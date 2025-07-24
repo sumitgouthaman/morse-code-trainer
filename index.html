@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morse Code Trainer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#333">
+</head>
+<body>
+    <div id="main-menu">
+        <div class="menu-header">
+            <h1>Morse Code Trainer</h1>
+        </div>
+        
+        <div class="menu-buttons">
+            <button id="char-to-morse-btn" class="menu-btn">
+                <div class="btn-content">
+                    <h3>Character to Morse</h3>
+                    <p>See a character, input the morse code</p>
+                </div>
+            </button>
+            
+            <button id="morse-to-char-btn" class="menu-btn">
+                <div class="btn-content">
+                    <h3>Morse to Character</h3>
+                    <p>See morse code, guess the character</p>
+                </div>
+            </button>
+            
+            <button id="sound-to-char-btn" class="menu-btn">
+                <div class="btn-content">
+                    <h3>Sound to Character</h3>
+                    <p>Listen to morse code, identify the character</p>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <div id="char-to-morse" class="practice-mode" style="display: none;">
+        <button class="back-btn">Back</button>
+        <button class="help-btn-corner">?</button>
+        <div class="character-display"></div>
+        <div class="morse-input"></div>
+        <div class="settings">
+            <label>
+                <input type="checkbox" id="include-punctuation-checkbox" checked>
+                Include Punctuation
+            </label>
+        </div>
+        <div class="controls">
+            <button class="dot-btn">.</button>
+            <button class="dash-btn">-</button>
+        </div>
+    </div>
+
+    <div id="morse-to-char" class="practice-mode" style="display: none;">
+        <button class="back-btn">Back</button>
+        <button class="help-btn-corner">?</button>
+        <div class="morse-display"></div>
+        <div class="settings">
+            <label>
+                <input type="checkbox" id="morse-to-char-include-punctuation-checkbox" checked>
+                Include Punctuation
+            </label>
+        </div>
+        <div class="qwerty-keyboard"></div>
+    </div>
+
+    <div id="sound-to-char" class="practice-mode" style="display: none;">
+        <div class="sound-display">
+            <button class="play-sound-btn">Play Sound</button>
+        </div>
+        <div class="qwerty-keyboard"></div>
+        <button class="back-btn">Back</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

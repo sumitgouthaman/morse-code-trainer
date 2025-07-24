@@ -1,0 +1,353 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #333;
+    color: white;
+}
+
+#main-menu {
+    text-align: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.menu-header {
+    margin-bottom: 40px;
+}
+
+#main-menu h1 {
+    font-size: 2.8em;
+    margin-bottom: 0.3em;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.menu-btn {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #4a4a4a, #3a3a3a);
+    border: 2px solid #666;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.menu-btn:hover {
+    background: linear-gradient(135deg, #5a5a5a, #4a4a4a);
+    border-color: #777;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.menu-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.3em;
+    color: #fff;
+}
+
+.btn-content p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #ccc;
+    line-height: 1.3;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    #main-menu {
+        padding: 15px;
+    }
+    
+    #main-menu h1 {
+        font-size: 2.2em;
+    }
+    
+    .menu-btn {
+        padding: 15px;
+    }
+    
+    .btn-content h3 {
+        font-size: 1.1em;
+    }
+    
+    .btn-content p {
+        font-size: 0.8em;
+    }
+}
+
+.practice-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.character-display, .morse-display {
+    font-size: 5em;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.morse-input {
+    font-size: 2em;
+    height: 1.5em;
+}
+
+.controls {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    padding: 1em;
+}
+
+.controls button {
+    font-size: 2em;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+}
+
+/* Phone keyboard styles */
+.phone-keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.key-btn {
+    padding: 12px 8px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid #555;
+    border-radius: 8px;
+    background-color: #4a4a4a;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    min-height: 48px;
+}
+
+.key-btn:hover {
+    background-color: #5a5a5a;
+    border-color: #666;
+}
+
+.key-btn:active {
+    background-color: #3a3a3a;
+    transform: scale(0.95);
+}
+
+/* Number row */
+.number-row {
+    margin-bottom: 4px;
+}
+
+.number-key {
+    flex: 1;
+    max-width: 45px;
+}
+
+/* Letter rows */
+.letter-row {
+    margin-bottom: 2px;
+}
+
+.letter-key {
+    flex: 1;
+    max-width: 45px;
+}
+
+.row-2 {
+    padding: 0 20px;
+}
+
+.row-3 {
+    padding: 0 20px;
+}
+
+.row-3 .punct-toggle-btn {
+    margin-right: 8px;
+    background-color: #4a4a4a;
+    min-width: 50px;
+    font-size: 14px;
+    border: 2px solid #555;
+}
+
+.row-3 .punct-toggle-btn:hover {
+    background-color: #5a5a5a;
+    border-color: #666;
+}
+
+/* Bottom row - remove since punctuation button is now in row 3 */
+
+/* Punctuation keyboard */
+.punctuation-keyboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    border: 2px solid #555;
+}
+
+.punct-key {
+    min-width: 35px;
+    min-height: 40px;
+    padding: 8px 6px;
+    font-size: 14px;
+    background-color: #4a4a4a;
+    border: 2px solid #555;
+}
+
+.punct-key:hover {
+    background-color: #5a5a5a;
+    border-color: #666;
+}
+
+.punct-back-toggle {
+    width: 100%;
+    margin-top: 10px;
+    min-height: 48px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.help-btn-corner {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #4a4a4a;
+    color: white;
+    border: 2px solid #666;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.help-btn-corner:hover {
+    background-color: #5a5a5a;
+    border-color: #777;
+}
+
+.help-btn-corner:active {
+    background-color: #3a3a3a;
+}
+
+#char-to-morse .controls {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+#char-to-morse .dot-btn,
+#char-to-morse .dash-btn {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+    font-weight: bold;
+    border-radius: 50%;
+    border: 3px solid #666;
+    background-color: #4a4a4a;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#char-to-morse .dot-btn:hover,
+#char-to-morse .dash-btn:hover {
+    background-color: #5a5a5a;
+    border-color: #777;
+    transform: scale(1.05);
+}
+
+#char-to-morse .dot-btn:active,
+#char-to-morse .dash-btn:active {
+    background-color: #3a3a3a;
+    transform: scale(0.95);
+}
+
+.answer-reveal {
+    color: #4CAF50 !important;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+/* Legacy keyboard styles for backward compatibility */
+.qwerty-keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.back-btn {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    padding: 0.5em 1em;
+    font-size: 1em;
+    background-color: #4f4f4f;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
