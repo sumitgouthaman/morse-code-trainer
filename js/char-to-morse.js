@@ -63,6 +63,26 @@ function checkCharToMorse(charToMorseState) {
 }
 
 function showCorrectMorse(charToMorseState) {
-    charToMorseState.morseInput.textContent = morseCode[charToMorseState.currentCharacter];
-    setTimeout(() => nextCharToMorse(charToMorseState), 1000);
+    // Create a temporary display element to show the answer
+    const answerDisplay = document.createElement('div');
+    answerDisplay.textContent = morseCode[charToMorseState.currentCharacter];
+    answerDisplay.className = 'answer-reveal';
+    answerDisplay.style.position = 'absolute';
+    answerDisplay.style.top = '60px';
+    answerDisplay.style.right = '10px';
+    answerDisplay.style.fontSize = '24px';
+    answerDisplay.style.padding = '10px';
+    answerDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    answerDisplay.style.borderRadius = '8px';
+    answerDisplay.style.zIndex = '20';
+    
+    // Add to the char-to-morse container
+    document.getElementById('char-to-morse').appendChild(answerDisplay);
+    
+    // Remove the answer display after 2 seconds
+    setTimeout(() => {
+        if (answerDisplay.parentNode) {
+            answerDisplay.parentNode.removeChild(answerDisplay);
+        }
+    }, 2000);
 }

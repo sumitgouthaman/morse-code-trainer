@@ -360,3 +360,40 @@ body {
     color: white;
     cursor: pointer;
 }
+
+
+.settings {
+    margin-bottom: 1em;
+}
+
+#sound-to-char .play-sound-btn {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 8px;
+    border: 2px solid #666;
+    background-color: #4a4a4a;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 20px;
+}
+
+#sound-to-char .play-sound-btn.correct {
+    background-color: lightgreen;
+}
+
+#sound-to-char .play-sound-btn.incorrect {
+    background-color: salmon;
+}
+
+#sound-to-char .settings {
+    margin-bottom: 20px;
+}
+
+#sound-to-char .qwerty-keyboard {
+    margin-top: 20px;
+}
+
+#morse-to-char .settings {
+    margin-bottom: 20px;
+}
