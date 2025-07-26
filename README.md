@@ -2,7 +2,7 @@
 
 An app I vibe-coded for practicing morse-code!
 
-**🚀 [Try it live here!](https://sumitgouthaman.com/morse-code-trainer/)**
+**🚀 [Try it live here!](https://morse-code.sumitgouthaman.com)**
 
 Built using Gemini CLI and Q CLI.
 
@@ -24,6 +24,51 @@ Due to browser security restrictions, you need to run this application using a l
     ```
 
 3.  Open your web browser and navigate to `http://localhost:8000`.
+
+## Generating PWA Icons
+
+The app uses a custom SOS signal favicon (`favicon.svg`) that needs to be converted to PNG format for PWA compatibility.
+
+### Prerequisites
+Install Inkscape for SVG to PNG conversion:
+```bash
+# macOS
+brew install inkscape
+
+# Ubuntu/Debian
+sudo apt install inkscape
+
+# Windows
+# Download from https://inkscape.org/
+```
+
+### Generate Icons
+Run these commands to create the required PNG icons from the SVG favicon:
+
+```bash
+# Generate 192x192 icon for PWA manifest
+inkscape --export-type=png --export-width=192 --export-height=192 favicon.svg --export-filename=icon-192.png
+
+# Generate 512x512 icon for PWA manifest  
+inkscape --export-type=png --export-width=512 --export-height=512 favicon.svg --export-filename=icon-512.png
+```
+
+### Alternative Tools
+If you don't have Inkscape, you can use other tools:
+
+**ImageMagick:**
+```bash
+convert -background none -size 192x192 favicon.svg icon-192.png
+convert -background none -size 512x512 favicon.svg icon-512.png
+```
+
+**rsvg-convert:**
+```bash
+rsvg-convert -w 192 -h 192 favicon.svg -o icon-192.png
+rsvg-convert -w 512 -h 512 favicon.svg -o icon-512.png
+```
+
+The generated PNG files are required for the PWA manifest and will be cached by the service worker for offline use.
 
 ## Taking Screenshots
 
