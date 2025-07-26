@@ -1,5 +1,6 @@
 import { morseCode } from './morse-code.js';
 import { generatePhoneKeyboard } from './ui.js';
+import { settings } from './settings.js';
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -9,7 +10,6 @@ export function initSoundToChar() {
         playSoundBtn: document.querySelector('.play-sound-btn'),
         soundDisplay: document.querySelector('.sound-display'),
         helpBtn: document.querySelector('.help-btn-corner'),
-        punctuationCheckbox: document.getElementById('sound-to-char-include-punctuation-checkbox'),
         currentMorse: '',
         correctCharacter: ''
     };
@@ -17,12 +17,11 @@ export function initSoundToChar() {
     generatePhoneKeyboard(soundToChar, handleSoundGuess);
     soundToChar.playSoundBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
     soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar));
-    soundToChar.punctuationCheckbox.addEventListener('change', () => nextSoundToChar(soundToChar));
     nextSoundToChar(soundToChar);
 }
 
 function nextSoundToChar(soundToChar) {
-    const includePunctuation = soundToChar.punctuationCheckbox.checked;
+    const includePunctuation = settings.get('includePunctuation');
     const characters = Object.keys(morseCode).filter(char => {
         if (includePunctuation) {
             return true;

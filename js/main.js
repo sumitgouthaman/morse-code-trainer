@@ -2,6 +2,7 @@ import { initCharToMorse } from './char-to-morse.js';
 import { initMorseToChar } from './morse-to-char.js';
 import { initSoundToChar } from './sound-to-char.js';
 import { initLearn } from './learn.js';
+import { settings } from './settings.js';
 
 const mainMenu = document.getElementById('main-menu');
 const gameContainer = document.getElementById('game-container');
@@ -11,6 +12,41 @@ const morseToCharBtn = document.getElementById('morse-to-char-btn');
 const soundToCharBtn = document.getElementById('sound-to-char-btn');
 const learnBtn = document.getElementById('learn-btn');
 
+// Settings modal elements
+const settingsBtn = document.getElementById('settings-btn');
+const settingsModal = document.getElementById('settings-modal');
+const closeSettingsBtn = document.getElementById('close-settings');
+const globalIncludePunctuationCheckbox = document.getElementById('global-include-punctuation');
+
+// Initialize settings UI
+function initializeSettings() {
+    // Set checkbox state from saved settings
+    globalIncludePunctuationCheckbox.checked = settings.get('includePunctuation');
+    
+    // Add event listeners
+    settingsBtn.addEventListener('click', openSettings);
+    closeSettingsBtn.addEventListener('click', closeSettings);
+    globalIncludePunctuationCheckbox.addEventListener('change', (e) => {
+        settings.set('includePunctuation', e.target.checked);
+    });
+    
+    // Close modal when clicking outside
+    settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+            closeSettings();
+        }
+    });
+}
+
+function openSettings() {
+    settingsModal.style.display = 'flex';
+}
+
+function closeSettings() {
+    settingsModal.style.display = 'none';
+}
+
+// Game mode navigation
 charToMorseBtn.addEventListener('click', () => {
     loadGameMode('char-to-morse');
 });
@@ -71,6 +107,7 @@ function showMainMenu() {
 
 // Initialize based on URL hash on page load
 window.addEventListener('load', () => {
+    initializeSettings();
     const hash = window.location.hash.substring(1);
     if (hash && ['char-to-morse', 'morse-to-char', 'sound-to-char', 'learn'].includes(hash)) {
         loadGameModeFromHistory(hash);

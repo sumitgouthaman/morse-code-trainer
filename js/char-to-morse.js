@@ -1,4 +1,5 @@
 import { morseCode } from './morse-code.js';
+import { settings } from './settings.js';
 
 export function initCharToMorse() {
     const charToMorseState = {
@@ -7,7 +8,6 @@ export function initCharToMorse() {
         dotBtn: document.querySelector('.dot-btn'),
         dashBtn: document.querySelector('.dash-btn'),
         helpBtn: document.querySelector('.help-btn-corner'),
-        punctuationCheckbox: document.getElementById('include-punctuation-checkbox'),
         currentCharacter: '',
         currentUserInput: ''
     };
@@ -15,13 +15,12 @@ export function initCharToMorse() {
     charToMorseState.dotBtn.addEventListener('click', () => handleCharInput('.', charToMorseState));
     charToMorseState.dashBtn.addEventListener('click', () => handleCharInput('-', charToMorseState));
     charToMorseState.helpBtn.addEventListener('click', () => showCorrectMorse(charToMorseState));
-    charToMorseState.punctuationCheckbox.addEventListener('change', () => nextCharToMorse(charToMorseState));
     
     nextCharToMorse(charToMorseState);
 }
 
 function nextCharToMorse(charToMorseState) {
-    const includePunctuation = charToMorseState.punctuationCheckbox.checked;
+    const includePunctuation = settings.get('includePunctuation');
     const characters = Object.keys(morseCode).filter(char => {
         if (includePunctuation) {
             return true;

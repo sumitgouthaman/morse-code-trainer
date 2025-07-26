@@ -1,5 +1,6 @@
 import { morseCode } from './morse-code.js';
 import { generatePhoneKeyboard } from './ui.js';
+import { settings } from './settings.js';
 
 export function initMorseToChar() {
     const morseToChar = {
@@ -7,12 +8,10 @@ export function initMorseToChar() {
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentMorse: '',
-        correctCharacter: '',
-        punctuationCheckbox: document.getElementById('morse-to-char-include-punctuation-checkbox')
+        correctCharacter: ''
     };
 
     generatePhoneKeyboard(morseToChar, handleMorseGuess);
-    morseToChar.punctuationCheckbox.addEventListener('change', () => nextMorseToChar(morseToChar));
     morseToChar.helpBtn.addEventListener('click', () => showMorseAnswer(morseToChar));
     nextMorseToChar(morseToChar);
 }
@@ -43,7 +42,7 @@ function showMorseAnswer(morseToChar) {
 }
 
 function nextMorseToChar(morseToChar) {
-    const includePunctuation = morseToChar.punctuationCheckbox.checked;
+    const includePunctuation = settings.get('includePunctuation');
     const characters = Object.keys(morseCode).filter(char => {
         if (includePunctuation) {
             return true;

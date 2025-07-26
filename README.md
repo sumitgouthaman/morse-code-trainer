@@ -19,6 +19,5 @@ Due to browser security restrictions, you need to run this application using a l
 
 ## TODO
 - Make PWA
-- Sound to character mode doesn't work correctly.
 - Icons, etc.
 - Store stats
