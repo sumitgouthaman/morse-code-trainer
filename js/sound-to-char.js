@@ -2,7 +2,20 @@ import { morseCode } from './morse-code.js';
 import { generatePhoneKeyboard } from './ui.js';
 import { settings } from './settings.js';
 
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioCtx = null;
+
+function getAudioContext() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    
+    // Ensure AudioContext is running
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    
+    return audioCtx;
+}
 
 export function initSoundToChar() {
     const soundToChar = {
@@ -146,27 +159,28 @@ function showCorrectAnswer(soundToChar) {
 }
 
 function playSoundAndVibrate(morse) {
+    const audioContext = getAudioContext();
     const dotDuration = 100;
     const dashDuration = dotDuration * 3;
     const pauseDuration = dotDuration;
 
-    let time = audioCtx.currentTime;
+    let time = audioContext.currentTime;
     const vibrationPattern = [];
 
     morse.split('').forEach(char => {
         if (char === '.') {
             vibrationPattern.push(dotDuration);
-            const oscillator = audioCtx.createOscillator();
+            const oscillator = audioContext.createOscillator();
             oscillator.frequency.setValueAtTime(440, time);
-            oscillator.connect(audioCtx.destination);
+            oscillator.connect(audioContext.destination);
             oscillator.start(time);
             oscillator.stop(time + dotDuration / 1000);
             time += dotDuration / 1000;
         } else if (char === '-') {
             vibrationPattern.push(dashDuration);
-            const oscillator = audioCtx.createOscillator();
+            const oscillator = audioContext.createOscillator();
             oscillator.frequency.setValueAtTime(440, time);
-            oscillator.connect(audioCtx.destination);
+            oscillator.connect(audioContext.destination);
             oscillator.start(time);
             oscillator.stop(time + dashDuration / 1000);
             time += dashDuration / 1000;
