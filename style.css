@@ -37,6 +37,7 @@ body {
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
+    min-height: 100dvh; /* Fallback for mobile browsers */
     margin: 0;
     padding: 0;
     background: var(--bg-dark);
@@ -94,6 +95,7 @@ body {
 #game-container {
     width: 100%;
     min-height: 100vh;
+    min-height: 100dvh; /* Fallback for mobile browsers */
 }
 
 .practice-mode {
@@ -102,6 +104,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
+    min-height: 100dvh; /* Fallback for mobile browsers */
     width: 100%;
     padding: var(--space-lg);
     gap: var(--space-lg);
@@ -788,22 +791,38 @@ body {
 }
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
-    #main-menu {
-        width: 100%;
-        max-width: none;
-        padding: var(--space-md);
-        padding-top: 40px;
+    /* Fix mobile viewport height issue */
+    body {
+        min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
     }
     
-    #main-menu h1 {
-        font-size: 2.2em;
-        margin-bottom: var(--space-lg);
+    #game-container {
+        min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
     }
     
     .practice-mode {
+        min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
         padding: var(--space-md);
         gap: var(--space-lg);
-        min-height: 100vh;
+    }
+    
+    /* Fix keyboard overflow on mobile */
+    .phone-keyboard, .qwerty-keyboard {
+        max-width: 100%; /* Use full available width */
+        padding: 0 var(--space-xs); /* Reduced padding to give more space to keys */
+        box-sizing: border-box;
+    }
+    
+    .keyboard-row {
+        gap: 3px; /* Slightly reduced gap between keys */
+    }
+    
+    .key-btn {
+        padding: 12px 8px; /* Increased padding for larger keys */
+        font-size: 15px; /* Slightly larger font */
+        min-width: 32px; /* Ensure minimum touch target */
+        flex: 1; /* Allow keys to flex and fit available space */
+        max-width: 42px; /* Allow keys to be a bit wider */
     }
     
     .character-display, 
@@ -885,15 +904,27 @@ body {
 }
 
 @media (max-width: 480px) {
-    #main-menu {
-        padding: var(--space-sm);
-        padding-top: 30px;
-    }
-    
+    /* Fix mobile viewport height issue */
     .practice-mode {
+        min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
         padding: var(--space-sm);
         gap: var(--space-md);
-        min-height: 100vh;
+    }
+    
+    /* Extra compact keyboard for very small screens */
+    .phone-keyboard, .qwerty-keyboard {
+        padding: 0 2px; /* Minimal padding to maximize key space */
+    }
+    
+    .keyboard-row {
+        gap: 2px; /* Minimal gap between keys */
+    }
+    
+    .key-btn {
+        padding: 10px 6px; /* Better balance of size vs fit */
+        font-size: 14px; /* Good readable size */
+        min-width: 30px; /* Adequate touch target */
+        max-width: 38px; /* Allow reasonable key width */
     }
     
     .character-display, 

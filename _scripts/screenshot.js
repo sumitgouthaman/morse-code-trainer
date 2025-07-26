@@ -14,8 +14,8 @@ const config = {
     height: 800
   },
   mobileViewport: {
-    width: 375,
-    height: 667
+    width: 448,
+    height: 867
   }
 };
 
