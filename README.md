@@ -2,6 +2,8 @@
 
 An app I vibe-coded for practicing morse-code!
 
+**🚀 [Try it live here!](https://sumitgouthaman.com/morse-code-trainer/)**
+
 Built using Gemini CLI and Q CLI.
 
 ## Screenshots
