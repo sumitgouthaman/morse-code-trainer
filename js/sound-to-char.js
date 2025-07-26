@@ -7,6 +7,8 @@ export function initSoundToChar() {
     const soundToChar = {
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
         playSoundBtn: document.querySelector('.play-sound-btn'),
+        soundDisplay: document.querySelector('.sound-display'),
+        helpBtn: document.querySelector('.help-btn-corner'),
         punctuationCheckbox: document.getElementById('sound-to-char-include-punctuation-checkbox'),
         currentMorse: '',
         correctCharacter: ''
@@ -14,6 +16,7 @@ export function initSoundToChar() {
 
     generatePhoneKeyboard(soundToChar, handleSoundGuess);
     soundToChar.playSoundBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
+    soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar));
     soundToChar.punctuationCheckbox.addEventListener('change', () => nextSoundToChar(soundToChar));
     nextSoundToChar(soundToChar);
 }
@@ -33,19 +36,79 @@ function nextSoundToChar(soundToChar) {
 }
 
 function handleSoundGuess(guess, soundToChar) {
-    const playSoundBtn = soundToChar.playSoundBtn;
+    // Show the guessed character prominently in the sound display area
+    showCharacterFeedback(guess, soundToChar);
+    
     if (guess === soundToChar.correctCharacter) {
-        playSoundBtn.style.backgroundColor = 'lightgreen';
+        // Correct guess
         setTimeout(() => {
-            playSoundBtn.style.backgroundColor = '';
             nextSoundToChar(soundToChar);
-        }, 500);
+        }, 1000);
     } else {
-        playSoundBtn.style.backgroundColor = 'salmon';
+        // Incorrect guess - just show feedback, don't advance
         setTimeout(() => {
-            playSoundBtn.style.backgroundColor = '';
-        }, 500);
+            clearCharacterFeedback(soundToChar);
+        }, 1000);
     }
+}
+
+function showCharacterFeedback(character, soundToChar) {
+    // Create or update the feedback display
+    let feedbackDiv = soundToChar.soundDisplay.querySelector('.character-feedback');
+    if (!feedbackDiv) {
+        feedbackDiv = document.createElement('div');
+        feedbackDiv.className = 'character-feedback';
+        soundToChar.soundDisplay.appendChild(feedbackDiv);
+    }
+    
+    feedbackDiv.textContent = character;
+    feedbackDiv.style.display = 'block';
+    
+    // Set color based on correctness
+    if (character === soundToChar.correctCharacter) {
+        feedbackDiv.style.color = '#4CAF50'; // Green for correct
+        feedbackDiv.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+        feedbackDiv.style.borderColor = '#4CAF50';
+    } else {
+        feedbackDiv.style.color = '#f44336'; // Red for incorrect
+        feedbackDiv.style.backgroundColor = 'rgba(244, 67, 54, 0.1)';
+        feedbackDiv.style.borderColor = '#f44336';
+    }
+}
+
+function clearCharacterFeedback(soundToChar) {
+    const feedbackDiv = soundToChar.soundDisplay.querySelector('.character-feedback');
+    if (feedbackDiv) {
+        feedbackDiv.style.display = 'none';
+    }
+}
+
+function showCorrectAnswer(soundToChar) {
+    // Create a temporary display element to show the answer
+    const answerDisplay = document.createElement('div');
+    answerDisplay.textContent = `${soundToChar.correctCharacter} (${soundToChar.currentMorse})`;
+    answerDisplay.className = 'answer-reveal';
+    answerDisplay.style.position = 'absolute';
+    answerDisplay.style.top = '60px';
+    answerDisplay.style.right = '10px';
+    answerDisplay.style.fontSize = '24px';
+    answerDisplay.style.padding = '10px';
+    answerDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    answerDisplay.style.borderRadius = '8px';
+    answerDisplay.style.zIndex = '20';
+    answerDisplay.style.color = '#4CAF50';
+    answerDisplay.style.fontWeight = 'bold';
+    answerDisplay.style.textShadow = '0 0 10px rgba(76, 175, 80, 0.5)';
+    
+    // Add to the sound-to-char container
+    document.getElementById('sound-to-char').appendChild(answerDisplay);
+    
+    // Remove the answer display after 2 seconds
+    setTimeout(() => {
+        if (answerDisplay.parentNode) {
+            answerDisplay.parentNode.removeChild(answerDisplay);
+        }
+    }, 2000);
 }
 
 function playSoundAndVibrate(morse) {
