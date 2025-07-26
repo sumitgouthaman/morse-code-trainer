@@ -348,20 +348,6 @@ body {
     max-width: 600px;
 }
 
-.back-btn {
-    position: absolute;
-    top: 1em;
-    left: 1em;
-    padding: 0.5em 1em;
-    font-size: 1em;
-    background-color: #4f4f4f;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-}
-
-
 .settings {
     margin-bottom: 1em;
 }
@@ -400,7 +386,7 @@ body {
 /* Learn Mode Styles */
 .learn-container {
     max-width: 800px;
-    margin: 60px auto 0 auto;
+    margin: 0 auto;
     padding: 20px;
 }
 

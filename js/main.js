@@ -27,7 +27,22 @@ learnBtn.addEventListener('click', () => {
     loadGameMode('learn');
 });
 
+// Handle browser back button
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.mode) {
+        loadGameModeFromHistory(event.state.mode);
+    } else {
+        showMainMenu();
+    }
+});
+
 async function loadGameMode(mode) {
+    // Push state to history for browser back button support
+    history.pushState({ mode: mode }, '', `#${mode}`);
+    await loadGameModeFromHistory(mode);
+}
+
+async function loadGameModeFromHistory(mode) {
     mainMenu.style.display = 'none';
     gameContainer.style.display = 'block';
 
@@ -44,14 +59,23 @@ async function loadGameMode(mode) {
     } else if (mode === 'learn') {
         initLearn();
     }
-
-    const backBtn = gameContainer.querySelector('.back-btn');
-    backBtn.addEventListener('click', () => {
-        mainMenu.style.display = 'block';
-        gameContainer.style.display = 'none';
-        gameContainer.innerHTML = '';
-    });
 }
+
+function showMainMenu() {
+    mainMenu.style.display = 'block';
+    gameContainer.style.display = 'none';
+    gameContainer.innerHTML = '';
+    // Update URL to remove hash
+    history.replaceState(null, '', window.location.pathname);
+}
+
+// Initialize based on URL hash on page load
+window.addEventListener('load', () => {
+    const hash = window.location.hash.substring(1);
+    if (hash && ['char-to-morse', 'morse-to-char', 'sound-to-char', 'learn'].includes(hash)) {
+        loadGameModeFromHistory(hash);
+    }
+});
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
