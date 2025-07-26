@@ -86,6 +86,30 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
   try {
     console.log(`📸 Taking screenshot: ${scenario.name}${suffix}`);
     
+    // Override Math.random for consistent screenshots
+    await page.evaluateOnNewDocument(() => {
+      // Predefined sequence for consistent character selection
+      const mockRandomValues = [
+        0.0,   // 'A' - Always start with A for char-to-morse
+        0.05,  // 'B' - Second character
+        0.1,   // 'C' - Third character  
+        0.15,  // 'D' - Fourth character
+        0.2,   // 'E' - Fifth character
+        0.25   // 'F' - Sixth character
+      ];
+      let mockRandomIndex = 0;
+      
+      // Store original random function
+      window._originalRandom = Math.random;
+      
+      // Override with predictable sequence
+      Math.random = () => {
+        const value = mockRandomValues[mockRandomIndex % mockRandomValues.length];
+        mockRandomIndex++;
+        return value;
+      };
+    });
+    
     // Navigate to the specific URL
     const fullUrl = baseUrl + scenario.url;
     await page.goto(fullUrl, { waitUntil: 'networkidle0' });
