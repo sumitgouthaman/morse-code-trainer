@@ -1,0 +1,19 @@
+{
+  "name": "morse-code-screenshots",
+  "version": "1.0.0",
+  "description": "Screenshot automation for Morse Code Trainer app",
+  "main": "screenshot.js",
+  "scripts": {
+    "screenshot": "node screenshot.js",
+    "screenshot-local": "node screenshot.js --local",
+    "screenshot-live": "node screenshot.js --live",
+    "screenshot-both": "node screenshot.js --both"
+  },
+  "dependencies": {
+    "puppeteer": "^22.15.0"
+  },
+  "devDependencies": {},
+  "keywords": ["morse-code", "screenshots", "automation"],
+  "author": "",
+  "license": "MIT"
+}
