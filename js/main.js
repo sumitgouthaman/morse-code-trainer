@@ -1,6 +1,7 @@
 import { initCharToMorse } from './char-to-morse.js';
 import { initMorseToChar } from './morse-to-char.js';
 import { initSoundToChar } from './sound-to-char.js';
+import { initLearn } from './learn.js';
 
 const mainMenu = document.getElementById('main-menu');
 const gameContainer = document.getElementById('game-container');
@@ -8,6 +9,7 @@ const gameContainer = document.getElementById('game-container');
 const charToMorseBtn = document.getElementById('char-to-morse-btn');
 const morseToCharBtn = document.getElementById('morse-to-char-btn');
 const soundToCharBtn = document.getElementById('sound-to-char-btn');
+const learnBtn = document.getElementById('learn-btn');
 
 charToMorseBtn.addEventListener('click', () => {
     loadGameMode('char-to-morse');
@@ -19,6 +21,10 @@ morseToCharBtn.addEventListener('click', () => {
 
 soundToCharBtn.addEventListener('click', () => {
     loadGameMode('sound-to-char');
+});
+
+learnBtn.addEventListener('click', () => {
+    loadGameMode('learn');
 });
 
 async function loadGameMode(mode) {
@@ -35,6 +41,8 @@ async function loadGameMode(mode) {
         initMorseToChar();
     } else if (mode === 'sound-to-char') {
         initSoundToChar();
+    } else if (mode === 'learn') {
+        initLearn();
     }
 
     const backBtn = gameContainer.querySelector('.back-btn');
