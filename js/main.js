@@ -17,17 +17,31 @@ const settingsBtn = document.getElementById('settings-btn');
 const settingsModal = document.getElementById('settings-modal');
 const closeSettingsBtn = document.getElementById('close-settings');
 const globalIncludePunctuationCheckbox = document.getElementById('global-include-punctuation');
+const morseSpeedSlider = document.getElementById('morse-speed-slider');
+const speedDisplay = document.getElementById('speed-display');
 
 // Initialize settings UI
 function initializeSettings() {
     // Set checkbox state from saved settings
     globalIncludePunctuationCheckbox.checked = settings.get('includePunctuation');
     
+    // Set speed slider and display from saved settings
+    const savedSpeed = settings.get('morseSpeed');
+    morseSpeedSlider.value = savedSpeed;
+    speedDisplay.textContent = `${savedSpeed} WPM`;
+    
     // Add event listeners
     settingsBtn.addEventListener('click', openSettings);
     closeSettingsBtn.addEventListener('click', closeSettings);
     globalIncludePunctuationCheckbox.addEventListener('change', (e) => {
         settings.set('includePunctuation', e.target.checked);
+    });
+    
+    // Speed slider event listener
+    morseSpeedSlider.addEventListener('input', (e) => {
+        const speed = parseInt(e.target.value);
+        speedDisplay.textContent = `${speed} WPM`;
+        settings.set('morseSpeed', speed);
     });
     
     // Close modal when clicking outside

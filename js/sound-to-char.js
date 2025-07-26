@@ -17,20 +17,60 @@ function getAudioContext() {
     return audioCtx;
 }
 
+function getTimingFromWPM(wpm) {
+    // Standard formula: dot duration = 1200ms / WPM
+    // This gives us the correct timing for standard morse code speeds
+    const dotDuration = 1200 / wpm;
+    return {
+        dot: dotDuration,
+        dash: dotDuration * 3,
+        pause: dotDuration
+    };
+}
+
+function initInlineSpeedControl(soundToChar) {
+    // Set initial value from settings
+    const currentSpeed = settings.get('morseSpeed');
+    soundToChar.speedSlider.value = currentSpeed;
+    soundToChar.speedValue.textContent = `${currentSpeed} WPM`;
+    
+    // Add event listener for speed changes
+    soundToChar.speedSlider.addEventListener('input', (e) => {
+        const speed = parseInt(e.target.value);
+        soundToChar.speedValue.textContent = `${speed} WPM`;
+        settings.set('morseSpeed', speed);
+        
+        // Update the main settings display if it exists
+        const mainSpeedDisplay = document.getElementById('speed-display');
+        if (mainSpeedDisplay) {
+            mainSpeedDisplay.textContent = `${speed} WPM`;
+        }
+        const mainSpeedSlider = document.getElementById('morse-speed-slider');
+        if (mainSpeedSlider) {
+            mainSpeedSlider.value = speed;
+        }
+    });
+}
+
 export function initSoundToChar() {
     const soundToChar = {
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
-        playSoundBtn: document.querySelector('.play-sound-btn'),
+        playBtn: document.querySelector('.play-btn'),
         soundDisplay: document.querySelector('.sound-display'),
         hintArea: document.querySelector('.hint-area'),
         morsePattern: document.querySelector('.morse-pattern'),
         helpBtn: document.querySelector('.help-btn-corner'),
+        speedSlider: document.querySelector('#inline-speed-slider'),
+        speedValue: document.querySelector('#speed-value'),
         currentMorse: '',
         correctCharacter: ''
     };
 
+    // Initialize inline speed control
+    initInlineSpeedControl(soundToChar);
+
     generatePhoneKeyboard(soundToChar, handleSoundGuess);
-    soundToChar.playSoundBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
+    soundToChar.playBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
     soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar));
     
     // Add click handler for hint area
@@ -160,33 +200,32 @@ function showCorrectAnswer(soundToChar) {
 
 function playSoundAndVibrate(morse) {
     const audioContext = getAudioContext();
-    const dotDuration = 100;
-    const dashDuration = dotDuration * 3;
-    const pauseDuration = dotDuration;
+    const speed = settings.get('morseSpeed');
+    const timing = getTimingFromWPM(speed);
 
     let time = audioContext.currentTime;
     const vibrationPattern = [];
 
     morse.split('').forEach(char => {
         if (char === '.') {
-            vibrationPattern.push(dotDuration);
+            vibrationPattern.push(Math.round(timing.dot));
             const oscillator = audioContext.createOscillator();
             oscillator.frequency.setValueAtTime(440, time);
             oscillator.connect(audioContext.destination);
             oscillator.start(time);
-            oscillator.stop(time + dotDuration / 1000);
-            time += dotDuration / 1000;
+            oscillator.stop(time + timing.dot / 1000);
+            time += timing.dot / 1000;
         } else if (char === '-') {
-            vibrationPattern.push(dashDuration);
+            vibrationPattern.push(Math.round(timing.dash));
             const oscillator = audioContext.createOscillator();
             oscillator.frequency.setValueAtTime(440, time);
             oscillator.connect(audioContext.destination);
             oscillator.start(time);
-            oscillator.stop(time + dashDuration / 1000);
-            time += dashDuration / 1000;
+            oscillator.stop(time + timing.dash / 1000);
+            time += timing.dash / 1000;
         }
-        vibrationPattern.push(pauseDuration);
-        time += pauseDuration / 1000;
+        vibrationPattern.push(Math.round(timing.pause));
+        time += timing.pause / 1000;
     });
 
     if (navigator.vibrate) {

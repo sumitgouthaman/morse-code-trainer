@@ -6,6 +6,18 @@
             <div class="character-feedback"></div>
         </div>
     </div>
-    <button class="play-sound-btn">Play Sound</button>
+    
+    <div class="audio-controls">
+        <button class="control-btn speed-btn">
+            <div class="btn-label">Speed</div>
+            <div class="btn-value" id="speed-value">12 WPM</div>
+            <input type="range" id="inline-speed-slider" min="5" max="30" value="12" step="1" class="speed-slider">
+        </button>
+        
+        <button class="control-btn play-btn">
+            <div class="btn-content">Play Sound</div>
+        </button>
+    </div>
+    
     <div class="qwerty-keyboard"></div>
 </div>

@@ -14,19 +14,11 @@ body {
     padding: 20px;
     max-width: 600px;
     margin: 0 auto;
-    /* Remove height and flex properties that were causing centering */
 }
 
 #game-container {
     width: 100%;
     height: 100%;
-}
-
-#main-menu {
-    text-align: center;
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
 }
 
 .menu-header {
@@ -47,11 +39,12 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    align-items: stretch; /* Ensure buttons stretch to full width */
 }
 
 .menu-btn {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
     padding: 20px;
     background: linear-gradient(135deg, #4a4a4a, #3a3a3a);
     border: 2px solid #666;
@@ -61,6 +54,9 @@ body {
     transition: all 0.3s ease;
     text-align: left;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: flex-start;
 }
 
 .menu-btn:hover {
@@ -574,8 +570,18 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Remove margin when in audio controls row */
+.audio-controls-row .play-sound-btn {
+    margin-bottom: 0;
 }
 
 .play-sound-btn:hover {
@@ -737,9 +743,207 @@ body {
     margin-bottom: 5px;
 }
 
+.setting-item .speed-label {
+    justify-content: space-between;
+    margin-bottom: 12px;
+    cursor: default;
+}
+
 .setting-item input[type="checkbox"] {
     margin-right: 10px;
     transform: scale(1.2);
+}
+
+.setting-item input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #333;
+    border-radius: 3px;
+    outline: none;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb:hover {
+    background: #45a049;
+}
+
+.setting-item input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.setting-item input[type="range"]::-moz-range-thumb:hover {
+    background: #45a049;
+}
+
+#speed-display {
+    font-weight: bold;
+    color: #4CAF50;
+    font-size: 0.95em;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+/* Audio Controls - Cohesive Button Design */
+.audio-controls {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+    align-items: stretch;
+}
+
+.audio-controls .control-btn {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+.audio-controls .control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.audio-controls .control-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Speed Control Button */
+.speed-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #555, #666);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+}
+
+.btn-label {
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-bottom: 4px;
+    opacity: 0.9;
+}
+
+.btn-value {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.speed-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.speed-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.speed-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.speed-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.speed-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* Play Sound Button */
+.play-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 16px 32px;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+}
+
+.play-btn .btn-content {
+    font-size: 1.1em;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .audio-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .audio-controls .control-btn {
+        min-height: 60px;
+    }
+    
+    .speed-btn {
+        padding: 14px 18px;
+    }
+    
+    .play-btn {
+        padding: 14px 24px;
+        min-width: auto;
+    }
+    
+    .play-btn .btn-content {
+        font-size: 1em;
+    }
+}
+    }
 }
 
 .setting-description {
