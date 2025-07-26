@@ -12,11 +12,24 @@ export function initCharToMorse() {
         currentUserInput: ''
     };
 
-    charToMorseState.dotBtn.addEventListener('click', () => handleCharInput('.', charToMorseState));
-    charToMorseState.dashBtn.addEventListener('click', () => handleCharInput('-', charToMorseState));
+    charToMorseState.dotBtn.addEventListener('click', () => {
+        addPressedAnimation(charToMorseState.dotBtn);
+        handleCharInput('.', charToMorseState);
+    });
+    charToMorseState.dashBtn.addEventListener('click', () => {
+        addPressedAnimation(charToMorseState.dashBtn);
+        handleCharInput('-', charToMorseState);
+    });
     charToMorseState.helpBtn.addEventListener('click', () => showCorrectMorse(charToMorseState));
     
     nextCharToMorse(charToMorseState);
+}
+
+function addPressedAnimation(button) {
+    button.classList.add('pressed');
+    setTimeout(() => {
+        button.classList.remove('pressed');
+    }, 100);
 }
 
 function nextCharToMorse(charToMorseState) {
