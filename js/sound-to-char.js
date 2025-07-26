@@ -9,6 +9,8 @@ export function initSoundToChar() {
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
         playSoundBtn: document.querySelector('.play-sound-btn'),
         soundDisplay: document.querySelector('.sound-display'),
+        hintArea: document.querySelector('.hint-area'),
+        morsePattern: document.querySelector('.morse-pattern'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentMorse: '',
         correctCharacter: ''
@@ -17,6 +19,10 @@ export function initSoundToChar() {
     generatePhoneKeyboard(soundToChar, handleSoundGuess);
     soundToChar.playSoundBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
     soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar));
+    
+    // Add click handler for hint area
+    soundToChar.hintArea.addEventListener('click', () => toggleMorseHint(soundToChar));
+    
     nextSoundToChar(soundToChar);
 }
 
@@ -30,8 +36,36 @@ function nextSoundToChar(soundToChar) {
     });
     soundToChar.correctCharacter = characters[Math.floor(Math.random() * characters.length)];
     soundToChar.currentMorse = morseCode[soundToChar.correctCharacter];
+    
+    // Clear any previous feedback and hide hint
+    clearCharacterFeedback(soundToChar);
+    hideMorseHint(soundToChar);
+    
+    // Set the morse pattern but keep it hidden
+    soundToChar.morsePattern.textContent = soundToChar.currentMorse;
+    
     // Automatically play sound for the new character
     playSoundAndVibrate(soundToChar.currentMorse);
+}
+
+function toggleMorseHint(soundToChar) {
+    const isVisible = soundToChar.morsePattern.classList.contains('visible');
+    
+    if (isVisible) {
+        hideMorseHint(soundToChar);
+    } else {
+        showMorseHint(soundToChar);
+    }
+}
+
+function showMorseHint(soundToChar) {
+    soundToChar.morsePattern.classList.add('visible');
+    soundToChar.hintArea.classList.add('showing-hint');
+}
+
+function hideMorseHint(soundToChar) {
+    soundToChar.morsePattern.classList.remove('visible');
+    soundToChar.hintArea.classList.remove('showing-hint');
 }
 
 function handleSoundGuess(guess, soundToChar) {
@@ -39,15 +73,16 @@ function handleSoundGuess(guess, soundToChar) {
     showCharacterFeedback(guess, soundToChar);
     
     if (guess === soundToChar.correctCharacter) {
-        // Correct guess
+        // Correct guess - clear feedback and move to next character
         setTimeout(() => {
+            clearCharacterFeedback(soundToChar);
             nextSoundToChar(soundToChar);
-        }, 1000);
+        }, 1500);
     } else {
         // Incorrect guess - just show feedback, don't advance
         setTimeout(() => {
             clearCharacterFeedback(soundToChar);
-        }, 1000);
+        }, 1500);
     }
 }
 
