@@ -1,17 +1,92 @@
+/* ===== CSS VARIABLES ===== */
+:root {
+    /* Colors */
+    --primary-green: #4CAF50;
+    --primary-green-dark: #45a049;
+    --bg-dark: #333;
+    --bg-medium: #444;
+    --bg-light: #4a4a4a;
+    --bg-lighter: #5a5a5a;
+    --border-color: #666;
+    --border-light: #777;
+    --text-primary: white;
+    --text-secondary: #ccc;
+    --text-muted: #999;
+    --error-color: salmon;
+    --success-color: lightgreen;
+    
+    /* Spacing */
+    --spacing-xs: 5px;
+    --spacing-sm: 10px;
+    --spacing-md: 15px;
+    --spacing-lg: 20px;
+    --spacing-xl: 30px;
+    
+    /* Border radius */
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 15px;
+    --radius-circle: 50%;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.2);
+    --shadow-lg: 0 6px 12px rgba(0,0,0,0.3);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+/* ===== BASE STYLES ===== */
 body {
     font-family: sans-serif;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align items to the top */
+    align-items: flex-start;
     height: 100vh;
     margin: 0;
-    background-color: #333; /* Restore background color */
-    color: white;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
 }
 
+/* ===== UTILITY CLASSES ===== */
+.btn-base {
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-family: inherit;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-base:hover {
+    background-color: var(--bg-lighter);
+    border-color: var(--border-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-base:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+    border-color: var(--primary-green);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-green-dark), var(--primary-green));
+}
+
+/* ===== LAYOUT COMPONENTS ===== */
 #main-menu {
     text-align: center;
-    padding: 20px;
+    padding: var(--spacing-lg);
     max-width: 600px;
     margin: 0 auto;
 }
@@ -19,92 +94,6 @@ body {
 #game-container {
     width: 100%;
     height: 100%;
-}
-
-.menu-header {
-    margin-bottom: 40px;
-}
-
-#main-menu h1 {
-    font-size: 2.8em;
-    margin-bottom: 0.3em;
-    background: linear-gradient(135deg, #4CAF50, #45a049);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.menu-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: stretch; /* Ensure buttons stretch to full width */
-}
-
-.menu-btn {
-    display: flex !important;
-    align-items: center !important;
-    padding: 20px;
-    background: linear-gradient(135deg, #4a4a4a, #3a3a3a);
-    border: 2px solid #666;
-    border-radius: 15px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: left;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    width: 100%;
-    box-sizing: border-box;
-    justify-content: flex-start;
-}
-
-.menu-btn:hover {
-    background: linear-gradient(135deg, #5a5a5a, #4a4a4a);
-    border-color: #777;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-
-.menu-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.btn-content h3 {
-    margin: 0 0 5px 0;
-    font-size: 1.3em;
-    color: #fff;
-}
-
-.btn-content p {
-    margin: 0;
-    font-size: 0.9em;
-    color: #ccc;
-    line-height: 1.3;
-}
-
-/* Responsive design for smaller screens */
-@media (max-width: 600px) {
-    #main-menu {
-        padding: 15px;
-    }
-    
-    #main-menu h1 {
-        font-size: 2.2em;
-    }
-    
-    .menu-btn {
-        padding: 15px;
-    }
-    
-    .btn-content h3 {
-        font-size: 1.1em;
-    }
-    
-    .btn-content p {
-        font-size: 0.8em;
-    }
 }
 
 .practice-mode {
@@ -118,7 +107,73 @@ body {
     box-sizing: border-box;
 }
 
-.character-display, .morse-display {
+/* ===== MAIN MENU ===== */
+.menu-header {
+    margin-bottom: 40px;
+}
+
+#main-menu h1 {
+    font-size: 2.8em;
+    margin-bottom: 0.3em;
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    align-items: stretch;
+}
+
+.menu-btn {
+    display: flex !important;
+    align-items: center !important;
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, var(--bg-light), #3a3a3a);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    text-align: left;
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: flex-start;
+}
+
+.menu-btn:hover {
+    background: linear-gradient(135deg, var(--bg-lighter), var(--bg-light));
+    border-color: var(--border-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.menu-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-content h3 {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: 1.3em;
+    color: var(--text-primary);
+}
+
+.btn-content p {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+
+/* ===== DISPLAYS ===== */
+.character-display, 
+.morse-display {
     font-size: 5em;
     flex-grow: 1;
     display: flex;
@@ -131,376 +186,6 @@ body {
     height: 1.5em;
 }
 
-.controls {
-    display: flex;
-    width: 100%;
-    justify-content: space-around;
-    padding: 1em;
-}
-
-.controls button {
-    font-size: 2em;
-    width: 2em;
-    height: 2em;
-    border-radius: 50%;
-}
-
-/* Phone keyboard styles */
-.phone-keyboard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 20px;
-}
-
-.keyboard-row {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    width: 100%;
-}
-
-.key-btn {
-    padding: 12px 8px;
-    font-size: 16px;
-    font-weight: bold;
-    border: 2px solid #555;
-    border-radius: 8px;
-    background-color: #4a4a4a;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 40px;
-    min-height: 48px;
-}
-
-.key-btn:hover {
-    background-color: #5a5a5a;
-    border-color: #666;
-}
-
-.key-btn:active {
-    background-color: #3a3a3a;
-    transform: scale(0.95);
-}
-
-/* Number row */
-.number-row {
-    margin-bottom: 4px;
-}
-
-.number-key {
-    flex: 1;
-    max-width: 45px;
-}
-
-/* Letter rows */
-.letter-row {
-    margin-bottom: 2px;
-}
-
-.letter-key {
-    flex: 1;
-    max-width: 45px;
-}
-
-.row-2 {
-    padding: 0 20px;
-}
-
-.row-3 {
-    padding: 0 20px;
-}
-
-.row-3 .punct-toggle-btn {
-    margin-right: 8px;
-    background-color: #4a4a4a;
-    min-width: 50px;
-    font-size: 14px;
-    border: 2px solid #555;
-}
-
-.row-3 .punct-toggle-btn:hover {
-    background-color: #5a5a5a;
-    border-color: #666;
-}
-
-/* Bottom row - remove since punctuation button is now in row 3 */
-
-/* Punctuation keyboard */
-.punctuation-keyboard {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-    width: 100%;
-    max-width: 400px;
-    margin-top: 10px;
-    padding: 15px;
-    background-color: #2a2a2a;
-    border-radius: 10px;
-    border: 2px solid #555;
-}
-
-.punct-key {
-    min-width: 35px;
-    min-height: 40px;
-    padding: 8px 6px;
-    font-size: 14px;
-    background-color: #4a4a4a;
-    border: 2px solid #555;
-}
-
-.punct-key:hover {
-    background-color: #5a5a5a;
-    border-color: #666;
-}
-
-.punct-back-toggle {
-    width: 100%;
-    margin-top: 10px;
-    min-height: 48px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.help-btn-corner {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #4a4a4a;
-    color: white;
-    border: 2px solid #666;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-}
-
-.help-btn-corner:hover {
-    background-color: #5a5a5a;
-    border-color: #777;
-}
-
-.help-btn-corner:active {
-    background-color: #3a3a3a;
-}
-
-#char-to-morse .controls {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin: 30px 0;
-}
-
-#char-to-morse .dot-btn,
-#char-to-morse .dash-btn {
-    width: 80px;
-    height: 80px;
-    font-size: 32px;
-    font-weight: bold;
-    border-radius: 50%;
-    border: 3px solid #666;
-    background-color: #4a4a4a;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-#char-to-morse .dot-btn:hover,
-#char-to-morse .dash-btn:hover {
-    background-color: #5a5a5a;
-    border-color: #777;
-    transform: scale(1.05);
-}
-
-#char-to-morse .dot-btn:active,
-#char-to-morse .dash-btn:active {
-    background-color: #3a3a3a;
-    transform: scale(0.95);
-}
-
-.answer-reveal {
-    color: #4CAF50 !important;
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-}
-
-/* Legacy keyboard styles for backward compatibility */
-.qwerty-keyboard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 600px;
-}
-
-.settings {
-    margin-bottom: 1em;
-}
-
-#sound-to-char .play-sound-btn {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    border-radius: 8px;
-    border: 2px solid #666;
-    background-color: #4a4a4a;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    margin-bottom: 20px;
-}
-
-#sound-to-char .play-sound-btn.correct {
-    background-color: lightgreen;
-}
-
-#sound-to-char .play-sound-btn.incorrect {
-    background-color: salmon;
-}
-
-#sound-to-char .settings {
-    margin-bottom: 20px;
-}
-
-#sound-to-char .qwerty-keyboard {
-    margin-top: 20px;
-}
-
-#morse-to-char .settings {
-    margin-bottom: 20px;
-}
-/* Learn Mode Styles */
-.learn-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.tab-buttons {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-    border-bottom: 2px solid #555;
-}
-
-.tab-btn {
-    background: none;
-    border: none;
-    color: #ccc;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-bottom: 3px solid transparent;
-}
-
-.tab-btn:hover {
-    color: white;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.tab-btn.active {
-    color: #4CAF50;
-    border-bottom-color: #4CAF50;
-}
-
-.tab-panel {
-    display: none;
-}
-
-.tab-panel.active {
-    display: block;
-}
-
-.morse-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    padding: 20px 0;
-}
-
-.morse-item {
-    background-color: #444;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 2px solid transparent;
-}
-
-.morse-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-    border-color: #4CAF50;
-}
-
-.morse-item .character {
-    font-size: 2em;
-    font-weight: bold;
-    color: #4CAF50;
-    margin-bottom: 10px;
-}
-
-.morse-item .morse-code {
-    font-size: 1.5em;
-    font-family: 'Courier New', monospace;
-    color: #fff;
-    letter-spacing: 2px;
-}
-
-/* Responsive adjustments for Learn mode */
-@media (max-width: 768px) {
-    .tab-buttons {
-        margin-bottom: 20px;
-    }
-    
-    .tab-btn {
-        padding: 12px 15px;
-        font-size: 1em;
-        flex: 1;
-        min-width: 0;
-    }
-    
-    .morse-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 10px;
-    }
-    
-    .morse-item {
-        padding: 15px;
-    }
-    
-    .morse-item .character {
-        font-size: 1.5em;
-    }
-    
-    .morse-item .morse-code {
-        font-size: 1.2em;
-    }
-}
-
-@media (max-width: 480px) {
-    .tab-btn {
-        padding: 10px 8px;
-        font-size: 0.9em;
-    }
-    
-    .morse-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    }
-}
-/* Character feedback styling moved to sound-display section */
-
 .sound-display {
     display: flex;
     flex-direction: column;
@@ -508,7 +193,23 @@ body {
     justify-content: center;
     flex-grow: 1;
     min-height: 200px;
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.character-feedback {
+    display: none;
+    font-size: 3.5em;
+    font-weight: bold;
+    text-align: center;
+    padding: var(--spacing-md) 25px;
+    border: 3px solid;
+    border-radius: 12px;
+    transition: all var(--transition-normal);
+    min-height: 70px;
+    min-width: 70px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .hint-area {
@@ -516,14 +217,14 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 15px;
+    gap: var(--spacing-md);
     min-height: 120px;
     width: 100%;
     max-width: 400px;
     cursor: pointer;
     border-radius: 12px;
-    transition: background-color 0.2s ease;
-    padding: 20px;
+    transition: background-color var(--transition-fast);
+    padding: var(--spacing-lg);
 }
 
 .hint-area:hover {
@@ -532,7 +233,7 @@ body {
 
 .hint-area::before {
     content: "Tap here for hint";
-    color: #999;
+    color: var(--text-muted);
     font-size: 0.9em;
     text-align: center;
     opacity: 0.7;
@@ -545,7 +246,7 @@ body {
 .morse-pattern {
     font-size: 2em;
     font-family: 'Courier New', monospace;
-    color: #666;
+    color: var(--border-color);
     text-align: center;
     min-height: 40px;
     display: none;
@@ -553,7 +254,7 @@ body {
     justify-content: center;
     letter-spacing: 0.2em;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--transition-normal);
 }
 
 .morse-pattern.visible {
@@ -561,284 +262,59 @@ body {
     opacity: 1;
 }
 
-.play-sound-btn {
-    background: linear-gradient(135deg, #4CAF50, #45a049);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    white-space: nowrap;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-}
-
-/* Remove margin when in audio controls row */
-.audio-controls-row .play-sound-btn {
-    margin-bottom: 0;
-}
-
-.play-sound-btn:hover {
-    background: linear-gradient(135deg, #45a049, #4CAF50);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.play-sound-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Character feedback for sound-to-char mode */
-.character-feedback {
-    display: none;
-    font-size: 3.5em;
+.answer-reveal {
+    color: var(--primary-green) !important;
     font-weight: bold;
-    text-align: center;
-    padding: 15px 25px;
-    border: 3px solid;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    min-height: 70px;
-    min-width: 70px;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+/* ===== CONTROLS ===== */
+.controls {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive adjustments for sound-to-char mode */
-@media (max-width: 768px) {
-    .sound-display {
-        min-height: 180px;
-    }
-    
-    .hint-area {
-        min-height: 100px;
-        padding: 15px;
-    }
-    
-    .character-feedback {
-        font-size: 3em;
-        padding: 12px 20px;
-        min-height: 60px;
-        min-width: 60px;
-    }
-    
-    .morse-pattern {
-        font-size: 1.8em;
-        min-height: 35px;
-    }
-    
-    .play-sound-btn {
-        padding: 12px 25px;
-        font-size: 1em;
-    }
-}
-
-@media (max-width: 480px) {
-    .sound-display {
-        min-height: 160px;
-    }
-    
-    .hint-area {
-        min-height: 90px;
-        padding: 12px;
-    }
-    
-    .hint-area::before {
-        font-size: 0.8em;
-    }
-    
-    .character-feedback {
-        font-size: 2.5em;
-        padding: 10px 18px;
-        min-height: 50px;
-        min-width: 50px;
-    }
-    
-    .morse-pattern {
-        font-size: 1.5em;
-        min-height: 30px;
-    }
-    
-    .play-sound-btn {
-        padding: 10px 20px;
-        font-size: 0.9em;
-    }
-}
-/* Settings Modal */
-.modal {
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-around;
+    padding: 1em;
 }
 
-.modal-content {
-    background-color: #444;
-    border-radius: 10px;
-    padding: 0;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+.controls button {
+    font-size: 2em;
+    width: 2em;
+    height: 2em;
+    border-radius: var(--radius-circle);
 }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #555;
-}
-
-.modal-header h2 {
-    margin: 0;
-    color: #4CAF50;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    color: #ccc;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.close-btn:hover {
-    color: #ff6b6b;
-    background-color: rgba(255, 107, 107, 0.1);
-}
-
-.modal-body {
-    padding: 20px;
-}
-
-.setting-item {
-    margin-bottom: 20px;
-}
-
-.setting-item label {
-    display: flex;
-    align-items: center;
-    font-size: 1.1em;
-    cursor: pointer;
-    margin-bottom: 5px;
-}
-
-.setting-item .speed-label {
-    justify-content: space-between;
-    margin-bottom: 12px;
-    cursor: default;
-}
-
-.setting-item input[type="checkbox"] {
-    margin-right: 10px;
-    transform: scale(1.2);
-}
-
-.setting-item input[type="range"] {
-    width: 100%;
-    margin: 10px 0;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 6px;
-    background: #333;
-    border-radius: 3px;
-    outline: none;
-}
-
-.setting-item input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.setting-item input[type="range"]::-webkit-slider-thumb:hover {
-    background: #45a049;
-}
-
-.setting-item input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
-    transition: background 0.3s ease;
-}
-
-.setting-item input[type="range"]::-moz-range-thumb:hover {
-    background: #45a049;
-}
-
-#speed-display {
-    font-weight: bold;
-    color: #4CAF50;
-    font-size: 0.95em;
-    background: rgba(76, 175, 80, 0.1);
-    padding: 2px 8px;
-    border-radius: 4px;
-    border: 1px solid rgba(76, 175, 80, 0.3);
-}
-
-/* Audio Controls - Cohesive Button Design */
 .audio-controls {
     display: flex;
     gap: 12px;
-    margin: 20px 0;
+    margin: var(--spacing-lg) 0;
     align-items: stretch;
 }
 
-.audio-controls .control-btn {
+.control-btn {
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     font-family: inherit;
-    position: relative;
-    overflow: hidden;
 }
 
-.audio-controls .control-btn:hover {
+.control-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-.audio-controls .control-btn:active {
+.control-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Speed Control Button */
+/* Speed Control */
 .speed-btn {
     flex: 1;
-    background: linear-gradient(135deg, #555, #666);
-    color: white;
-    padding: 16px 20px;
+    background: linear-gradient(135deg, #555, var(--border-color));
+    color: var(--text-primary);
+    padding: 16px var(--spacing-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -856,7 +332,7 @@ body {
 .btn-value {
     font-size: 1.1em;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-sm);
 }
 
 .speed-slider {
@@ -875,11 +351,11 @@ body {
     appearance: none;
     width: 16px;
     height: 16px;
-    background: white;
-    border-radius: 50%;
+    background: var(--text-primary);
+    border-radius: var(--radius-circle);
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease;
+    transition: transform var(--transition-fast);
 }
 
 .speed-slider::-webkit-slider-thumb:hover {
@@ -889,22 +365,22 @@ body {
 .speed-slider::-moz-range-thumb {
     width: 16px;
     height: 16px;
-    background: white;
-    border-radius: 50%;
+    background: var(--text-primary);
+    border-radius: var(--radius-circle);
     cursor: pointer;
     border: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease;
+    transition: transform var(--transition-fast);
 }
 
 .speed-slider::-moz-range-thumb:hover {
     transform: scale(1.2);
 }
 
-/* Play Sound Button */
+/* Play Button */
 .play-btn {
-    background: linear-gradient(135deg, #4CAF50, #45a049);
-    color: white;
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+    color: var(--text-primary);
     padding: 16px 32px;
     min-width: 140px;
     display: flex;
@@ -919,14 +395,552 @@ body {
     text-align: center;
 }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-    .audio-controls {
-        flex-direction: column;
-        gap: 10px;
+.play-sound-btn {
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+    color: var(--text-primary);
+    border: none;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.1em;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin-bottom: var(--spacing-lg);
+}
+
+.audio-controls .play-sound-btn {
+    margin-bottom: 0;
+}
+
+.play-sound-btn:hover {
+    background: linear-gradient(135deg, var(--primary-green-dark), var(--primary-green));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.play-sound-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.play-sound-btn.correct {
+    background-color: var(--success-color);
+}
+
+.play-sound-btn.incorrect {
+    background-color: var(--error-color);
+}
+
+/* ===== KEYBOARDS ===== */
+.phone-keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.qwerty-keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.key-btn {
+    padding: 12px var(--spacing-sm);
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid #555;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-width: 40px;
+    min-height: 48px;
+}
+
+.key-btn:hover {
+    background-color: var(--bg-lighter);
+    border-color: var(--border-color);
+}
+
+.key-btn:active {
+    background-color: #3a3a3a;
+    transform: scale(0.95);
+}
+
+.number-row {
+    margin-bottom: 4px;
+}
+
+.number-key {
+    flex: 1;
+    max-width: 45px;
+}
+
+.letter-row {
+    margin-bottom: 2px;
+}
+
+.letter-key {
+    flex: 1;
+    max-width: 45px;
+}
+
+.row-2 {
+    padding: 0 var(--spacing-lg);
+}
+
+.row-3 {
+    padding: 0 var(--spacing-lg);
+}
+
+.row-3 .punct-toggle-btn {
+    margin-right: var(--spacing-sm);
+    background-color: var(--bg-light);
+    min-width: 50px;
+    font-size: 14px;
+    border: 2px solid #555;
+}
+
+.row-3 .punct-toggle-btn:hover {
+    background-color: var(--bg-lighter);
+    border-color: var(--border-color);
+}
+
+.punctuation-keyboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: #2a2a2a;
+    border-radius: var(--radius-md);
+    border: 2px solid #555;
+}
+
+.punct-key {
+    min-width: 35px;
+    min-height: 40px;
+    padding: var(--spacing-sm) 6px;
+    font-size: 14px;
+    background-color: var(--bg-light);
+    border: 2px solid #555;
+}
+
+.punct-key:hover {
+    background-color: var(--bg-lighter);
+    border-color: var(--border-color);
+}
+
+.punct-back-toggle {
+    width: 100%;
+    margin-top: var(--spacing-sm);
+    min-height: 48px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ===== CHAR TO MORSE MODE ===== */
+#char-to-morse .controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xl);
+    margin: var(--spacing-xl) 0;
+}
+
+#char-to-morse .dot-btn,
+#char-to-morse .dash-btn {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+    font-weight: bold;
+    border-radius: var(--radius-circle);
+    border: 3px solid var(--border-color);
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+#char-to-morse .dot-btn:hover,
+#char-to-morse .dash-btn:hover {
+    background-color: var(--bg-lighter);
+    border-color: var(--border-light);
+    transform: scale(1.05);
+}
+
+#char-to-morse .dot-btn:active,
+#char-to-morse .dash-btn:active {
+    background-color: #3a3a3a;
+    transform: scale(0.95);
+}
+
+/* ===== SOUND TO CHAR MODE ===== */
+#sound-to-char .settings {
+    margin-bottom: var(--spacing-lg);
+}
+
+#sound-to-char .qwerty-keyboard {
+    margin-top: var(--spacing-lg);
+}
+
+#morse-to-char .settings {
+    margin-bottom: var(--spacing-lg);
+}
+
+.settings {
+    margin-bottom: 1em;
+}
+
+/* ===== LEARN MODE ===== */
+.learn-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+}
+
+.tab-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: 2px solid #555;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn.active {
+    color: var(--primary-green);
+    border-bottom-color: var(--primary-green);
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+.morse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) 0;
+}
+
+.morse-item {
+    background-color: var(--bg-medium);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    border: 2px solid transparent;
+}
+
+.morse-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    border-color: var(--primary-green);
+}
+
+.morse-item .character {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--primary-green);
+    margin-bottom: var(--spacing-sm);
+}
+
+.morse-item .morse-code {
+    font-size: 1.5em;
+    font-family: 'Courier New', monospace;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+}
+
+/* ===== MODALS ===== */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--bg-medium);
+    border-radius: var(--radius-md);
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid #555;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--primary-green);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-circle);
+    transition: all var(--transition-normal);
+}
+
+.close-btn:hover {
+    color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.modal-body {
+    padding: var(--spacing-lg);
+}
+
+.setting-item {
+    margin-bottom: var(--spacing-lg);
+}
+
+.setting-item label {
+    display: flex;
+    align-items: center;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-bottom: var(--spacing-xs);
+}
+
+.setting-item .speed-label {
+    justify-content: space-between;
+    margin-bottom: 12px;
+    cursor: default;
+}
+
+.setting-item input[type="checkbox"] {
+    margin-right: var(--spacing-sm);
+    transform: scale(1.2);
+}
+
+.setting-item input[type="range"] {
+    width: 100%;
+    margin: var(--spacing-sm) 0;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--bg-dark);
+    border-radius: 3px;
+    outline: none;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-green);
+    border-radius: var(--radius-circle);
+    cursor: pointer;
+    transition: background var(--transition-normal);
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb:hover {
+    background: var(--primary-green-dark);
+}
+
+.setting-item input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-green);
+    border-radius: var(--radius-circle);
+    cursor: pointer;
+    border: none;
+    transition: background var(--transition-normal);
+}
+
+.setting-item input[type="range"]::-moz-range-thumb:hover {
+    background: var(--primary-green-dark);
+}
+
+#speed-display {
+    font-weight: bold;
+    color: var(--primary-green);
+    font-size: 0.95em;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 2px var(--spacing-sm);
+    border-radius: 4px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.setting-description {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    margin: var(--spacing-xs) 0 0 0;
+    line-height: 1.4;
+}
+
+/* ===== HELP BUTTON ===== */
+.help-btn-corner {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-circle);
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all var(--transition-normal);
+}
+
+.help-btn-corner:hover {
+    background-color: var(--bg-lighter);
+    border-color: var(--border-light);
+}
+
+.help-btn-corner:active {
+    background-color: #3a3a3a;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    #main-menu h1 {
+        font-size: 2.2em;
     }
     
-    .audio-controls .control-btn {
+    .menu-btn {
+        padding: var(--spacing-md);
+    }
+    
+    .btn-content h3 {
+        font-size: 1.1em;
+    }
+    
+    .btn-content p {
+        font-size: 0.8em;
+    }
+    
+    .tab-btn {
+        padding: 12px var(--spacing-md);
+        font-size: 1em;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .morse-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--spacing-sm);
+    }
+    
+    .morse-item {
+        padding: var(--spacing-md);
+    }
+    
+    .morse-item .character {
+        font-size: 1.5em;
+    }
+    
+    .morse-item .morse-code {
+        font-size: 1.2em;
+    }
+    
+    .sound-display {
+        min-height: 180px;
+    }
+    
+    .hint-area {
+        min-height: 100px;
+        padding: var(--spacing-md);
+    }
+    
+    .character-feedback {
+        font-size: 3em;
+        padding: 12px var(--spacing-lg);
+        min-height: 60px;
+        min-width: 60px;
+    }
+    
+    .morse-pattern {
+        font-size: 1.8em;
+        min-height: 35px;
+    }
+    
+    .play-sound-btn {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    #main-menu {
+        padding: var(--spacing-md);
+    }
+    
+    .audio-controls {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .control-btn {
         min-height: 60px;
     }
     
@@ -942,13 +956,49 @@ body {
     .play-btn .btn-content {
         font-size: 1em;
     }
-}
+    
+    .tab-btn {
+        padding: var(--spacing-sm) var(--spacing-sm);
+        font-size: 0.9em;
+    }
+    
+    .morse-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .sound-display {
+        min-height: 160px;
+    }
+    
+    .hint-area {
+        min-height: 90px;
+        padding: 12px;
+    }
+    
+    .hint-area::before {
+        font-size: 0.8em;
+    }
+    
+    .character-feedback {
+        font-size: 2.5em;
+        padding: var(--spacing-sm) 18px;
+        min-height: 50px;
+        min-width: 50px;
+    }
+    
+    .morse-pattern {
+        font-size: 1.5em;
+        min-height: 30px;
+    }
+    
+    .play-sound-btn {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: 0.9em;
     }
 }
 
-.setting-description {
-    color: #ccc;
-    font-size: 0.9em;
-    margin: 5px 0 0 0;
-    line-height: 1.4;
+@media (max-width: 360px) {
+    .morse-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
 }
