@@ -40,17 +40,10 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network first, then cache
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      })
-      .catch(() => {
-        // If both cache and network fail, could return offline page
-        console.log('Service Worker: Fetch failed for:', event.request.url);
-      })
+    fetch(event.request)
+      .catch(() => caches.match(event.request))
   );
 });
