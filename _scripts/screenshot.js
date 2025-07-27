@@ -92,6 +92,11 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
   try {
     console.log(`📸 Taking screenshot: ${scenario.name}${suffix}`);
     
+    // Set consistent browser settings for deterministic screenshots
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'en-US,en;q=0.9'
+    });
+    
     // Override Math.random for consistent screenshots
     await page.evaluateOnNewDocument(() => {
       // Predefined sequence for consistent character selection
@@ -114,21 +119,35 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
         mockRandomIndex++;
         return value;
       };
+      
+      // Override Date.now for consistent timestamps
+      const fixedTime = 1640995200000; // Fixed timestamp: Jan 1, 2022
+      window._originalDateNow = Date.now;
+      Date.now = () => fixedTime;
+      
+      // Override performance.now for consistent timing
+      window._originalPerformanceNow = performance.now;
+      performance.now = () => 1000; // Fixed 1 second
     });
     
     // Navigate to the specific URL
     const fullUrl = baseUrl + scenario.url;
     await page.goto(fullUrl, { waitUntil: 'networkidle0' });
     
-    // Give dynamic loading time to complete (same as debug script)
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Give dynamic loading time to complete and animations to settle
+    await new Promise(resolve => setTimeout(resolve, 3000)); // Increased from 2000
+    
+    // Wait for fonts to load
+    await page.evaluate(() => {
+      return document.fonts.ready;
+    });
     
     // Perform any required actions
     if (scenario.actions) {
       for (const action of scenario.actions) {
         if (action.type === 'click') {
           await page.click(action.selector);
-          await new Promise(resolve => setTimeout(resolve, 300));
+          await new Promise(resolve => setTimeout(resolve, 500)); // Increased wait time
         }
       }
     }
@@ -137,6 +156,9 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
     if (scenario.waitFor) {
       await page.waitForSelector(scenario.waitFor, { timeout: 2000 });
     }
+    
+    // Additional wait for any animations to complete
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     // Take screenshot
     const filename = `${scenario.name}.png`; // Remove suffix from filename
