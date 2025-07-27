@@ -127,6 +127,4 @@ Each folder contains screenshots of:
 The animated GIFs cycle through all screens with 1-second timing, perfect for README demonstrations and social media.
 
 ## TODO
-- Make PWA
-- Icons, etc.
 - Store stats
