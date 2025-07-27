@@ -94,16 +94,26 @@ npm run screenshot-live
 npm run screenshot-both
 ```
 
+All commands automatically generate both screenshots and animated GIFs.
+
 ### Output
-Screenshots are automatically saved to `_screenshots/` with organized subfolders:
+Screenshots and animated GIFs are automatically saved to `_screenshots/` with organized subfolders:
 ```
 _screenshots/
 ├── local/              # Local development screenshots
 │   ├── desktop/        # Desktop viewport (1200x800)
+│   │   ├── [screenshots]
+│   │   └── combined.gif
 │   └── mobile/         # Mobile viewport (375x667)
+│       ├── [screenshots]
+│       └── combined.gif
 └── live/               # Live GitHub Pages screenshots
     ├── desktop/        # Desktop viewport (1200x800)
+    │   ├── [screenshots]
+    │   └── combined.gif
     └── mobile/         # Mobile viewport (375x667)
+        ├── [screenshots]
+        └── combined.gif
 ```
 
 Each folder contains screenshots of:
@@ -113,6 +123,8 @@ Each folder contains screenshots of:
 - Morse to Character practice mode
 - Sound to Character practice mode
 - Learn mode interface
+
+The animated GIFs cycle through all screens with 1-second timing, perfect for README demonstrations and social media.
 
 ## TODO
 - Make PWA

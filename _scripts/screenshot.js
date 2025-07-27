@@ -1,11 +1,12 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const sharp = require('sharp');
 
 // Configuration
 const config = {
   local: 'http://localhost:8000',
-  live: 'https://sumitgouthaman.com/morse-code-trainer', // Update with your actual GitHub Pages URL
+  live: 'https://morse-code.sumitgouthaman.com', // Update with your actual GitHub Pages URL
   outputDir: '../_screenshots',
   getDesktopDir: (source) => `../_screenshots/${source}/desktop`,
   getMobileDir: (source) => `../_screenshots/${source}/mobile`,
@@ -16,6 +17,11 @@ const config = {
   mobileViewport: {
     width: 448,
     height: 867
+  },
+  gif: {
+    delay: 100, // Frame delay in centiseconds (100 = 1 second)
+    loop: 0,    // Infinite loop
+    quality: 80
   }
 };
 
@@ -168,63 +174,92 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
   }
 }
 
-async function runScreenshots() {
-  // Parse command line arguments
-  const args = process.argv.slice(2);
-  const isLocal = args.includes('--local');
-  const isLive = args.includes('--live');
-  const isBoth = args.includes('--both');
+async function createGifFromScreenshots(source, viewport) {
+  const isDesktop = viewport.width > 500;
+  const viewportType = isDesktop ? 'desktop' : 'mobile';
+  const screenshotDir = isDesktop ? config.getDesktopDir(source) : config.getMobileDir(source);
   
-  if (isBoth) {
-    console.log('🚀 Starting comprehensive screenshot session...\n');
+  console.log(`🎬 Creating animated GIF from ${source} ${viewportType} screenshots...`);
+  
+  try {
+    // Get all screenshot files in order
+    const screenshotFiles = scenarios.map(scenario => 
+      path.join(screenshotDir, `${scenario.name}.png`)
+    ).filter(filePath => fs.existsSync(filePath));
     
-    try {
-      // Take local screenshots first
-      console.log('📱 Phase 1: Local development screenshots');
-      console.log('=' .repeat(50));
-      await runSingleScreenshots('local', config.local);
-      
-      console.log('\n⏳ Waiting 2 seconds before next phase...\n');
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Take live screenshots
-      console.log('🌐 Phase 2: Live GitHub Pages screenshots');
-      console.log('=' .repeat(50));
-      await runSingleScreenshots('live', config.live);
-      
-      console.log('\n🎉 Comprehensive screenshot session complete!');
-      console.log('📁 Screenshots saved to:');
-      console.log('   • _screenshots/local/desktop/');
-      console.log('   • _screenshots/local/mobile/');
-      console.log('   • _screenshots/live/desktop/');
-      console.log('   • _screenshots/live/mobile/');
-      console.log('\n✨ You can now compare local vs live versions!');
-      
-    } catch (error) {
-      console.error('❌ Comprehensive screenshot session failed:', error);
-      process.exit(1);
+    if (screenshotFiles.length === 0) {
+      console.log(`⚠️  No screenshots found in ${screenshotDir}`);
+      return;
     }
-    return;
+    
+    console.log(`📊 Processing ${screenshotFiles.length} screenshots into GIF...`);
+    
+    // Create GIF in the same directory as screenshots
+    const gifPath = path.join(screenshotDir, 'combined.gif');
+    
+    // Check if ImageMagick is available for better GIF creation
+    try {
+      const { execSync } = require('child_process');
+      
+      // Build the convert command
+      const frameList = screenshotFiles.map(f => `"${f}"`).join(' ');
+      const convertCmd = `convert -delay ${config.gif.delay} -loop ${config.gif.loop} ${frameList} "${gifPath}"`;
+      
+      execSync(convertCmd, { stdio: 'pipe' });
+      console.log(`🎉 Animated GIF created: combined.gif`);
+      console.log(`📁 Saved to: ${gifPath}`);
+      
+    } catch (convertError) {
+      console.log('⚠️  ImageMagick not available, using Node.js approach...');
+      
+      // Read and process all frames
+      const frames = [];
+      for (const filePath of screenshotFiles) {
+        const frameBuffer = await sharp(filePath)
+          .resize(viewport.width, viewport.height, { 
+            fit: 'contain',
+            background: { r: 255, g: 255, b: 255, alpha: 1 }
+          })
+          .png()
+          .toBuffer();
+        
+        // Duplicate frames to control timing (since sharp doesn't support delay directly)
+        const duplicateCount = Math.max(1, Math.floor(config.gif.delay / 10));
+        for (let i = 0; i < duplicateCount; i++) {
+          frames.push(frameBuffer);
+        }
+      }
+      
+      // Create animated GIF using sharp
+      if (frames.length > 0) {
+        await sharp(frames[0], { 
+          animated: true,
+          pages: frames.length
+        })
+        .gif({
+          delay: 10, // 10ms between duplicated frames
+          loop: config.gif.loop
+        })
+        .toFile(gifPath);
+        
+        console.log(`🎉 Animated GIF created: combined.gif`);
+        console.log(`📁 Saved to: ${gifPath}`);
+      }
+    }
+    
+  } catch (error) {
+    console.error(`❌ Failed to create GIF for ${source} ${viewportType}:`, error.message);
   }
+}
+
+async function createAllGifs(source) {
+  console.log(`🎬 Creating animated GIFs for ${source}...`);
   
-  // Single mode (local or live)
-  let baseUrl, source;
-  if (isLocal) {
-    baseUrl = config.local;
-    source = 'local';
-    console.log('📱 Using local server:', baseUrl);
-  } else if (isLive) {
-    baseUrl = config.live;
-    source = 'live';
-    console.log('🌐 Using live site:', baseUrl);
-  } else {
-    // Default to local
-    baseUrl = config.local;
-    source = 'local';
-    console.log('📱 Using local server (default):', baseUrl);
-  }
+  // Create desktop GIF
+  await createGifFromScreenshots(source, config.viewport);
   
-  await runSingleScreenshots(source, baseUrl);
+  // Create mobile GIF  
+  await createGifFromScreenshots(source, config.mobileViewport);
 }
 
 async function runSingleScreenshots(source, baseUrl) {
@@ -262,11 +297,74 @@ async function runSingleScreenshots(source, baseUrl) {
     console.log('🎉 Screenshot session complete!');
     console.log(`📁 Screenshots saved to: _screenshots/${source}/`);
     
+    // Always create GIFs after screenshots
+    await createAllGifs(source);
+    
   } catch (error) {
     console.error('❌ Screenshot session failed:', error);
   } finally {
     await browser.close();
   }
+}
+
+async function runScreenshots() {
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  const isLocal = args.includes('--local');
+  const isLive = args.includes('--live');
+  const isBoth = args.includes('--both');
+  
+  if (isBoth) {
+    console.log('🚀 Starting comprehensive screenshot session...\n');
+    
+    try {
+      // Take local screenshots first
+      console.log('📱 Phase 1: Local development screenshots');
+      console.log('=' .repeat(50));
+      await runSingleScreenshots('local', config.local);
+      
+      console.log('\n⏳ Waiting 2 seconds before next phase...\n');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Take live screenshots
+      console.log('🌐 Phase 2: Live GitHub Pages screenshots');
+      console.log('=' .repeat(50));
+      await runSingleScreenshots('live', config.live);
+      
+      console.log('\n🎉 Comprehensive screenshot session complete!');
+      console.log('📁 Screenshots and GIFs saved to:');
+      console.log('   • _screenshots/local/desktop/ (+ combined.gif)');
+      console.log('   • _screenshots/local/mobile/ (+ combined.gif)');
+      console.log('   • _screenshots/live/desktop/ (+ combined.gif)');
+      console.log('   • _screenshots/live/mobile/ (+ combined.gif)');
+      
+      console.log('\n✨ You can now compare local vs live versions!');
+      
+    } catch (error) {
+      console.error('❌ Comprehensive screenshot session failed:', error);
+      process.exit(1);
+    }
+    return;
+  }
+  
+  // Single mode (local or live)
+  let baseUrl, source;
+  if (isLocal) {
+    baseUrl = config.local;
+    source = 'local';
+    console.log('📱 Using local server:', baseUrl);
+  } else if (isLive) {
+    baseUrl = config.live;
+    source = 'live';
+    console.log('🌐 Using live site:', baseUrl);
+  } else {
+    // Default to local
+    baseUrl = config.local;
+    source = 'local';
+    console.log('📱 Using local server (default):', baseUrl);
+  }
+  
+  await runSingleScreenshots(source, baseUrl);
 }
 
 // Handle graceful shutdown
