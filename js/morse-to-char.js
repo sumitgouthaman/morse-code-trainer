@@ -1,6 +1,7 @@
 import { morseCode } from './morse-code.js';
 import { generatePhoneKeyboard } from './ui.js';
 import { settings } from './settings.js';
+import { SessionTracker } from './session-tracker.js';
 
 export function initMorseToChar() {
     const morseToChar = {
@@ -8,7 +9,8 @@ export function initMorseToChar() {
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentMorse: '',
-        correctCharacter: ''
+        correctCharacter: '',
+        sessionTracker: new SessionTracker('morse-to-char')
     };
 
     generatePhoneKeyboard(morseToChar, handleMorseGuess);
@@ -56,15 +58,26 @@ function nextMorseToChar(morseToChar) {
 
 function handleMorseGuess(guess, morseToChar) {
     if (guess === morseToChar.correctCharacter) {
+        morseToChar.sessionTracker.recordCorrect();
         morseToChar.morseDisplay.style.color = 'lightgreen';
         setTimeout(() => {
             morseToChar.morseDisplay.style.color = 'white';
             nextMorseToChar(morseToChar);
         }, 500);
     } else {
+        morseToChar.sessionTracker.recordIncorrect();
         morseToChar.morseDisplay.style.color = 'salmon';
         setTimeout(() => {
             morseToChar.morseDisplay.style.color = 'white';
         }, 500);
+    }
+    
+    // Show session results after configured number of questions
+    if (morseToChar.sessionTracker.totalQuestions >= settings.get('sessionLength')) {
+        setTimeout(() => {
+            morseToChar.sessionTracker.completeSession();
+            // Reset tracker for next session
+            morseToChar.sessionTracker = new SessionTracker('morse-to-char');
+        }, 1000);
     }
 }

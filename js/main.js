@@ -3,6 +3,7 @@ import { initMorseToChar } from './morse-to-char.js';
 import { initSoundToChar } from './sound-to-char.js';
 import { initLearn } from './learn.js';
 import { settings } from './settings.js';
+import { statistics } from './statistics.js';
 
 const mainMenu = document.getElementById('main-menu');
 const gameContainer = document.getElementById('game-container');
@@ -19,6 +20,8 @@ const closeSettingsBtn = document.getElementById('close-settings');
 const globalIncludePunctuationCheckbox = document.getElementById('global-include-punctuation');
 const morseSpeedSlider = document.getElementById('morse-speed-slider');
 const speedDisplay = document.getElementById('speed-display');
+const sessionLengthSlider = document.getElementById('session-length-slider');
+const sessionLengthDisplay = document.getElementById('session-length-display');
 
 // Initialize settings UI
 function initializeSettings() {
@@ -29,6 +32,11 @@ function initializeSettings() {
     const savedSpeed = settings.get('morseSpeed');
     morseSpeedSlider.value = savedSpeed;
     speedDisplay.textContent = `${savedSpeed} WPM`;
+
+    // Set session length slider and display from saved settings
+    const savedSessionLength = settings.get('sessionLength');
+    sessionLengthSlider.value = savedSessionLength;
+    sessionLengthDisplay.textContent = `${savedSessionLength} questions`;
     
     // Add event listeners
     settingsBtn.addEventListener('click', openSettings);
@@ -42,6 +50,23 @@ function initializeSettings() {
         const speed = parseInt(e.target.value);
         speedDisplay.textContent = `${speed} WPM`;
         settings.set('morseSpeed', speed);
+    });
+
+    // Session length slider event listener
+    sessionLengthSlider.addEventListener('input', (e) => {
+        const length = parseInt(e.target.value);
+        sessionLengthDisplay.textContent = `${length} questions`;
+        settings.set('sessionLength', length);
+    });
+    
+    // Clear stats button event listener
+    const clearStatsBtn = document.getElementById('clear-stats-btn');
+    clearStatsBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all statistics? This action cannot be undone.')) {
+            statistics.clearAllStats();
+            updateStatsDisplay();
+            alert('All statistics have been cleared.');
+        }
     });
     
     // Close modal when clicking outside
@@ -117,19 +142,42 @@ function showMainMenu() {
     gameContainer.innerHTML = '';
     // Update URL to remove hash
     history.replaceState(null, '', window.location.pathname);
+    // Update stats when returning to main menu
+    updateStatsDisplay();
 }
 
 // Initialize based on URL hash on page load
 window.addEventListener('load', () => {
     initializeSettings();
+    updateStatsDisplay();
     const hash = window.location.hash.substring(1);
     if (hash && ['char-to-morse', 'morse-to-char', 'sound-to-char', 'learn'].includes(hash)) {
         loadGameModeFromHistory(hash);
     }
 });
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log('Service worker registered', reg))
-        .catch(err => console.log('Service worker not registered', err));
+// Update statistics display on main menu
+function updateStatsDisplay() {
+    const summary = statistics.getStatsSummary();
+    console.log('Updating stats display:', summary);
+    let statsElement = document.getElementById('stats-display');
+    
+    if (!statsElement) {
+        statsElement = document.createElement('div');
+        statsElement.id = 'stats-display';
+        statsElement.className = 'stats-display';
+        document.querySelector('.menu-header').appendChild(statsElement);
+    }
+    
+    if (summary.hasStats) {
+        statsElement.innerHTML = `
+            <p class="stats-summary">
+                Overall Accuracy: <strong>${summary.overallAccuracy}%</strong>
+            </p>
+        `;
+    } else {
+        statsElement.innerHTML = `
+            <p class="stats-summary">${summary.message}</p>
+        `;
+    }
 }

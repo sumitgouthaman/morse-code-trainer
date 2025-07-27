@@ -80,6 +80,20 @@
                     <input type="range" id="morse-speed-slider" min="5" max="30" value="12" step="1">
                     <p class="setting-description">Adjust the speed of morse code playback (5-30 WPM)</p>
                 </div>
+                
+                <div class="setting-item">
+                    <label for="session-length-slider" class="speed-label">
+                        Session Length
+                        <span id="session-length-display">10</span>
+                    </label>
+                    <input type="range" id="session-length-slider" min="5" max="50" value="10" step="5">
+                    <p class="setting-description">Set the number of questions per practice session</p>
+                </div>
+                
+                <div class="setting-item">
+                    <button id="clear-stats-btn" class="clear-stats-btn">Clear All Statistics</button>
+                    <p class="setting-description">Reset all practice session data and accuracy tracking</p>
+                </div>
             </div>
         </div>
     </div>

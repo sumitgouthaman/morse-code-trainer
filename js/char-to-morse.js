@@ -1,5 +1,6 @@
 import { morseCode } from './morse-code.js';
 import { settings } from './settings.js';
+import { SessionTracker } from './session-tracker.js';
 
 export function initCharToMorse() {
     const charToMorseState = {
@@ -9,7 +10,8 @@ export function initCharToMorse() {
         dashBtn: document.querySelector('.dash-btn'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentCharacter: '',
-        currentUserInput: ''
+        currentUserInput: '',
+        sessionTracker: new SessionTracker('char-to-morse')
     };
 
     charToMorseState.dotBtn.addEventListener('click', () => {
@@ -58,6 +60,7 @@ function checkCharToMorse(charToMorseState) {
     const correctMorse = morseCode[charToMorseState.currentCharacter];
     if (charToMorseState.currentUserInput === correctMorse) {
         // Correct!
+        charToMorseState.sessionTracker.recordCorrect();
         charToMorseState.characterDisplay.style.color = 'lightgreen';
         setTimeout(() => {
             charToMorseState.characterDisplay.style.color = 'white';
@@ -65,12 +68,22 @@ function checkCharToMorse(charToMorseState) {
         }, 500);
     } else if (!correctMorse.startsWith(charToMorseState.currentUserInput)) {
         // Incorrect
+        charToMorseState.sessionTracker.recordIncorrect();
         charToMorseState.characterDisplay.style.color = 'salmon';
         setTimeout(() => {
             charToMorseState.characterDisplay.style.color = 'white';
             charToMorseState.currentUserInput = '';
             charToMorseState.morseInput.textContent = '';
         }, 500);
+    }
+    
+    // Show session results after configured number of questions
+    if (charToMorseState.sessionTracker.totalQuestions >= settings.get('sessionLength')) {
+        setTimeout(() => {
+            charToMorseState.sessionTracker.completeSession();
+            // Reset tracker for next session
+            charToMorseState.sessionTracker = new SessionTracker('char-to-morse');
+        }, 1000);
     }
 }
 

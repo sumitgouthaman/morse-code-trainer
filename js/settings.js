@@ -3,7 +3,8 @@ class Settings {
     constructor() {
         this.settings = {
             includePunctuation: true, // default value
-            morseSpeed: 12 // default speed in WPM
+            morseSpeed: 12, // default speed in WPM
+            sessionLength: 10
         };
         this.loadFromCookies();
     }

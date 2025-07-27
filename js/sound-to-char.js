@@ -1,6 +1,7 @@
 import { morseCode } from './morse-code.js';
 import { generatePhoneKeyboard } from './ui.js';
 import { settings } from './settings.js';
+import { SessionTracker } from './session-tracker.js';
 
 let audioCtx = null;
 
@@ -63,7 +64,8 @@ export function initSoundToChar() {
         speedSlider: document.querySelector('#inline-speed-slider'),
         speedValue: document.querySelector('#speed-value'),
         currentMorse: '',
-        correctCharacter: ''
+        correctCharacter: '',
+        sessionTracker: new SessionTracker('sound-to-char')
     };
 
     // Initialize inline speed control
@@ -126,16 +128,27 @@ function handleSoundGuess(guess, soundToChar) {
     showCharacterFeedback(guess, soundToChar);
     
     if (guess === soundToChar.correctCharacter) {
+        soundToChar.sessionTracker.recordCorrect();
         // Correct guess - clear feedback and move to next character
         setTimeout(() => {
             clearCharacterFeedback(soundToChar);
             nextSoundToChar(soundToChar);
         }, 1500);
     } else {
+        soundToChar.sessionTracker.recordIncorrect();
         // Incorrect guess - just show feedback, don't advance
         setTimeout(() => {
             clearCharacterFeedback(soundToChar);
         }, 1500);
+    }
+    
+    // Show session results after configured number of questions
+    if (soundToChar.sessionTracker.totalQuestions >= settings.get('sessionLength')) {
+        setTimeout(() => {
+            soundToChar.sessionTracker.completeSession();
+            // Reset tracker for next session
+            soundToChar.sessionTracker = new SessionTracker('sound-to-char');
+        }, 2000);
     }
 }
 
