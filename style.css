@@ -737,6 +737,39 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+/* Style for number input in settings */
+.setting-item input[type="number"] {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 1em;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: none;
+    box-sizing: border-box;
+}
+
+.setting-item input[type="number"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.5);
+}
+
+/* Hide number input arrows for Chrome, Safari, Edge, Opera */
+.setting-item input[type="number"]::-webkit-outer-spin-button,
+.setting-item input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Hide number input arrows for Firefox */
+.setting-item input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 .setting-item input[type="range"]::-moz-range-thumb:hover {
     background: var(--primary-dark);
     transform: scale(1.1);

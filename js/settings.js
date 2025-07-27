@@ -4,7 +4,8 @@ class Settings {
         this.settings = {
             includePunctuation: true, // default value
             morseSpeed: 12, // default speed in WPM
-            sessionLength: 10
+            showToast: true, // default to showing toast notifications
+            toastQuestionCount: 20 // default number of questions for toast accuracy
         };
         this.loadFromCookies();
     }

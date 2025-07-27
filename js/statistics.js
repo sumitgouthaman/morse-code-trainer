@@ -1,11 +1,15 @@
-// Statistics Manager for Morse Code Trainer V0
-// Handles session tracking and basic accuracy calculations
-
-const STORAGE_KEY = 'morse_trainer_stats';
+// Statistics Manager - Per-Character and Recent Accuracy Tracking
+const STORAGE_KEY = 'morse_trainer_stats_v2';
 
 class StatisticsManager {
     constructor() {
         this.data = this.loadData();
+        // Ensure recentAttempts structure exists for all modes
+        this.data.recentAttempts = this.data.recentAttempts || {};
+        this.data.recentAttempts['char-to-morse'] = this.data.recentAttempts['char-to-morse'] || [];
+        this.data.recentAttempts['morse-to-char'] = this.data.recentAttempts['morse-to-char'] || [];
+        this.data.recentAttempts['sound-to-char'] = this.data.recentAttempts['sound-to-char'] || [];
+        this.data.questionCounter = this.data.questionCounter || 0; // Initialize global question counter
     }
 
     loadData() {
@@ -18,9 +22,17 @@ class StatisticsManager {
             console.warn('Failed to load statistics data:', error);
         }
         
-        // Default structure
+        // Default structure for per-character tracking and recent attempts
         return {
-            sessions: []
+            'char-to-morse': {},
+            'morse-to-char': {},
+            'sound-to-char': {},
+            recentAttempts: {
+                'char-to-morse': [],
+                'morse-to-char': [],
+                'sound-to-char': []
+            },
+            questionCounter: 0 // Initialize global question counter
         };
     }
 
@@ -32,114 +44,120 @@ class StatisticsManager {
         }
     }
 
-    // Record a new practice session
-    recordSession(mode, correctAnswers, totalQuestions) {
-        console.log('Recording session:', mode, correctAnswers, totalQuestions);
-        const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
-        
-        const session = {
-            mode: mode,
-            timestamp: Date.now(),
-            accuracy: Math.round(accuracy * 10) / 10, // Round to 1 decimal
-            totalQuestions: totalQuestions,
-            correctAnswers: correctAnswers
-        };
+    // Record a single attempt for a character in a specific mode
+    recordAttempt(mode, character, isCorrect) {
+        // Update per-character stats
+        if (!this.data[mode]) {
+            this.data[mode] = {};
+        }
+        if (!this.data[mode][character]) {
+            this.data[mode][character] = { attempts: 0, correct: 0 };
+        }
 
-        this.data.sessions.push(session);
-        console.log('Session added, total sessions:', this.data.sessions.length);
-        this.saveData();
+        const stats = this.data[mode][character];
+        stats.attempts++;
+        if (isCorrect) {
+            stats.correct++;
+        }
         
-        return session;
+        // Update recent attempts history
+        if (!this.data.recentAttempts[mode]) {
+            this.data.recentAttempts[mode] = [];
+        }
+        this.data.recentAttempts[mode].push(isCorrect);
+        
+        // Trim recent attempts to a reasonable size (e.g., 1000) to prevent excessive storage
+        const MAX_RECENT_ATTEMPTS = 1000;
+        if (this.data.recentAttempts[mode].length > MAX_RECENT_ATTEMPTS) {
+            this.data.recentAttempts[mode] = this.data.recentAttempts[mode].slice(-MAX_RECENT_ATTEMPTS);
+        }
+
+        this.data.questionCounter++; // Increment global question counter
+        
+        this.saveData();
+    }
+
+    // Get stats for a specific character in a mode
+    getCharacterStats(mode, character) {
+        return this.data[mode]?.[character] || { attempts: 0, correct: 0 };
+    }
+
+    // Get all stats for a given mode
+    getModeStats(mode) {
+        return this.data[mode] || {};
     }
 
     // Get overall accuracy across all modes
     getOverallAccuracy() {
-        if (this.data.sessions.length === 0) return null;
-        
+        let totalAttempts = 0;
         let totalCorrect = 0;
-        let totalQuestions = 0;
-        
-        this.data.sessions.forEach(session => {
-            totalCorrect += session.correctAnswers;
-            totalQuestions += session.totalQuestions;
-        });
-        
-        return totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 1000) / 10 : 0;
+
+        for (const mode in this.data) {
+            if (mode === 'recentAttempts' || mode === 'questionCounter') continue; // Skip these when calculating overall
+            for (const char in this.data[mode]) {
+                totalAttempts += this.data[mode][char].attempts;
+                totalCorrect += this.data[mode][char].correct;
+            }
+        }
+
+        return totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
     }
 
-    // Get accuracy for a specific mode
-    getModeAccuracy(mode) {
-        const modeSessions = this.data.sessions.filter(s => s.mode === mode);
-        if (modeSessions.length === 0) return null;
+    // Get accuracy over the last 'count' questions for a specific mode
+    getRecentAccuracy(mode, count) {
+        const attempts = this.data.recentAttempts[mode] || [];
+        const relevantAttempts = attempts.slice(-count); // Get the last 'count' attempts
         
-        let totalCorrect = 0;
-        let totalQuestions = 0;
-        
-        modeSessions.forEach(session => {
-            totalCorrect += session.correctAnswers;
-            totalQuestions += session.totalQuestions;
-        });
-        
-        return totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 1000) / 10 : 0;
+        if (relevantAttempts.length === 0) {
+            return null; // No attempts to calculate accuracy from
+        }
+
+        const correctCount = relevantAttempts.filter(isCorrect => isCorrect).length;
+        return Math.round((correctCount / relevantAttempts.length) * 100);
     }
 
-    // Get last N sessions for a mode (for trend display)
-    getRecentSessions(mode, limit = 5) {
-        return this.data.sessions
-            .filter(s => s.mode === mode)
-            .slice(-limit)
-            .map(s => s.accuracy);
-    }
-
-    // Get total number of sessions
-    getTotalSessions() {
-        return this.data.sessions.length;
-    }
-
-    // Get total sessions for a specific mode
-    getModeSessions(mode) {
-        return this.data.sessions.filter(s => s.mode === mode).length;
+    // Get the global question counter
+    getQuestionCount() {
+        return this.data.questionCounter;
     }
 
     // Clear all statistics
     clearAllStats() {
-        this.data = { sessions: [] };
+        this.data = {
+            'char-to-morse': {},
+            'morse-to-char': {},
+            'sound-to-char': {},
+            recentAttempts: {
+                'char-to-morse': [],
+                'morse-to-char': [],
+                'sound-to-char': []
+            },
+            questionCounter: 0
+        };
         this.saveData();
     }
 
-    // Get formatted stats summary for display
+    // Get a summary for the main menu display
     getStatsSummary() {
-        const totalSessions = this.getTotalSessions();
         const overallAccuracy = this.getOverallAccuracy();
-        
-        if (totalSessions === 0) {
+        let totalAttempts = 0;
+        for (const mode in this.data) {
+            if (mode === 'recentAttempts' || mode === 'questionCounter') continue;
+            for (const char in this.data[mode]) {
+                totalAttempts += this.data[mode][char].attempts;
+            }
+        }
+
+        if (totalAttempts === 0) {
             return {
                 hasStats: false,
-                message: "Complete a practice session to see your stats!"
+                message: "Practice any mode to see your stats!"
             };
         }
 
         return {
             hasStats: true,
-            totalSessions: totalSessions,
-            overallAccuracy: overallAccuracy,
-            modes: {
-                'char-to-morse': {
-                    sessions: this.getModeSessions('char-to-morse'),
-                    accuracy: this.getModeAccuracy('char-to-morse'),
-                    recent: this.getRecentSessions('char-to-morse')
-                },
-                'morse-to-char': {
-                    sessions: this.getModeSessions('morse-to-char'),
-                    accuracy: this.getModeAccuracy('morse-to-char'),
-                    recent: this.getRecentSessions('morse-to-char')
-                },
-                'sound-to-char': {
-                    sessions: this.getModeSessions('sound-to-char'),
-                    accuracy: this.getModeAccuracy('sound-to-char'),
-                    recent: this.getRecentSessions('sound-to-char')
-                }
-            }
+            overallAccuracy: overallAccuracy
         };
     }
 }

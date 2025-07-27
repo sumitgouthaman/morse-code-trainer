@@ -1,6 +1,7 @@
 import { morseCode } from './morse-code.js';
 import { settings } from './settings.js';
-import { SessionTracker } from './session-tracker.js';
+import { statistics } from './statistics.js';
+import { showToast } from './main.js';
 
 export function initCharToMorse() {
     const charToMorseState = {
@@ -10,8 +11,7 @@ export function initCharToMorse() {
         dashBtn: document.querySelector('.dash-btn'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentCharacter: '',
-        currentUserInput: '',
-        sessionTracker: new SessionTracker('char-to-morse')
+        currentUserInput: ''
     };
 
     charToMorseState.dotBtn.addEventListener('click', () => {
@@ -25,6 +25,31 @@ export function initCharToMorse() {
     charToMorseState.helpBtn.addEventListener('click', () => showCorrectMorse(charToMorseState));
     
     nextCharToMorse(charToMorseState);
+
+    function showCorrectMorse(charToMorseState) {
+        // Create a temporary display element to show the answer
+        const answerDisplay = document.createElement('div');
+        answerDisplay.textContent = morseCode[charToMorseState.currentCharacter];
+        answerDisplay.className = 'answer-reveal';
+        answerDisplay.style.position = 'absolute';
+        answerDisplay.style.top = '60px';
+        answerDisplay.style.right = '10px';
+        answerDisplay.style.fontSize = '24px';
+        answerDisplay.style.padding = '10px';
+        answerDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        answerDisplay.style.borderRadius = '8px';
+        answerDisplay.style.zIndex = '20';
+        
+        // Add to the char-to-morse container
+        document.getElementById('char-to-morse').appendChild(answerDisplay);
+        
+        // Remove the answer display after 2 seconds
+        setTimeout(() => {
+            if (answerDisplay.parentNode) {
+                answerDisplay.parentNode.removeChild(answerDisplay);
+            }
+        }, 2000);
+    }
 }
 
 function addPressedAnimation(button) {
@@ -60,7 +85,7 @@ function checkCharToMorse(charToMorseState) {
     const correctMorse = morseCode[charToMorseState.currentCharacter];
     if (charToMorseState.currentUserInput === correctMorse) {
         // Correct!
-        charToMorseState.sessionTracker.recordCorrect();
+        statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, true);
         charToMorseState.characterDisplay.style.color = 'lightgreen';
         setTimeout(() => {
             charToMorseState.characterDisplay.style.color = 'white';
@@ -68,7 +93,7 @@ function checkCharToMorse(charToMorseState) {
         }, 500);
     } else if (!correctMorse.startsWith(charToMorseState.currentUserInput)) {
         // Incorrect
-        charToMorseState.sessionTracker.recordIncorrect();
+        statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, false);
         charToMorseState.characterDisplay.style.color = 'salmon';
         setTimeout(() => {
             charToMorseState.characterDisplay.style.color = 'white';
@@ -76,38 +101,19 @@ function checkCharToMorse(charToMorseState) {
             charToMorseState.morseInput.textContent = '';
         }, 500);
     }
-    
-    // Show session results after configured number of questions
-    if (charToMorseState.sessionTracker.totalQuestions >= settings.get('sessionLength')) {
-        setTimeout(() => {
-            charToMorseState.sessionTracker.completeSession();
-            // Reset tracker for next session
-            charToMorseState.sessionTracker = new SessionTracker('char-to-morse');
-        }, 1000);
+
+    // Check if a full attempt has been made (either correct or incorrect final input)
+    if (charToMorseState.currentUserInput === correctMorse || !correctMorse.startsWith(charToMorseState.currentUserInput)) {
+        const toastCount = settings.get('toastQuestionCount');
+        const showToastSetting = settings.get('showToast');
+
+        if (showToastSetting && toastCount > 0 && statistics.getQuestionCount() % toastCount === 0) {
+            const recentAccuracy = statistics.getRecentAccuracy('char-to-morse', toastCount);
+            showToast(`Accuracy over last ${toastCount} questions: ${recentAccuracy}%`, recentAccuracy >= 70);
+        }
     }
 }
 
-function showCorrectMorse(charToMorseState) {
-    // Create a temporary display element to show the answer
-    const answerDisplay = document.createElement('div');
-    answerDisplay.textContent = morseCode[charToMorseState.currentCharacter];
-    answerDisplay.className = 'answer-reveal';
-    answerDisplay.style.position = 'absolute';
-    answerDisplay.style.top = '60px';
-    answerDisplay.style.right = '10px';
-    answerDisplay.style.fontSize = '24px';
-    answerDisplay.style.padding = '10px';
-    answerDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    answerDisplay.style.borderRadius = '8px';
-    answerDisplay.style.zIndex = '20';
-    
-    // Add to the char-to-morse container
-    document.getElementById('char-to-morse').appendChild(answerDisplay);
-    
-    // Remove the answer display after 2 seconds
-    setTimeout(() => {
-        if (answerDisplay.parentNode) {
-            answerDisplay.parentNode.removeChild(answerDisplay);
-        }
-    }, 2000);
-}
+
+
+

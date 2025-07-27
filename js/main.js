@@ -20,10 +20,12 @@ const closeSettingsBtn = document.getElementById('close-settings');
 const globalIncludePunctuationCheckbox = document.getElementById('global-include-punctuation');
 const morseSpeedSlider = document.getElementById('morse-speed-slider');
 const speedDisplay = document.getElementById('speed-display');
-const sessionLengthSlider = document.getElementById('session-length-slider');
-const sessionLengthDisplay = document.getElementById('session-length-display');
+const showToastCheckbox = document.getElementById('show-toast-checkbox');
+const toastQuestionCountInput = document.getElementById('toast-question-count-input');
+const toastQuestionCountDisplay = document.getElementById('toast-question-count-display');
 
-// Initialize settings UI
+
+    // Initialize settings UI
 function initializeSettings() {
     // Set checkbox state from saved settings
     globalIncludePunctuationCheckbox.checked = settings.get('includePunctuation');
@@ -33,10 +35,11 @@ function initializeSettings() {
     morseSpeedSlider.value = savedSpeed;
     speedDisplay.textContent = `${savedSpeed} WPM`;
 
-    // Set session length slider and display from saved settings
-    const savedSessionLength = settings.get('sessionLength');
-    sessionLengthSlider.value = savedSessionLength;
-    sessionLengthDisplay.textContent = `${savedSessionLength} questions`;
+    // Initialize toast settings
+    showToastCheckbox.checked = settings.get('showToast');
+    const savedToastCount = settings.get('toastQuestionCount');
+    toastQuestionCountInput.value = savedToastCount;
+    toastQuestionCountDisplay.textContent = savedToastCount;
     
     // Add event listeners
     settingsBtn.addEventListener('click', openSettings);
@@ -52,11 +55,18 @@ function initializeSettings() {
         settings.set('morseSpeed', speed);
     });
 
-    // Session length slider event listener
-    sessionLengthSlider.addEventListener('input', (e) => {
-        const length = parseInt(e.target.value);
-        sessionLengthDisplay.textContent = `${length} questions`;
-        settings.set('sessionLength', length);
+    // Toast checkbox event listener
+    showToastCheckbox.addEventListener('change', (e) => {
+        settings.set('showToast', e.target.checked);
+    });
+
+    // Toast question count input listener
+    toastQuestionCountInput.addEventListener('input', (e) => {
+        const count = parseInt(e.target.value);
+        if (!isNaN(count) && count >= 1) {
+            toastQuestionCountDisplay.textContent = count;
+            settings.set('toastQuestionCount', count);
+        }
     });
     
     // Clear stats button event listener
@@ -83,6 +93,34 @@ function openSettings() {
 
 function closeSettings() {
     settingsModal.style.display = 'none';
+}
+
+// Function to show a toast notification
+export function showToast(message, isCorrect) {
+    if (!settings.get('showToast')) {
+        return; // Do not show toast if disabled in settings
+    }
+
+    let toast = document.getElementById('session-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'session-toast';
+        toast.className = 'session-toast';
+        document.body.appendChild(toast);
+    }
+
+    toast.innerHTML = `<div class="toast-content">${message}</div>`;
+    toast.style.backgroundColor = isCorrect ? 'rgba(76, 175, 80, 0.95)' : 'rgba(244, 67, 54, 0.95)';
+    toast.classList.remove('fade-out');
+    toast.style.display = 'block';
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        toast.addEventListener('animationend', () => {
+            toast.style.display = 'none';
+        }, { once: true });
+    }, 3000);
 }
 
 // Game mode navigation
@@ -181,3 +219,4 @@ function updateStatsDisplay() {
         `;
     }
 }
+

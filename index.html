@@ -81,13 +81,23 @@
                     <p class="setting-description">Adjust the speed of morse code playback (5-30 WPM)</p>
                 </div>
                 
+                
+                
                 <div class="setting-item">
-                    <label for="session-length-slider" class="speed-label">
-                        Session Length
-                        <span id="session-length-display">10</span>
+                    <label>
+                        <input type="checkbox" id="show-toast-checkbox">
+                        Show Accuracy Toast
                     </label>
-                    <input type="range" id="session-length-slider" min="5" max="50" value="10" step="5">
-                    <p class="setting-description">Set the number of questions per practice session</p>
+                    <p class="setting-description">Display a toast notification with accuracy periodically.</p>
+                </div>
+                
+                <div class="setting-item">
+                    <label for="toast-question-count-input" class="speed-label">
+                        Toast Accuracy Over Last
+                        <span id="toast-question-count-display">20</span> questions
+                    </label>
+                    <input type="number" id="toast-question-count-input" min="1" max="100" value="20" step="1">
+                    <p class="setting-description">Number of recent questions to calculate accuracy for in the toast.</p>
                 </div>
                 
                 <div class="setting-item">
