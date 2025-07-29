@@ -22,7 +22,6 @@ const morseSpeedSlider = document.getElementById('morse-speed-slider');
 const speedDisplay = document.getElementById('speed-display');
 const showToastCheckbox = document.getElementById('show-toast-checkbox');
 const toastQuestionCountInput = document.getElementById('toast-question-count-input');
-const toastQuestionCountDisplay = document.getElementById('toast-question-count-display');
 
 
     // Initialize settings UI
@@ -39,7 +38,6 @@ function initializeSettings() {
     showToastCheckbox.checked = settings.get('showToast');
     const savedToastCount = settings.get('toastQuestionCount');
     toastQuestionCountInput.value = savedToastCount;
-    toastQuestionCountDisplay.textContent = savedToastCount;
     
     // Add event listeners
     settingsBtn.addEventListener('click', openSettings);
@@ -64,7 +62,6 @@ function initializeSettings() {
     toastQuestionCountInput.addEventListener('input', (e) => {
         const count = parseInt(e.target.value);
         if (!isNaN(count) && count >= 1) {
-            toastQuestionCountDisplay.textContent = count;
             settings.set('toastQuestionCount', count);
         }
     });

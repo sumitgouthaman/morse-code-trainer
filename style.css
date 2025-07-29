@@ -844,6 +844,44 @@ body {
     transform: scale(1.1);
 }
 
+/* Inline input styling for settings */
+.setting-item .inline-label {
+    display: inline;
+    align-items: baseline;
+    font-size: 1.1em;
+    margin-bottom: var(--space-md);
+    cursor: default;
+}
+
+.setting-item input[type="number"].inline-input {
+    display: inline-block !important;
+    width: 60px !important;
+    padding: 4px 8px;
+    font-size: 1em;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    text-align: center;
+    margin: 0 4px;
+    vertical-align: baseline;
+    -moz-appearance: textfield;
+    appearance: none;
+    box-sizing: border-box;
+}
+
+.setting-item input[type="number"].inline-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+}
+
+.setting-item input[type="number"].inline-input::-webkit-outer-spin-button,
+.setting-item input[type="number"].inline-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 #speed-display {
     font-weight: 600;
     color: var(--primary);

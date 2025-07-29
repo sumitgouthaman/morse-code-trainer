@@ -92,12 +92,10 @@
                 </div>
                 
                 <div class="setting-item">
-                    <label for="toast-question-count-input" class="speed-label">
-                        Toast Accuracy Over Last
-                        <span id="toast-question-count-display">20</span> questions
+                    <label for="toast-question-count-input" class="inline-label">
+                        Show accuracy every <input type="number" id="toast-question-count-input" min="1" max="100" value="20" step="1" class="inline-input"> questions
                     </label>
-                    <input type="number" id="toast-question-count-input" min="1" max="100" value="20" step="1">
-                    <p class="setting-description">Number of recent questions to calculate accuracy for in the toast.</p>
+                    <p class="setting-description">Shows your accuracy over the most recent questions when practicing.</p>
                 </div>
                 
                 <div class="setting-item">
