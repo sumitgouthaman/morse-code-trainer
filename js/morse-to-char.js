@@ -8,12 +8,14 @@ export function initMorseToChar() {
     const morseToChar = {
         morseDisplay: document.querySelector('.morse-display'),
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
+        skipBtn: document.querySelector('.skip-btn'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentMorse: '',
         correctCharacter: ''
     };
 
     generatePhoneKeyboard(morseToChar, handleMorseGuess);
+    morseToChar.skipBtn.addEventListener('click', () => skipMorse(morseToChar));
     morseToChar.helpBtn.addEventListener('click', () => showMorseAnswer(morseToChar));
     nextMorseToChar(morseToChar);
 
@@ -40,6 +42,27 @@ export function initMorseToChar() {
                 answerDisplay.parentNode.removeChild(answerDisplay);
             }
         }, 2000);
+    }
+
+    function skipMorse(morseToChar) {
+        // Record as a wrong guess for statistics
+        statistics.recordAttempt('morse-to-char', morseToChar.correctCharacter, false);
+        
+        // Show brief indication that it was skipped
+        morseToChar.morseDisplay.style.color = 'orange';
+        setTimeout(() => {
+            morseToChar.morseDisplay.style.color = 'white';
+            nextMorseToChar(morseToChar);
+        }, 300);
+
+        // Check for toast display
+        const toastCount = settings.get('toastQuestionCount');
+        const showToastSetting = settings.get('showToast');
+
+        if (showToastSetting && toastCount > 0 && statistics.getQuestionCount() % toastCount === 0) {
+            const recentAccuracy = statistics.getRecentAccuracy('morse-to-char', toastCount);
+            showToast(`Accuracy over last ${toastCount} questions: ${recentAccuracy}%`, recentAccuracy >= 70);
+        }
     }
 }
 

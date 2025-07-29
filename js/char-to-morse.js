@@ -9,6 +9,7 @@ export function initCharToMorse() {
         morseInput: document.querySelector('.morse-input'),
         dotBtn: document.querySelector('.dot-btn'),
         dashBtn: document.querySelector('.dash-btn'),
+        skipBtn: document.querySelector('.skip-btn'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentCharacter: '',
         currentUserInput: ''
@@ -21,6 +22,10 @@ export function initCharToMorse() {
     charToMorseState.dashBtn.addEventListener('click', () => {
         addPressedAnimation(charToMorseState.dashBtn);
         handleCharInput('-', charToMorseState);
+    });
+    charToMorseState.skipBtn.addEventListener('click', () => {
+        addPressedAnimation(charToMorseState.skipBtn);
+        skipCharacter(charToMorseState);
     });
     charToMorseState.helpBtn.addEventListener('click', () => showCorrectMorse(charToMorseState));
     
@@ -49,6 +54,18 @@ export function initCharToMorse() {
                 answerDisplay.parentNode.removeChild(answerDisplay);
             }
         }, 2000);
+    }
+
+    function skipCharacter(charToMorseState) {
+        // Record as a wrong guess for statistics
+        statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, false);
+        
+        // Show brief indication that it was skipped
+        charToMorseState.characterDisplay.style.color = 'orange';
+        setTimeout(() => {
+            charToMorseState.characterDisplay.style.color = 'white';
+            nextCharToMorse(charToMorseState);
+        }, 300);
     }
 }
 

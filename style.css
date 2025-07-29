@@ -462,6 +462,75 @@ body {
     background-color: var(--error);
 }
 
+/* ===== SKIP BUTTONS ===== */
+.skip-btn {
+    padding: 12px 20px;
+    border: 2px solid #ff9800;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, #ff9800, #e68900);
+    color: white;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.skip-btn:hover {
+    background: linear-gradient(135deg, #e68900, #cc7700);
+    transform: translateY(-2px);
+}
+
+.skip-btn:active {
+    transform: translateY(0) scale(0.95);
+    background: linear-gradient(135deg, #cc7700, #b36600);
+}
+
+.skip-btn.pressed {
+    animation: buttonPress 0.1s ease-in-out;
+}
+
+/* Skip button container for morse-to-char mode */
+.skip-container {
+    display: flex;
+    justify-content: center;
+    margin: var(--space-md) 0;
+}
+
+/* Skip button in char-to-morse controls matches dot/dash buttons */
+.controls .skip-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-size: 1.1em;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Skip button as control button in sound-to-char mode */
+.control-btn.skip-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #ff9800, #e68900);
+    border: 2px solid #ff9800;
+    color: white;
+    padding: 16px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    min-height: 70px;
+}
+
+.control-btn.skip-btn:hover {
+    background: linear-gradient(135deg, #e68900, #cc7700);
+}
+
+.control-btn.skip-btn:active {
+    background: linear-gradient(135deg, #cc7700, #b36600);
+}
+
 /* ===== KEYBOARDS ===== */
 .phone-keyboard, .qwerty-keyboard {
     display: flex;
@@ -987,6 +1056,12 @@ body {
         min-height: 90px;
     }
     
+    .controls .skip-btn {
+        width: 90px;
+        height: 90px;
+        font-size: 1.3em;
+    }
+    
     .practice-mode {
         justify-content: flex-start;
         padding-top: var(--space-xl);
@@ -1090,6 +1165,12 @@ body {
         width: 80px;
         height: 80px;
         font-size: 2em;
+    }
+    
+    .controls .skip-btn {
+        width: 80px;
+        height: 80px;
+        font-size: 1.2em;
     }
     
     #main-menu h1 {

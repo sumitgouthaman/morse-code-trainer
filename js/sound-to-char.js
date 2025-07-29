@@ -8,6 +8,7 @@ export function initSoundToChar() {
     const soundToChar = {
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
         playBtn: document.querySelector('.play-btn'),
+        skipBtn: document.querySelector('.skip-btn'),
         soundDisplay: document.querySelector('.sound-display'),
         hintArea: document.querySelector('.hint-area'),
         morsePattern: document.querySelector('.morse-pattern'),
@@ -200,6 +201,34 @@ export function initSoundToChar() {
         }, 2000);
     }
 
+    function skipSound(soundToChar) {
+        // Record as a wrong guess for statistics
+        statistics.recordAttempt('sound-to-char', soundToChar.correctCharacter, false);
+        
+        // Show brief indication that it was skipped with orange feedback
+        showCharacterFeedback(`Skipped: ${soundToChar.correctCharacter}`, soundToChar);
+        const feedbackDiv = soundToChar.soundDisplay.querySelector('.character-feedback');
+        if (feedbackDiv) {
+            feedbackDiv.style.color = '#ff9800'; // Orange for skipped
+            feedbackDiv.style.backgroundColor = 'rgba(255, 152, 0, 0.1)';
+            feedbackDiv.style.borderColor = '#ff9800';
+        }
+        
+        setTimeout(() => {
+            clearCharacterFeedback(soundToChar);
+            nextSoundToChar(soundToChar);
+        }, 1500);
+
+        // Check for toast display
+        const toastCount = settings.get('toastQuestionCount');
+        const showToastSetting = settings.get('showToast');
+
+        if (showToastSetting && toastCount > 0 && statistics.getQuestionCount() % toastCount === 0) {
+            const recentAccuracy = statistics.getRecentAccuracy('sound-to-char', toastCount);
+            showToast(`Accuracy over last ${toastCount} questions: ${recentAccuracy}%`, recentAccuracy >= 70);
+        }
+    }
+
     function playSoundAndVibrate(morse) {
         const audioContext = getAudioContext();
         const speed = settings.get('morseSpeed');
@@ -240,6 +269,7 @@ export function initSoundToChar() {
 
     generatePhoneKeyboard(soundToChar, handleSoundGuess);
     soundToChar.playBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
+    soundToChar.skipBtn.addEventListener('click', () => skipSound(soundToChar));
     soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar));
     
     // Add click handler for hint area
