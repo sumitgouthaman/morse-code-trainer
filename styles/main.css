@@ -1,0 +1,8 @@
+/* ===== MORSE CODE TRAINER - MAIN STYLESHEET ===== */
+/* This file imports all CSS modules for better maintainability */
+
+@import url('base.css');
+@import url('layout.css');
+@import url('components.css');
+@import url('game-modes.css');
+@import url('mobile.css');

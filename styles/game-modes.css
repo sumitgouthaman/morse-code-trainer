@@ -1,0 +1,399 @@
+/* ===== GAME DISPLAYS ===== */
+.character-display, 
+.morse-display {
+    font-size: 5em;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: var(--space-md) 0;
+    min-height: 120px;
+}
+
+.morse-input {
+    font-size: 2em;
+    height: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: var(--space-md) 0;
+    padding: var(--space-lg);
+    min-height: 60px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.2em;
+}
+
+.sound-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    min-height: 200px;
+    margin-bottom: var(--space-lg);
+}
+
+.character-feedback {
+    display: none;
+    font-size: 3.5em;
+    font-weight: bold;
+    text-align: center;
+    padding: var(--space-md) 25px;
+    border: 3px solid;
+    border-radius: 12px;
+    transition: all var(--transition);
+    min-height: 70px;
+    min-width: 70px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+}
+
+.hint-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    min-height: 120px;
+    width: 100%;
+    max-width: 400px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color var(--transition);
+    padding: var(--space-lg);
+}
+
+.hint-area:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.hint-area::before {
+    content: "Tap here for hint";
+    color: var(--text-muted);
+    font-size: 0.9em;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.hint-area.showing-hint::before {
+    display: none;
+}
+
+.morse-pattern {
+    font-size: 2em;
+    font-family: 'Courier New', monospace;
+    color: var(--border);
+    text-align: center;
+    min-height: 40px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.2em;
+    opacity: 0;
+    transition: opacity var(--transition);
+}
+
+.morse-pattern.visible {
+    display: flex;
+    opacity: 1;
+}
+
+.answer-reveal {
+    color: var(--primary) !important;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+/* ===== CONTROLS ===== */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    padding: var(--space-lg);
+    margin: var(--space-md) 0;
+}
+
+.dot-btn, .dash-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-size: 1.8em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: 2px solid var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dot-btn:hover, .dash-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-2px);
+}
+
+.dot-btn:active, .dash-btn:active {
+    transform: translateY(0) scale(0.95);
+    background: linear-gradient(135deg, #3d8b40, var(--primary-dark));
+}
+
+@keyframes buttonPress {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.dot-btn.pressed, .dash-btn.pressed {
+    animation: buttonPress 0.1s ease-in-out;
+}
+
+.audio-controls {
+    display: flex;
+    gap: 12px;
+    margin: var(--space-lg) 0;
+    align-items: stretch;
+}
+
+.control-btn {
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+    font-family: inherit;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+}
+
+.control-btn:active {
+    transform: translateY(0);
+}
+
+.speed-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #555, var(--border));
+    color: var(--text);
+    padding: 16px var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+}
+
+.btn-label {
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-bottom: 4px;
+    opacity: 0.9;
+}
+
+.btn-value {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: var(--space-sm);
+}
+
+.speed-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.speed-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--text);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: transform var(--transition);
+}
+
+.speed-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.speed-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--text);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: transform var(--transition);
+}
+
+.speed-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+}
+
+.play-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--text);
+    padding: 16px 32px;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+}
+
+.play-btn .btn-content {
+    font-size: 1.1em;
+    font-weight: 600;
+    text-align: center;
+}
+
+.play-sound-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--text);
+    border: none;
+    padding: var(--space-md) var(--space-xl);
+    font-size: 1.1em;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+}
+
+.audio-controls .play-sound-btn {
+    margin-bottom: 0;
+}
+
+.play-sound-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-2px);
+}
+
+.play-sound-btn:active {
+    transform: translateY(0);
+}
+
+.play-sound-btn.correct {
+    background-color: var(--success);
+}
+
+.play-sound-btn.incorrect {
+    background-color: var(--error);
+}
+
+/* ===== SKIP BUTTONS ===== */
+.skip-btn {
+    padding: 12px 20px;
+    border: 2px solid #ff9800;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, #ff9800, #e68900);
+    color: white;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.skip-btn:hover {
+    background: linear-gradient(135deg, #e68900, #cc7700);
+    transform: translateY(-2px);
+}
+
+.skip-btn:active {
+    transform: translateY(0) scale(0.95);
+    background: linear-gradient(135deg, #cc7700, #b36600);
+}
+
+.skip-btn.pressed {
+    animation: buttonPress 0.1s ease-in-out;
+}
+
+/* Skip button container for morse-to-char mode */
+.skip-container {
+    display: flex;
+    justify-content: center;
+    margin: var(--space-md) 0;
+}
+
+/* Skip button in char-to-morse controls matches dot/dash buttons */
+.controls .skip-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-size: 1.1em;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Skip button as control button in sound-to-char mode */
+.control-btn.skip-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #ff9800, #e68900);
+    border: 2px solid #ff9800;
+    color: white;
+    padding: 16px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    min-height: 70px;
+}
+
+.control-btn.skip-btn:hover {
+    background: linear-gradient(135deg, #e68900, #cc7700);
+}
+
+.control-btn.skip-btn:active {
+    background: linear-gradient(135deg, #cc7700, #b36600);
+}
+
+/* ===== HELP BUTTON ===== */
+.help-btn-corner {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--bg-light);
+    color: var(--text);
+    border: 2px solid var(--border);
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all var(--transition);
+}
+
+.help-btn-corner:hover {
+    background-color: #5a5a5a;
+}
+
+.help-btn-corner:active {
+    background-color: #3a3a3a;
+}

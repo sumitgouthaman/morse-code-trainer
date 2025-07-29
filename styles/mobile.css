@@ -1,0 +1,322 @@
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    /* Fix mobile viewport height issue */
+    body {
+        min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
+    }
+    
+    #game-container {
+        min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
+    }
+    
+    .practice-mode {
+        min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
+        padding: var(--space-md);
+        gap: var(--space-lg);
+    }
+    
+    /* Fix keyboard overflow on mobile */
+    .phone-keyboard, .qwerty-keyboard {
+        max-width: 100%; /* Use full available width */
+        padding: 0 var(--space-xs); /* Reduced padding to give more space to keys */
+        box-sizing: border-box;
+    }
+    
+    .keyboard-row {
+        gap: 3px; /* Slightly reduced gap between keys */
+    }
+    
+    .key-btn {
+        padding: 12px 8px; /* Increased padding for larger keys */
+        font-size: 15px; /* Slightly larger font */
+        min-width: 32px; /* Ensure minimum touch target */
+        flex: 1; /* Allow keys to flex and fit available space */
+        max-width: 42px; /* Allow keys to be a bit wider */
+    }
+    
+    .character-display, 
+    .morse-display {
+        font-size: 4em;
+        min-height: 120px;
+        padding: var(--space-lg);
+        margin: var(--space-md) 0;
+    }
+    
+    .morse-input {
+        font-size: 2.5em;
+        min-height: 80px;
+        padding: var(--space-md);
+        margin: var(--space-md) 0;
+    }
+    
+    .menu-btn {
+        padding: var(--space-md);
+    }
+    
+    .btn-content h3 {
+        font-size: 1.1em;
+    }
+    
+    .btn-content p {
+        font-size: 0.8em;
+    }
+    
+    .tab-btn {
+        padding: 12px var(--space-md);
+        font-size: 1em;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .morse-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--space-sm);
+    }
+    
+    .morse-item {
+        padding: var(--space-md);
+    }
+    
+    .morse-item .character {
+        font-size: 1.5em;
+    }
+    
+    .morse-item .morse-code {
+        font-size: 1.2em;
+    }
+    
+    .sound-display {
+        min-height: 180px;
+    }
+    
+    .hint-area {
+        min-height: 100px;
+        padding: var(--space-md);
+    }
+    
+    .character-feedback {
+        font-size: 3em;
+        padding: 12px var(--space-lg);
+        min-height: 60px;
+        min-width: 60px;
+    }
+    
+    .morse-pattern {
+        font-size: 1.8em;
+        min-height: 35px;
+    }
+    
+    .play-sound-btn {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+
+    /* Mobile responsiveness for toast */
+    .session-toast {
+        top: 60px;
+        left: 10px;
+        right: 10px;
+        transform: none;
+        max-width: none;
+        padding: var(--space-sm);
+    }
+    
+    .toast-content {
+        justify-content: center;
+    }
+    
+    @keyframes toastSlideDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes toastSlideUp {
+        from {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    /* Fix mobile viewport height issue */
+    .practice-mode {
+        min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
+        padding: var(--space-sm);
+        gap: var(--space-md);
+    }
+    
+    /* Extra compact keyboard for very small screens */
+    .phone-keyboard, .qwerty-keyboard {
+        padding: 0 2px; /* Minimal padding to maximize key space */
+    }
+    
+    .keyboard-row {
+        gap: 2px; /* Minimal gap between keys */
+    }
+    
+    .key-btn {
+        padding: 10px 6px; /* Better balance of size vs fit */
+        font-size: 14px; /* Good readable size */
+        min-width: 30px; /* Adequate touch target */
+        max-width: 38px; /* Allow reasonable key width */
+    }
+    
+    .character-display, 
+    .morse-display {
+        font-size: 3.5em;
+        min-height: 100px;
+        padding: var(--space-md);
+    }
+    
+    .morse-input {
+        font-size: 2em;
+        min-height: 60px;
+        padding: var(--space-sm);
+    }
+    
+    .controls {
+        padding: var(--space-xl);
+        gap: 60px;
+        margin: var(--space-lg) 0;
+    }
+    
+    .dot-btn, .dash-btn {
+        width: 90px;
+        height: 90px;
+        font-size: 2.2em;
+        min-width: 90px;
+        min-height: 90px;
+    }
+    
+    .controls .skip-btn {
+        width: 90px;
+        height: 90px;
+        font-size: 1.3em;
+    }
+    
+    .practice-mode {
+        justify-content: flex-start;
+        padding-top: var(--space-xl);
+    }
+    
+    .help-btn-corner {
+        position: fixed;
+        top: var(--space-md);
+        right: var(--space-md);
+        z-index: 100;
+        width: 50px;
+        height: 50px;
+        font-size: 1.2em;
+    }
+    
+    .audio-controls {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+    
+    .control-btn {
+        min-height: 60px;
+    }
+    
+    .speed-btn {
+        padding: 14px 18px;
+    }
+    
+    .play-btn {
+        padding: 14px 24px;
+        min-width: auto;
+    }
+    
+    .play-btn .btn-content {
+        font-size: 1em;
+    }
+    
+    .tab-btn {
+        padding: var(--space-sm) var(--space-sm);
+        font-size: 0.9em;
+    }
+    
+    .morse-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .sound-display {
+        min-height: 160px;
+    }
+    
+    .hint-area {
+        min-height: 90px;
+        padding: 12px;
+    }
+    
+    .hint-area::before {
+        font-size: 0.8em;
+    }
+    
+    .character-feedback {
+        font-size: 2.5em;
+        padding: var(--space-sm) 18px;
+        min-height: 50px;
+        min-width: 50px;
+    }
+    
+    .morse-pattern {
+        font-size: 1.5em;
+        min-height: 30px;
+    }
+    
+    .play-sound-btn {
+        padding: var(--space-sm) var(--space-lg);
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 360px) {
+    .morse-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+    
+    .character-display, 
+    .morse-display {
+        font-size: 3em;
+        min-height: 80px;
+        padding: var(--space-sm);
+    }
+    
+    .morse-input {
+        font-size: 1.8em;
+        min-height: 50px;
+    }
+    
+    .controls {
+        gap: 40px;
+        padding: var(--space-lg);
+    }
+    
+    .dot-btn, .dash-btn {
+        width: 80px;
+        height: 80px;
+        font-size: 2em;
+    }
+    
+    .controls .skip-btn {
+        width: 80px;
+        height: 80px;
+        font-size: 1.2em;
+    }
+    
+    #main-menu h1 {
+        font-size: 1.8em;
+    }
+}

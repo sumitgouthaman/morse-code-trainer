@@ -1,0 +1,50 @@
+/* ===== CSS VARIABLES ===== */
+:root {
+    --primary: #4CAF50;
+    --primary-dark: #45a049;
+    --bg-dark: #333;
+    --bg-medium: #444;
+    --bg-light: #4a4a4a;
+    --border: #666;
+    --text: white;
+    --text-muted: #999;
+    --error: salmon;
+    --success: lightgreen;
+    
+    --space-sm: 10px;
+    --space-md: 15px;
+    --space-lg: 20px;
+    --space-xl: 30px;
+    
+    --radius: 8px;
+    --shadow: 0 4px 8px rgba(0,0,0,0.2);
+    --transition: 0.2s ease;
+}
+
+/* ===== BASE STYLES ===== */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    min-height: 100dvh; /* Fallback for mobile browsers */
+    margin: 0;
+    padding: 0;
+    background: var(--bg-dark);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+}
