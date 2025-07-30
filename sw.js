@@ -1,5 +1,5 @@
 // Increment the CACHE_VERSION to trigger a cache update when any of the cached files change.
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `morse-trainer-${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
@@ -15,6 +15,7 @@ const urlsToCache = [
   '/js/morse-to-char.js',
   '/js/sound-to-char.js',
   '/js/learn.js',
+  '/js/stats.js',
   '/js/settings.js',
   '/js/statistics.js',
   '/js/morse-code.js',
@@ -24,10 +25,12 @@ const urlsToCache = [
   '/html/morse-to-char.html',
   '/html/sound-to-char.html',
   '/html/learn.html',
+  '/html/stats.html',
   '/favicon.svg',
   '/icon-192.png',
   '/icon-512.png',
-  '/manifest.json'
+  '/manifest.json',
+  'https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js'
 ];
 
 // Install event - cache resources

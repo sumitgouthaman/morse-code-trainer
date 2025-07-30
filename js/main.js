@@ -2,6 +2,7 @@ import { initCharToMorse } from './char-to-morse.js';
 import { initMorseToChar } from './morse-to-char.js';
 import { initSoundToChar } from './sound-to-char.js';
 import { initLearn } from './learn.js';
+import { initStats } from './stats.js';
 import { settings } from './settings.js';
 import { statistics } from './statistics.js';
 
@@ -12,6 +13,7 @@ const charToMorseBtn = document.getElementById('char-to-morse-btn');
 const morseToCharBtn = document.getElementById('morse-to-char-btn');
 const soundToCharBtn = document.getElementById('sound-to-char-btn');
 const learnBtn = document.getElementById('learn-btn');
+const statsBtn = document.getElementById('stats-btn');
 
 // Settings modal elements
 const settingsBtn = document.getElementById('settings-btn');
@@ -137,6 +139,10 @@ learnBtn.addEventListener('click', () => {
     loadGameMode('learn');
 });
 
+statsBtn.addEventListener('click', () => {
+    loadGameMode('stats');
+});
+
 // Handle browser back button
 window.addEventListener('popstate', (event) => {
     if (event.state && event.state.mode) {
@@ -168,6 +174,8 @@ async function loadGameModeFromHistory(mode) {
         initSoundToChar();
     } else if (mode === 'learn') {
         initLearn();
+    } else if (mode === 'stats') {
+        initStats();
     }
 }
 
@@ -186,7 +194,7 @@ window.addEventListener('load', () => {
     initializeSettings();
     updateStatsDisplay();
     const hash = window.location.hash.substring(1);
-    if (hash && ['char-to-morse', 'morse-to-char', 'sound-to-char', 'learn'].includes(hash)) {
+    if (hash && ['char-to-morse', 'morse-to-char', 'sound-to-char', 'learn', 'stats'].includes(hash)) {
         loadGameModeFromHistory(hash);
     }
 });
