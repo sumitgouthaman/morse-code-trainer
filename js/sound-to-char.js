@@ -1,13 +1,11 @@
 import { morseCode } from './morse-code.js';
 import { generatePhoneKeyboard } from './ui.js';
 import { settings } from './settings.js';
-import { statistics } from './statistics.js';
-import { showToast } from './main.js';
-
-// Global variable to track active keyboard handler
-let activeKeyboardHandler = null;
+import { PracticeMode, createValidCharsRegex } from './practice-mode-utils.js';
 
 export function initSoundToChar() {
+    const practiceMode = new PracticeMode('sound-to-char', 'sound-to-char');
+
     const soundToChar = {
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
         playBtn: document.querySelector('.play-btn'),
@@ -19,8 +17,7 @@ export function initSoundToChar() {
         speedSlider: document.querySelector('#inline-speed-slider'),
         speedValue: document.querySelector('#speed-value'),
         currentMorse: '',
-        correctCharacter: '',
-        keyboardHandler: null
+        correctCharacter: ''
     };
 
     let audioCtx = null;
@@ -74,14 +71,9 @@ export function initSoundToChar() {
     }
 
     function nextSoundToChar(soundToChar) {
-        const includePunctuation = settings.get('includePunctuation');
-        const characters = Object.keys(morseCode).filter(char => {
-            if (includePunctuation) {
-                return true;
-            }
-            return /[a-zA-Z0-9]/.test(char);
-        });
-        soundToChar.correctCharacter = characters[Math.floor(Math.random() * characters.length)];
+        const practiceMode = new PracticeMode('sound-to-char', 'sound-to-char');
+        
+        soundToChar.correctCharacter = practiceMode.getRandomCharacter();
         soundToChar.currentMorse = morseCode[soundToChar.correctCharacter];
         
         // Clear any previous feedback and hide hint
@@ -116,11 +108,13 @@ export function initSoundToChar() {
     }
 
     function handleSoundGuess(guess, soundToChar) {
+        const practiceMode = new PracticeMode('sound-to-char', 'sound-to-char');
+        
         // Show the guessed character prominently in the sound display area
         showCharacterFeedback(guess, soundToChar);
         
         const isCorrect = guess === soundToChar.correctCharacter;
-        statistics.recordAttempt('sound-to-char', soundToChar.correctCharacter, isCorrect);
+        practiceMode.recordAttemptAndCheckToast(soundToChar.correctCharacter, isCorrect);
 
         if (isCorrect) {
             // Correct guess - clear feedback and move to next character
@@ -133,16 +127,6 @@ export function initSoundToChar() {
             setTimeout(() => {
                 clearCharacterFeedback(soundToChar);
             }, 1500);
-        }
-
-        // Check if a full attempt has been made (either correct or incorrect guess)
-        // The toast should be shown periodically based on the global question counter
-        const toastCount = settings.get('toastQuestionCount');
-        const showToastSetting = settings.get('showToast');
-
-        if (showToastSetting && toastCount > 0 && statistics.getQuestionCount() % toastCount === 0) {
-            const recentAccuracy = statistics.getRecentAccuracy('sound-to-char', toastCount);
-            showToast(`Accuracy over last ${toastCount} questions: ${recentAccuracy}%`, recentAccuracy >= 70);
         }
     }
 
@@ -171,57 +155,23 @@ export function initSoundToChar() {
         }
     }
 
-    function showCorrectAnswer(soundToChar) {
-        const answerDisplay = document.createElement('div');
-        answerDisplay.textContent = `${soundToChar.correctCharacter} (${soundToChar.currentMorse})`;
-        answerDisplay.className = 'answer-reveal sound-mode';
-        
-        document.getElementById('sound-to-char').appendChild(answerDisplay);
-        
-        setTimeout(() => {
-            if (answerDisplay.parentNode) {
-                answerDisplay.parentNode.removeChild(answerDisplay);
-            }
-        }, 2000);
+    function showCorrectAnswer(soundToChar, practiceMode) {
+        const answerContent = `${soundToChar.correctCharacter} (${soundToChar.currentMorse})`;
+        practiceMode.showAnswerReveal(answerContent, 'answer-reveal sound-mode');
     }
 
-    function skipSound(soundToChar) {
-        // Record as a wrong guess for statistics
-        statistics.recordAttempt('sound-to-char', soundToChar.correctCharacter, false);
+    function skipSound(soundToChar, practiceMode) {
+        const answerContent = `${soundToChar.currentMorse} <span class="arrow">→</span> ${soundToChar.correctCharacter}`;
         
-        // Show the correct answer
-        showAnswerOnSkip(soundToChar);
+        // Custom next function that also clears feedback
+        const customNext = (state) => {
+            clearCharacterFeedback(state);
+            nextSoundToChar(state);
+        };
         
-        // Move to next sound after showing answer
-        setTimeout(() => {
-            clearCharacterFeedback(soundToChar);
-            nextSoundToChar(soundToChar);
-        }, 2000);
-
-        // Check for toast display
-        const toastCount = settings.get('toastQuestionCount');
-        const showToastSetting = settings.get('showToast');
-
-        if (showToastSetting && toastCount > 0 && statistics.getQuestionCount() % toastCount === 0) {
-            const recentAccuracy = statistics.getRecentAccuracy('sound-to-char', toastCount);
-            showToast(`Accuracy over last ${toastCount} questions: ${recentAccuracy}%`, recentAccuracy >= 70);
-        }
+        practiceMode.handleSkip(soundToChar.correctCharacter, answerContent, customNext, soundToChar);
     }
 
-    function showAnswerOnSkip(soundToChar) {
-        const answerDisplay = document.createElement('div');
-        answerDisplay.innerHTML = `${soundToChar.currentMorse} <span class="arrow">→</span> ${soundToChar.correctCharacter}`;
-        answerDisplay.className = 'answer-display-skip';
-        
-        document.body.appendChild(answerDisplay);
-        
-        // Remove after 2 seconds
-        setTimeout(() => {
-            if (answerDisplay.parentNode) {
-                answerDisplay.parentNode.removeChild(answerDisplay);
-            }
-        }, 2000);
-    }
 
     function playSoundAndVibrate(morse) {
         const audioContext = getAudioContext();
@@ -263,18 +213,11 @@ export function initSoundToChar() {
 
     generatePhoneKeyboard(soundToChar, handleSoundGuess);
     soundToChar.playBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
-    soundToChar.skipBtn.addEventListener('click', () => skipSound(soundToChar));
-    soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar));
+    soundToChar.skipBtn.addEventListener('click', () => skipSound(soundToChar, practiceMode));
+    soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar, practiceMode));
     
-    // Remove any existing keyboard handler
-    if (activeKeyboardHandler) {
-        document.removeEventListener('keydown', activeKeyboardHandler);
-    }
-    
-    // Add keyboard event listener for physical keyboard input
-    soundToChar.keyboardHandler = (event) => handleKeyboardInput(event, soundToChar);
-    document.addEventListener('keydown', soundToChar.keyboardHandler);
-    activeKeyboardHandler = soundToChar.keyboardHandler;
+    // Set up keyboard handler
+    practiceMode.setupKeyboardHandler(handleKeyboardInput, soundToChar);
     
     // Add click handler for hint area
     soundToChar.hintArea.addEventListener('click', () => toggleMorseHint(soundToChar));
@@ -286,7 +229,7 @@ export function initSoundToChar() {
         const key = event.key.toUpperCase();
         
         // Handle alphanumeric characters and punctuation
-        const validChars = /^[A-Z0-9.,'!/()&:;=+\-_"$@?]$/;
+        const validChars = createValidCharsRegex();
         
         if (validChars.test(key)) {
             event.preventDefault();

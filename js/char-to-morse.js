@@ -1,12 +1,9 @@
 import { morseCode } from './morse-code.js';
-import { settings } from './settings.js';
-import { statistics } from './statistics.js';
-import { showToast } from './main.js';
-
-// Global variable to track active keyboard handler
-let activeKeyboardHandler = null;
+import { PracticeMode, addPressedAnimation } from './practice-mode-utils.js';
 
 export function initCharToMorse() {
+    const practiceMode = new PracticeMode('char-to-morse', 'char-to-morse');
+    
     const charToMorseState = {
         characterDisplay: document.querySelector('.character-display'),
         morseInput: document.querySelector('.morse-input'),
@@ -15,8 +12,7 @@ export function initCharToMorse() {
         skipBtn: document.querySelector('.skip-btn'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentCharacter: '',
-        currentUserInput: '',
-        keyboardHandler: null
+        currentUserInput: ''
     };
 
     charToMorseState.dotBtn.addEventListener('click', () => {
@@ -31,17 +27,10 @@ export function initCharToMorse() {
         addPressedAnimation(charToMorseState.skipBtn);
         skipCharacter(charToMorseState);
     });
-    charToMorseState.helpBtn.addEventListener('click', () => showCorrectMorse(charToMorseState));
+    charToMorseState.helpBtn.addEventListener('click', () => showCorrectMorse(charToMorseState, practiceMode));
     
-    // Remove any existing keyboard handler
-    if (activeKeyboardHandler) {
-        document.removeEventListener('keydown', activeKeyboardHandler);
-    }
-    
-    // Add keyboard event listener for dot and dash keys
-    charToMorseState.keyboardHandler = (event) => handleKeyboardInput(event, charToMorseState);
-    document.addEventListener('keydown', charToMorseState.keyboardHandler);
-    activeKeyboardHandler = charToMorseState.keyboardHandler;
+    // Set up keyboard handler
+    practiceMode.setupKeyboardHandler(handleKeyboardInput, charToMorseState);
     
     nextCharToMorse(charToMorseState);
 
@@ -58,66 +47,22 @@ export function initCharToMorse() {
         }
     }
 
-    function showCorrectMorse(charToMorseState) {
-        const answerDisplay = document.createElement('div');
-        answerDisplay.textContent = morseCode[charToMorseState.currentCharacter];
-        answerDisplay.className = 'answer-reveal';
-        
-        document.getElementById('char-to-morse').appendChild(answerDisplay);
-        
-        setTimeout(() => {
-            if (answerDisplay.parentNode) {
-                answerDisplay.parentNode.removeChild(answerDisplay);
-            }
-        }, 2000);
+    function showCorrectMorse(charToMorseState, practiceMode) {
+        practiceMode.showAnswerReveal(morseCode[charToMorseState.currentCharacter]);
     }
 
     function skipCharacter(charToMorseState) {
-        // Record as a wrong guess for statistics
-        statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, false);
-        
-        // Show the correct answer
-        showAnswerOnSkip(charToMorseState);
-        
-        // Move to next character after showing answer
-        setTimeout(() => {
-            nextCharToMorse(charToMorseState);
-        }, 2000);
+        const answerContent = morseCode[charToMorseState.currentCharacter];
+        practiceMode.handleSkip(charToMorseState.currentCharacter, answerContent, nextCharToMorse, charToMorseState);
     }
 
-    function showAnswerOnSkip(charToMorseState) {
-        const answerDisplay = document.createElement('div');
-        answerDisplay.textContent = morseCode[charToMorseState.currentCharacter];
-        answerDisplay.className = 'answer-display-skip';
-        
-        document.body.appendChild(answerDisplay);
-        
-        // Remove after 2 seconds
-        setTimeout(() => {
-            if (answerDisplay.parentNode) {
-                answerDisplay.parentNode.removeChild(answerDisplay);
-            }
-        }, 2000);
-    }
 }
 
-function addPressedAnimation(button) {
-    button.classList.add('pressed');
-    setTimeout(() => {
-        button.classList.remove('pressed');
-    }, 100);
-}
 
 function nextCharToMorse(charToMorseState) {
-    const includePunctuation = settings.get('includePunctuation');
-    const characters = Object.keys(morseCode).filter(char => {
-        if (includePunctuation) {
-            return true;
-        }
-        return /[a-zA-Z0-9]/.test(char);
-    });
-
-    charToMorseState.currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+    const practiceMode = new PracticeMode('char-to-morse', 'char-to-morse');
+    
+    charToMorseState.currentCharacter = practiceMode.getRandomCharacter();
     charToMorseState.currentUserInput = '';
     charToMorseState.characterDisplay.textContent = charToMorseState.currentCharacter;
     charToMorseState.morseInput.textContent = '';
@@ -132,39 +77,22 @@ function handleCharInput(input, charToMorseState) {
 }
 
 function checkCharToMorse(charToMorseState) {
+    const practiceMode = new PracticeMode('char-to-morse', 'char-to-morse');
     const correctMorse = morseCode[charToMorseState.currentCharacter];
+    
     if (charToMorseState.currentUserInput === correctMorse) {
         // Correct!
-        statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, true);
-        charToMorseState.characterDisplay.classList.remove('feedback-incorrect', 'feedback-neutral');
-        charToMorseState.characterDisplay.classList.add('feedback-correct');
-        setTimeout(() => {
-            charToMorseState.characterDisplay.classList.remove('feedback-correct', 'feedback-incorrect');
-    charToMorseState.characterDisplay.classList.add('feedback-neutral');
+        practiceMode.recordAttemptAndCheckToast(charToMorseState.currentCharacter, true);
+        practiceMode.applyFeedback(charToMorseState.characterDisplay, 'correct', () => {
             nextCharToMorse(charToMorseState);
-        }, 500);
+        });
     } else if (!correctMorse.startsWith(charToMorseState.currentUserInput)) {
         // Incorrect
-        statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, false);
-        charToMorseState.characterDisplay.classList.remove('feedback-correct', 'feedback-neutral');
-        charToMorseState.characterDisplay.classList.add('feedback-incorrect');
-        setTimeout(() => {
-            charToMorseState.characterDisplay.classList.remove('feedback-correct', 'feedback-incorrect');
-    charToMorseState.characterDisplay.classList.add('feedback-neutral');
+        practiceMode.recordAttemptAndCheckToast(charToMorseState.currentCharacter, false);
+        practiceMode.applyFeedback(charToMorseState.characterDisplay, 'incorrect', () => {
             charToMorseState.currentUserInput = '';
             charToMorseState.morseInput.textContent = '';
-        }, 500);
-    }
-
-    // Check if a full attempt has been made (either correct or incorrect final input)
-    if (charToMorseState.currentUserInput === correctMorse || !correctMorse.startsWith(charToMorseState.currentUserInput)) {
-        const toastCount = settings.get('toastQuestionCount');
-        const showToastSetting = settings.get('showToast');
-
-        if (showToastSetting && toastCount > 0 && statistics.getQuestionCount() % toastCount === 0) {
-            const recentAccuracy = statistics.getRecentAccuracy('char-to-morse', toastCount);
-            showToast(`Accuracy over last ${toastCount} questions: ${recentAccuracy}%`, recentAccuracy >= 70);
-        }
+        });
     }
 }
 
