@@ -4,6 +4,9 @@ import { settings } from './settings.js';
 import { statistics } from './statistics.js';
 import { showToast } from './main.js';
 
+// Global variable to track active keyboard handler
+let activeKeyboardHandler = null;
+
 export function initSoundToChar() {
     const soundToChar = {
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
@@ -16,7 +19,8 @@ export function initSoundToChar() {
         speedSlider: document.querySelector('#inline-speed-slider'),
         speedValue: document.querySelector('#speed-value'),
         currentMorse: '',
-        correctCharacter: ''
+        correctCharacter: '',
+        keyboardHandler: null
     };
 
     let audioCtx = null;
@@ -262,8 +266,31 @@ export function initSoundToChar() {
     soundToChar.skipBtn.addEventListener('click', () => skipSound(soundToChar));
     soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar));
     
+    // Remove any existing keyboard handler
+    if (activeKeyboardHandler) {
+        document.removeEventListener('keydown', activeKeyboardHandler);
+    }
+    
+    // Add keyboard event listener for physical keyboard input
+    soundToChar.keyboardHandler = (event) => handleKeyboardInput(event, soundToChar);
+    document.addEventListener('keydown', soundToChar.keyboardHandler);
+    activeKeyboardHandler = soundToChar.keyboardHandler;
+    
     // Add click handler for hint area
     soundToChar.hintArea.addEventListener('click', () => toggleMorseHint(soundToChar));
     
     nextSoundToChar(soundToChar);
+
+    function handleKeyboardInput(event, soundToChar) {
+        // Prevent default behavior for handled keys
+        const key = event.key.toUpperCase();
+        
+        // Handle alphanumeric characters and punctuation
+        const validChars = /^[A-Z0-9.,'!/()&:;=+\-_"$@?]$/;
+        
+        if (validChars.test(key)) {
+            event.preventDefault();
+            handleSoundGuess(key, soundToChar);
+        }
+    }
 }

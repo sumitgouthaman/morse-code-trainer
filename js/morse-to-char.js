@@ -4,6 +4,9 @@ import { settings } from './settings.js';
 import { statistics } from './statistics.js';
 import { showToast } from './main.js';
 
+// Global variable to track active keyboard handler
+let activeKeyboardHandler = null;
+
 export function initMorseToChar() {
     const morseToChar = {
         morseDisplay: document.querySelector('.morse-display'),
@@ -11,13 +14,38 @@ export function initMorseToChar() {
         skipBtn: document.querySelector('.skip-btn'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentMorse: '',
-        correctCharacter: ''
+        correctCharacter: '',
+        keyboardHandler: null
     };
 
     generatePhoneKeyboard(morseToChar, handleMorseGuess);
     morseToChar.skipBtn.addEventListener('click', () => skipMorse(morseToChar));
     morseToChar.helpBtn.addEventListener('click', () => showMorseAnswer(morseToChar));
+    
+    // Remove any existing keyboard handler
+    if (activeKeyboardHandler) {
+        document.removeEventListener('keydown', activeKeyboardHandler);
+    }
+    
+    // Add keyboard event listener for physical keyboard input
+    morseToChar.keyboardHandler = (event) => handleKeyboardInput(event, morseToChar);
+    document.addEventListener('keydown', morseToChar.keyboardHandler);
+    activeKeyboardHandler = morseToChar.keyboardHandler;
+    
     nextMorseToChar(morseToChar);
+
+    function handleKeyboardInput(event, morseToChar) {
+        // Prevent default behavior for handled keys
+        const key = event.key.toUpperCase();
+        
+        // Handle alphanumeric characters and punctuation
+        const validChars = /^[A-Z0-9.,'!/()&:;=+\-_"$@?]$/;
+        
+        if (validChars.test(key)) {
+            event.preventDefault();
+            handleMorseGuess(key, morseToChar);
+        }
+    }
 
     function showMorseAnswer(morseToChar) {
         const answerDisplay = document.createElement('div');
