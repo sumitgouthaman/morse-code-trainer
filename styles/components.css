@@ -310,6 +310,7 @@
 /* Hide number input arrows for Firefox */
 .setting-item input[type="number"] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 /* Inline input styling for settings */
@@ -644,6 +645,7 @@
     min-width: 200px;
 }
 
+/* Skip answer animation (centered overlay) */
 @keyframes answerFadeIn {
     from {
         opacity: 0;
@@ -653,4 +655,78 @@
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
+}
+
+/* Help button answer animation (corner reveal) */
+@keyframes answerReveal {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ===== HELP BUTTON ANSWER DISPLAYS ===== */
+.answer-reveal {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    font-size: 24px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 8px;
+    z-index: 20;
+    animation: answerReveal 0.3s ease-out;
+}
+
+.answer-reveal.sound-mode {
+    color: #4CAF50;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+/* ===== FEEDBACK STATES ===== */
+.feedback-correct {
+    color: #4CAF50 !important;
+}
+
+.feedback-incorrect {
+    color: #f44336 !important;
+}
+
+.feedback-neutral {
+    color: white !important;
+}
+
+/* ===== CHARACTER FEEDBACK (Sound Mode) ===== */
+.character-feedback {
+    display: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px 0;
+    border: 2px solid;
+    transition: all 0.3s ease;
+}
+
+.character-feedback.correct {
+    color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-color: #4CAF50;
+}
+
+.character-feedback.incorrect {
+    color: #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
+    border-color: #f44336;
+}
+
+.character-feedback.show {
+    display: block;
 }

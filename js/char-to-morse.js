@@ -32,23 +32,12 @@ export function initCharToMorse() {
     nextCharToMorse(charToMorseState);
 
     function showCorrectMorse(charToMorseState) {
-        // Create a temporary display element to show the answer
         const answerDisplay = document.createElement('div');
         answerDisplay.textContent = morseCode[charToMorseState.currentCharacter];
         answerDisplay.className = 'answer-reveal';
-        answerDisplay.style.position = 'absolute';
-        answerDisplay.style.top = '60px';
-        answerDisplay.style.right = '10px';
-        answerDisplay.style.fontSize = '24px';
-        answerDisplay.style.padding = '10px';
-        answerDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        answerDisplay.style.borderRadius = '8px';
-        answerDisplay.style.zIndex = '20';
         
-        // Add to the char-to-morse container
         document.getElementById('char-to-morse').appendChild(answerDisplay);
         
-        // Remove the answer display after 2 seconds
         setTimeout(() => {
             if (answerDisplay.parentNode) {
                 answerDisplay.parentNode.removeChild(answerDisplay);
@@ -105,7 +94,8 @@ function nextCharToMorse(charToMorseState) {
     charToMorseState.currentUserInput = '';
     charToMorseState.characterDisplay.textContent = charToMorseState.currentCharacter;
     charToMorseState.morseInput.textContent = '';
-    charToMorseState.characterDisplay.style.color = 'white';
+    charToMorseState.characterDisplay.classList.remove('feedback-correct', 'feedback-incorrect');
+    charToMorseState.characterDisplay.classList.add('feedback-neutral');
 }
 
 function handleCharInput(input, charToMorseState) {
@@ -119,17 +109,21 @@ function checkCharToMorse(charToMorseState) {
     if (charToMorseState.currentUserInput === correctMorse) {
         // Correct!
         statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, true);
-        charToMorseState.characterDisplay.style.color = 'lightgreen';
+        charToMorseState.characterDisplay.classList.remove('feedback-incorrect', 'feedback-neutral');
+        charToMorseState.characterDisplay.classList.add('feedback-correct');
         setTimeout(() => {
-            charToMorseState.characterDisplay.style.color = 'white';
+            charToMorseState.characterDisplay.classList.remove('feedback-correct', 'feedback-incorrect');
+    charToMorseState.characterDisplay.classList.add('feedback-neutral');
             nextCharToMorse(charToMorseState);
         }, 500);
     } else if (!correctMorse.startsWith(charToMorseState.currentUserInput)) {
         // Incorrect
         statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, false);
-        charToMorseState.characterDisplay.style.color = 'salmon';
+        charToMorseState.characterDisplay.classList.remove('feedback-correct', 'feedback-neutral');
+        charToMorseState.characterDisplay.classList.add('feedback-incorrect');
         setTimeout(() => {
-            charToMorseState.characterDisplay.style.color = 'white';
+            charToMorseState.characterDisplay.classList.remove('feedback-correct', 'feedback-incorrect');
+    charToMorseState.characterDisplay.classList.add('feedback-neutral');
             charToMorseState.currentUserInput = '';
             charToMorseState.morseInput.textContent = '';
         }, 500);

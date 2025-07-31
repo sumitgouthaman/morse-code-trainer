@@ -20,23 +20,12 @@ export function initMorseToChar() {
     nextMorseToChar(morseToChar);
 
     function showMorseAnswer(morseToChar) {
-        // Create a temporary display element to show the answer
         const answerDisplay = document.createElement('div');
         answerDisplay.textContent = morseToChar.correctCharacter;
         answerDisplay.className = 'answer-reveal';
-        answerDisplay.style.position = 'absolute';
-        answerDisplay.style.top = '60px';
-        answerDisplay.style.right = '10px';
-        answerDisplay.style.fontSize = '24px';
-        answerDisplay.style.padding = '10px';
-        answerDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        answerDisplay.style.borderRadius = '8px';
-        answerDisplay.style.zIndex = '20';
         
-        // Add to the morse-to-char container
         document.getElementById('morse-to-char').appendChild(answerDisplay);
         
-        // Remove the answer display after 2 seconds
         setTimeout(() => {
             if (answerDisplay.parentNode) {
                 answerDisplay.parentNode.removeChild(answerDisplay);
@@ -100,15 +89,19 @@ function handleMorseGuess(guess, morseToChar) {
     statistics.recordAttempt('morse-to-char', morseToChar.correctCharacter, isCorrect);
 
     if (isCorrect) {
-        morseToChar.morseDisplay.style.color = 'lightgreen';
+        morseToChar.morseDisplay.classList.remove('feedback-incorrect', 'feedback-neutral');
+        morseToChar.morseDisplay.classList.add('feedback-correct');
         setTimeout(() => {
-            morseToChar.morseDisplay.style.color = 'white';
+            morseToChar.morseDisplay.classList.remove('feedback-correct', 'feedback-incorrect');
+            morseToChar.morseDisplay.classList.add('feedback-neutral');
             nextMorseToChar(morseToChar);
         }, 500);
     } else {
-        morseToChar.morseDisplay.style.color = 'salmon';
+        morseToChar.morseDisplay.classList.remove('feedback-correct', 'feedback-neutral');
+        morseToChar.morseDisplay.classList.add('feedback-incorrect');
         setTimeout(() => {
-            morseToChar.morseDisplay.style.color = 'white';
+            morseToChar.morseDisplay.classList.remove('feedback-correct', 'feedback-incorrect');
+            morseToChar.morseDisplay.classList.add('feedback-neutral');
         }, 500);
     }
 

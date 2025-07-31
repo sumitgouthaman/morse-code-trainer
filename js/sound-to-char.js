@@ -143,7 +143,6 @@ export function initSoundToChar() {
     }
 
     function showCharacterFeedback(character, soundToChar) {
-        // Create or update the feedback display
         let feedbackDiv = soundToChar.soundDisplay.querySelector('.character-feedback');
         if (!feedbackDiv) {
             feedbackDiv = document.createElement('div');
@@ -152,48 +151,29 @@ export function initSoundToChar() {
         }
         
         feedbackDiv.textContent = character;
-        feedbackDiv.style.display = 'block';
         
-        // Set color based on correctness
+        // Set class based on correctness
         if (character === soundToChar.correctCharacter) {
-            feedbackDiv.style.color = '#4CAF50'; // Green for correct
-            feedbackDiv.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
-            feedbackDiv.style.borderColor = '#4CAF50';
+            feedbackDiv.className = 'character-feedback correct show';
         } else {
-            feedbackDiv.style.color = '#f44336'; // Red for incorrect
-            feedbackDiv.style.backgroundColor = 'rgba(244, 67, 54, 0.1)';
-            feedbackDiv.style.borderColor = '#f44336';
+            feedbackDiv.className = 'character-feedback incorrect show';
         }
     }
 
     function clearCharacterFeedback(soundToChar) {
         const feedbackDiv = soundToChar.soundDisplay.querySelector('.character-feedback');
         if (feedbackDiv) {
-            feedbackDiv.style.display = 'none';
+            feedbackDiv.classList.remove('show');
         }
     }
 
     function showCorrectAnswer(soundToChar) {
-        // Create a temporary display element to show the answer
         const answerDisplay = document.createElement('div');
         answerDisplay.textContent = `${soundToChar.correctCharacter} (${soundToChar.currentMorse})`;
-        answerDisplay.className = 'answer-reveal';
-        answerDisplay.style.position = 'absolute';
-        answerDisplay.style.top = '60px';
-        answerDisplay.style.right = '10px';
-        answerDisplay.style.fontSize = '24px';
-        answerDisplay.style.padding = '10px';
-        answerDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        answerDisplay.style.borderRadius = '8px';
-        answerDisplay.style.zIndex = '20';
-        answerDisplay.style.color = '#4CAF50';
-        answerDisplay.style.fontWeight = 'bold';
-        answerDisplay.style.textShadow = '0 0 10px rgba(76, 175, 80, 0.5)';
+        answerDisplay.className = 'answer-reveal sound-mode';
         
-        // Add to the sound-to-char container
         document.getElementById('sound-to-char').appendChild(answerDisplay);
         
-        // Remove the answer display after 2 seconds
         setTimeout(() => {
             if (answerDisplay.parentNode) {
                 answerDisplay.parentNode.removeChild(answerDisplay);
