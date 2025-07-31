@@ -60,7 +60,7 @@ export function initCharToMorse() {
 
     function showAnswerOnSkip(charToMorseState) {
         const answerDisplay = document.createElement('div');
-        answerDisplay.textContent = `${charToMorseState.currentCharacter} = ${morseCode[charToMorseState.currentCharacter]}`;
+        answerDisplay.textContent = morseCode[charToMorseState.currentCharacter];
         answerDisplay.className = 'answer-display-skip';
         
         document.body.appendChild(answerDisplay);

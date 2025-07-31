@@ -645,6 +645,13 @@
     min-width: 200px;
 }
 
+.answer-display-skip .arrow {
+    font-size: 0.7em;
+    opacity: 0.8;
+    font-weight: normal;
+    margin: 0 0.3em;
+}
+
 /* Skip answer animation (centered overlay) */
 @keyframes answerFadeIn {
     from {

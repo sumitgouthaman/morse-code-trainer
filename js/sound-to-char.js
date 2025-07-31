@@ -206,7 +206,7 @@ export function initSoundToChar() {
 
     function showAnswerOnSkip(soundToChar) {
         const answerDisplay = document.createElement('div');
-        answerDisplay.textContent = `${soundToChar.correctCharacter} = ${soundToChar.currentMorse}`;
+        answerDisplay.innerHTML = `${soundToChar.currentMorse} <span class="arrow">→</span> ${soundToChar.correctCharacter}`;
         answerDisplay.className = 'answer-display-skip';
         
         document.body.appendChild(answerDisplay);
