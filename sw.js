@@ -1,5 +1,5 @@
 // Increment the CACHE_VERSION to trigger a cache update when any of the cached files change.
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `morse-trainer-${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
@@ -20,6 +20,7 @@ const urlsToCache = [
   '/js/statistics.js',
   '/js/morse-code.js',
   '/js/ui.js',
+  '/js/practice-mode-utils.js',
   '/js/session-tracker.js',
   '/html/char-to-morse.html',
   '/html/morse-to-char.html',
