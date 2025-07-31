@@ -60,12 +60,28 @@ export function initCharToMorse() {
         // Record as a wrong guess for statistics
         statistics.recordAttempt('char-to-morse', charToMorseState.currentCharacter, false);
         
-        // Show brief indication that it was skipped
-        charToMorseState.characterDisplay.style.color = 'orange';
+        // Show the correct answer
+        showAnswerOnSkip(charToMorseState);
+        
+        // Move to next character after showing answer
         setTimeout(() => {
-            charToMorseState.characterDisplay.style.color = 'white';
             nextCharToMorse(charToMorseState);
-        }, 300);
+        }, 2000);
+    }
+
+    function showAnswerOnSkip(charToMorseState) {
+        const answerDisplay = document.createElement('div');
+        answerDisplay.textContent = `${charToMorseState.currentCharacter} = ${morseCode[charToMorseState.currentCharacter]}`;
+        answerDisplay.className = 'answer-display-skip';
+        
+        document.body.appendChild(answerDisplay);
+        
+        // Remove after 2 seconds
+        setTimeout(() => {
+            if (answerDisplay.parentNode) {
+                answerDisplay.parentNode.removeChild(answerDisplay);
+            }
+        }, 2000);
     }
 }
 

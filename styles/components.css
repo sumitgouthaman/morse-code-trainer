@@ -621,3 +621,36 @@
     font-size: 1.1em;
     color: var(--text);
 }
+
+/* ===== ANSWER DISPLAY ON SKIP ===== */
+.answer-display-skip {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    font-weight: bold;
+    padding: 20px 30px;
+    background: rgba(255, 152, 0, 0.95);
+    color: white;
+    border-radius: 12px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    animation: answerFadeIn 0.3s ease-out;
+    text-align: center;
+    white-space: nowrap;
+    min-width: 200px;
+}
+
+@keyframes answerFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}

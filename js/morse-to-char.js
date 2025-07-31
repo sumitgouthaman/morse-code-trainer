@@ -48,12 +48,13 @@ export function initMorseToChar() {
         // Record as a wrong guess for statistics
         statistics.recordAttempt('morse-to-char', morseToChar.correctCharacter, false);
         
-        // Show brief indication that it was skipped
-        morseToChar.morseDisplay.style.color = 'orange';
+        // Show the correct answer
+        showAnswerOnSkip(morseToChar);
+        
+        // Move to next morse after showing answer
         setTimeout(() => {
-            morseToChar.morseDisplay.style.color = 'white';
             nextMorseToChar(morseToChar);
-        }, 300);
+        }, 2000);
 
         // Check for toast display
         const toastCount = settings.get('toastQuestionCount');
@@ -63,6 +64,21 @@ export function initMorseToChar() {
             const recentAccuracy = statistics.getRecentAccuracy('morse-to-char', toastCount);
             showToast(`Accuracy over last ${toastCount} questions: ${recentAccuracy}%`, recentAccuracy >= 70);
         }
+    }
+
+    function showAnswerOnSkip(morseToChar) {
+        const answerDisplay = document.createElement('div');
+        answerDisplay.textContent = `${morseToChar.currentMorse} = ${morseToChar.correctCharacter}`;
+        answerDisplay.className = 'answer-display-skip';
+        
+        document.body.appendChild(answerDisplay);
+        
+        // Remove after 2 seconds
+        setTimeout(() => {
+            if (answerDisplay.parentNode) {
+                answerDisplay.parentNode.removeChild(answerDisplay);
+            }
+        }, 2000);
     }
 }
 

@@ -205,19 +205,14 @@ export function initSoundToChar() {
         // Record as a wrong guess for statistics
         statistics.recordAttempt('sound-to-char', soundToChar.correctCharacter, false);
         
-        // Show brief indication that it was skipped with orange feedback
-        showCharacterFeedback(`Skipped: ${soundToChar.correctCharacter}`, soundToChar);
-        const feedbackDiv = soundToChar.soundDisplay.querySelector('.character-feedback');
-        if (feedbackDiv) {
-            feedbackDiv.style.color = '#ff9800'; // Orange for skipped
-            feedbackDiv.style.backgroundColor = 'rgba(255, 152, 0, 0.1)';
-            feedbackDiv.style.borderColor = '#ff9800';
-        }
+        // Show the correct answer
+        showAnswerOnSkip(soundToChar);
         
+        // Move to next sound after showing answer
         setTimeout(() => {
             clearCharacterFeedback(soundToChar);
             nextSoundToChar(soundToChar);
-        }, 1500);
+        }, 2000);
 
         // Check for toast display
         const toastCount = settings.get('toastQuestionCount');
@@ -227,6 +222,21 @@ export function initSoundToChar() {
             const recentAccuracy = statistics.getRecentAccuracy('sound-to-char', toastCount);
             showToast(`Accuracy over last ${toastCount} questions: ${recentAccuracy}%`, recentAccuracy >= 70);
         }
+    }
+
+    function showAnswerOnSkip(soundToChar) {
+        const answerDisplay = document.createElement('div');
+        answerDisplay.textContent = `${soundToChar.correctCharacter} = ${soundToChar.currentMorse}`;
+        answerDisplay.className = 'answer-display-skip';
+        
+        document.body.appendChild(answerDisplay);
+        
+        // Remove after 2 seconds
+        setTimeout(() => {
+            if (answerDisplay.parentNode) {
+                answerDisplay.parentNode.removeChild(answerDisplay);
+            }
+        }, 2000);
     }
 
     function playSoundAndVibrate(morse) {
