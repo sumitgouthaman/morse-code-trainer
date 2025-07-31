@@ -3,6 +3,9 @@ import { settings } from './settings.js';
 import { statistics } from './statistics.js';
 import { showToast } from './main.js';
 
+// Global variable to track active keyboard handler
+let activeKeyboardHandler = null;
+
 export function initCharToMorse() {
     const charToMorseState = {
         characterDisplay: document.querySelector('.character-display'),
@@ -12,7 +15,8 @@ export function initCharToMorse() {
         skipBtn: document.querySelector('.skip-btn'),
         helpBtn: document.querySelector('.help-btn-corner'),
         currentCharacter: '',
-        currentUserInput: ''
+        currentUserInput: '',
+        keyboardHandler: null
     };
 
     charToMorseState.dotBtn.addEventListener('click', () => {
@@ -29,7 +33,30 @@ export function initCharToMorse() {
     });
     charToMorseState.helpBtn.addEventListener('click', () => showCorrectMorse(charToMorseState));
     
+    // Remove any existing keyboard handler
+    if (activeKeyboardHandler) {
+        document.removeEventListener('keydown', activeKeyboardHandler);
+    }
+    
+    // Add keyboard event listener for dot and dash keys
+    charToMorseState.keyboardHandler = (event) => handleKeyboardInput(event, charToMorseState);
+    document.addEventListener('keydown', charToMorseState.keyboardHandler);
+    activeKeyboardHandler = charToMorseState.keyboardHandler;
+    
     nextCharToMorse(charToMorseState);
+
+    function handleKeyboardInput(event, charToMorseState) {
+        // Handle dot and dash key presses
+        if (event.key === '.') {
+            event.preventDefault();
+            addPressedAnimation(charToMorseState.dotBtn);
+            handleCharInput('.', charToMorseState);
+        } else if (event.key === '-') {
+            event.preventDefault();
+            addPressedAnimation(charToMorseState.dashBtn);
+            handleCharInput('-', charToMorseState);
+        }
+    }
 
     function showCorrectMorse(charToMorseState) {
         const answerDisplay = document.createElement('div');
