@@ -203,25 +203,15 @@ window.addEventListener('load', () => {
 function updateStatsDisplay() {
     const summary = statistics.getStatsSummary();
     console.log('Updating stats display:', summary);
-    let statsElement = document.getElementById('stats-display');
     
-    if (!statsElement) {
-        statsElement = document.createElement('div');
-        statsElement.id = 'stats-display';
-        statsElement.className = 'stats-display';
-        document.querySelector('.menu-header').appendChild(statsElement);
-    }
+    // Update the Statistics button instead of the header
+    const statsBtn = document.getElementById('stats-btn');
+    const statsDescription = statsBtn.querySelector('p');
     
     if (summary.hasStats) {
-        statsElement.innerHTML = `
-            <p class="stats-summary">
-                Overall Accuracy: <strong>${summary.overallAccuracy}%</strong>
-            </p>
-        `;
+        statsDescription.textContent = `View your learning progress (${summary.overallAccuracy}% overall accuracy)`;
     } else {
-        statsElement.innerHTML = `
-            <p class="stats-summary">${summary.message}</p>
-        `;
+        statsDescription.textContent = 'View your learning progress';
     }
 }
 
