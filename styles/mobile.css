@@ -12,7 +12,9 @@
     .practice-mode {
         min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
         padding: var(--space-md);
-        gap: var(--space-lg);
+        gap: var(--space-lg); /* Restore larger gap for better spacing */
+        justify-content: flex-start; /* Original layout approach */
+        padding-top: var(--space-lg); /* Add reasonable top padding */
     }
     
     /* Fix keyboard overflow on mobile */
@@ -37,16 +39,17 @@
     .character-display, 
     .morse-display {
         font-size: 4em;
-        min-height: 120px;
-        padding: var(--space-lg);
-        margin: var(--space-md) 0;
+        min-height: 100px; /* Reduced height for mobile */
+        padding: var(--space-md); /* Reduced padding */
+        margin: var(--space-sm) 0; /* Reduced margin */
+        flex-grow: 1; /* Allow expansion to fill available space like original */
     }
     
     .morse-input {
         font-size: 2.5em;
-        min-height: 80px;
-        padding: var(--space-md);
-        margin: var(--space-md) 0;
+        min-height: 60px; /* Reduced height */
+        padding: var(--space-sm); /* Reduced padding */
+        margin: var(--space-sm) 0; /* Reduced margin */
     }
     
     .menu-btn {
@@ -86,12 +89,13 @@
     }
     
     .sound-display {
-        min-height: 180px;
+        min-height: 140px; /* Reduced for mobile fit */
+        flex-grow: 1; /* Allow expansion to fill available space like original */
     }
     
     .hint-area {
-        min-height: 100px;
-        padding: var(--space-md);
+        min-height: 80px; /* Reduced height */
+        padding: var(--space-sm); /* Reduced padding */
     }
     
     .character-feedback {
@@ -153,7 +157,7 @@
     .practice-mode {
         min-height: 100dvh; /* Use dynamic viewport height instead of 100vh */
         padding: var(--space-sm);
-        gap: var(--space-md);
+        gap: var(--space-sm); /* Even smaller gap for very small screens */
     }
     
     /* Extra compact keyboard for very small screens */
@@ -175,20 +179,21 @@
     .character-display, 
     .morse-display {
         font-size: 3.5em;
-        min-height: 100px;
-        padding: var(--space-md);
+        min-height: 80px; /* Further reduced for small screens */
+        padding: var(--space-sm);
+        flex-grow: 1; /* Allow expansion to fill available space like original */
     }
     
     .morse-input {
         font-size: 2em;
-        min-height: 60px;
-        padding: var(--space-sm);
+        min-height: 50px; /* Further reduced */
+        padding: var(--space-xs); /* Minimal padding */
     }
     
     .controls {
-        padding: var(--space-xl);
-        gap: 60px;
-        margin: var(--space-lg) 0;
+        padding: var(--space-md); /* Reduced padding */
+        gap: 40px; /* Reduced gap */
+        margin: var(--space-sm) 0; /* Reduced margin */
     }
     
     .dot-btn, .dash-btn {
@@ -252,12 +257,13 @@
     }
     
     .sound-display {
-        min-height: 160px;
+        min-height: 120px; /* Further reduced for small screens */
+        flex-grow: 1; /* Allow expansion to fill available space like original */
     }
     
     .hint-area {
-        min-height: 90px;
-        padding: 12px;
+        min-height: 70px; /* Further reduced */
+        padding: var(--space-xs); /* Minimal padding */
     }
     
     .hint-area::before {
