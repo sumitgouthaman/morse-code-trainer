@@ -901,34 +901,6 @@ body {
     line-height: 1.4;
 }
 
-/* ===== HELP BUTTON ===== */
-.help-btn-corner {
-    position: absolute;
-    top: var(--space-sm);
-    right: var(--space-sm);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--bg-light);
-    color: var(--text);
-    border: 2px solid var(--border);
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: all var(--transition);
-}
-
-.help-btn-corner:hover {
-    background-color: #5a5a5a;
-}
-
-.help-btn-corner:active {
-    background-color: #3a3a3a;
-}
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
     /* Fix mobile viewport height issue */
@@ -1103,16 +1075,6 @@ body {
     .practice-mode {
         justify-content: flex-start;
         padding-top: var(--space-xl);
-    }
-    
-    .help-btn-corner {
-        position: fixed;
-        top: var(--space-md);
-        right: var(--space-md);
-        z-index: 100;
-        width: 50px;
-        height: 50px;
-        font-size: 1.2em;
     }
     
     .audio-controls {

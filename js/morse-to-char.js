@@ -9,14 +9,12 @@ export function initMorseToChar() {
         morseDisplay: document.querySelector('.morse-display'),
         qwertyKeyboard: document.querySelector('.qwerty-keyboard'),
         skipBtn: document.querySelector('.skip-btn'),
-        helpBtn: document.querySelector('.help-btn-corner'),
         currentMorse: '',
         correctCharacter: ''
     };
 
     generatePhoneKeyboard(morseToChar, handleMorseGuess);
     morseToChar.skipBtn.addEventListener('click', () => skipMorse(morseToChar, practiceMode));
-    morseToChar.helpBtn.addEventListener('click', () => showMorseAnswer(morseToChar, practiceMode));
     
     // Set up keyboard handler
     practiceMode.setupKeyboardHandler(handleKeyboardInput, morseToChar);
@@ -36,9 +34,6 @@ export function initMorseToChar() {
         }
     }
 
-    function showMorseAnswer(morseToChar, practiceMode) {
-        practiceMode.showAnswerReveal(morseToChar.correctCharacter);
-    }
 
     function skipMorse(morseToChar, practiceMode) {
         const answerContent = morseToChar.correctCharacter;

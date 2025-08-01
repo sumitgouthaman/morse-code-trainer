@@ -13,7 +13,6 @@ export function initSoundToChar() {
         soundDisplay: document.querySelector('.sound-display'),
         hintArea: document.querySelector('.hint-area'),
         morsePattern: document.querySelector('.morse-pattern'),
-        helpBtn: document.querySelector('.help-btn-corner'),
         speedSlider: document.querySelector('#inline-speed-slider'),
         speedValue: document.querySelector('#speed-value'),
         currentMorse: '',
@@ -155,10 +154,6 @@ export function initSoundToChar() {
         }
     }
 
-    function showCorrectAnswer(soundToChar, practiceMode) {
-        const answerContent = `${soundToChar.correctCharacter} (${soundToChar.currentMorse})`;
-        practiceMode.showAnswerReveal(answerContent, 'answer-reveal sound-mode');
-    }
 
     function skipSound(soundToChar, practiceMode) {
         const answerContent = `${soundToChar.currentMorse} <span class="arrow">→</span> ${soundToChar.correctCharacter}`;
@@ -214,7 +209,6 @@ export function initSoundToChar() {
     generatePhoneKeyboard(soundToChar, handleSoundGuess);
     soundToChar.playBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
     soundToChar.skipBtn.addEventListener('click', () => skipSound(soundToChar, practiceMode));
-    soundToChar.helpBtn.addEventListener('click', () => showCorrectAnswer(soundToChar, practiceMode));
     
     // Set up keyboard handler
     practiceMode.setupKeyboardHandler(handleKeyboardInput, soundToChar);

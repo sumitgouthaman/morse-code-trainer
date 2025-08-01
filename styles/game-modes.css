@@ -369,31 +369,3 @@
     background: linear-gradient(135deg, #cc7700, #b36600);
 }
 
-/* ===== HELP BUTTON ===== */
-.help-btn-corner {
-    position: absolute;
-    top: var(--space-sm);
-    right: var(--space-sm);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--bg-light);
-    color: var(--text);
-    border: 2px solid var(--border);
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: all var(--transition);
-}
-
-.help-btn-corner:hover {
-    background-color: #5a5a5a;
-}
-
-.help-btn-corner:active {
-    background-color: #3a3a3a;
-}

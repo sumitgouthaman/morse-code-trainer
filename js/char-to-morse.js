@@ -10,7 +10,6 @@ export function initCharToMorse() {
         dotBtn: document.querySelector('.dot-btn'),
         dashBtn: document.querySelector('.dash-btn'),
         skipBtn: document.querySelector('.skip-btn'),
-        helpBtn: document.querySelector('.help-btn-corner'),
         currentCharacter: '',
         currentUserInput: ''
     };
@@ -27,7 +26,6 @@ export function initCharToMorse() {
         addPressedAnimation(charToMorseState.skipBtn);
         skipCharacter(charToMorseState);
     });
-    charToMorseState.helpBtn.addEventListener('click', () => showCorrectMorse(charToMorseState, practiceMode));
     
     // Set up keyboard handler
     practiceMode.setupKeyboardHandler(handleKeyboardInput, charToMorseState);
@@ -47,9 +45,6 @@ export function initCharToMorse() {
         }
     }
 
-    function showCorrectMorse(charToMorseState, practiceMode) {
-        practiceMode.showAnswerReveal(morseCode[charToMorseState.currentCharacter]);
-    }
 
     function skipCharacter(charToMorseState) {
         const answerContent = morseCode[charToMorseState.currentCharacter];
