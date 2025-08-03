@@ -8,9 +8,9 @@ Built using Gemini CLI and Q CLI.
 
 ## Screenshots
 
-| Main Menu | Character to Morse | Morse to Character | Sound to Character | Learn Mode |
+| Main Menu | Character to Morse | Paddle mode | Morse to Character | Sound to Character |
 |:---:|:---:|:---:|:---:|:---:|
-| ![Main Menu](_screenshots/local/mobile/01-main-menu.png) | ![Char to Morse](_screenshots/local/mobile/03-char-to-morse.png) | ![Morse to Char](_screenshots/local/mobile/04-morse-to-char.png) | ![Sound to Char](_screenshots/local/mobile/05-sound-to-char.png) | ![Learn Mode](_screenshots/local/mobile/06-learn-mode.png) |
+| ![Main Menu](_screenshots/local/mobile/01-main-menu.png) | ![Char to Morse](_screenshots/local/mobile/03-char-to-morse.png) | ![Paddle mode](_screenshots/local/mobile/03b-char-to-morse-paddle.png) | ![Morse to Char](_screenshots/local/mobile/04-morse-to-char.png) | ![Sound to Char](_screenshots/local/mobile/05-sound-to-char.png) |
 
 ## Running the Application
 
@@ -120,6 +120,7 @@ Each folder contains screenshots of:
 - Main menu with all practice modes
 - Settings modal interface
 - Character to Morse practice mode
+- Character to Morse with spacebar paddle enabled
 - Morse to Character practice mode
 - Sound to Character practice mode
 - Learn mode interface

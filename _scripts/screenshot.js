@@ -51,6 +51,19 @@ const scenarios = [
     name: '03-char-to-morse',
     description: 'Character to Morse practice mode',
     url: '#char-to-morse',
+    actions: [
+      { 
+        type: 'evaluate', 
+        script: `
+          // Ensure paddle is disabled for regular char-to-morse screenshot
+          const toggle = document.querySelector('#paddle-toggle');
+          if (toggle && toggle.classList.contains('enabled')) {
+            toggle.click();
+          }
+        `
+      }
+    ],
+    waitFor: '.character-display',
     fullPage: false
   },
   {
@@ -58,7 +71,16 @@ const scenarios = [
     description: 'Character to Morse practice mode with spacebar paddle enabled',
     url: '#char-to-morse',
     actions: [
-      { type: 'click', selector: '#paddle-toggle' }
+      { 
+        type: 'evaluate', 
+        script: `
+          // Ensure paddle is enabled for paddle mode screenshot
+          const toggle = document.querySelector('#paddle-toggle');
+          if (toggle && !toggle.classList.contains('enabled')) {
+            toggle.click();
+          }
+        `
+      }
     ],
     waitFor: '#paddle-interface',
     fullPage: false
@@ -158,6 +180,9 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
         if (action.type === 'click') {
           await page.click(action.selector);
           await new Promise(resolve => setTimeout(resolve, 500)); // Increased wait time
+        } else if (action.type === 'evaluate') {
+          await page.evaluate(action.script);
+          await new Promise(resolve => setTimeout(resolve, 500)); // Wait for DOM changes
         }
       }
     }
