@@ -1,9 +1,33 @@
 <div id="char-to-morse" class="practice-mode">
     <div class="character-display"></div>
     <div class="morse-input"></div>
-    <div class="controls">
-        <button class="dot-btn">.</button>
-        <button class="dash-btn">-</button>
-        <button class="skip-btn">Skip</button>
+    <div class="controls" id="button-controls">
+        <button class="dot-btn" id="dot-btn-original">.</button>
+        <button class="dash-btn" id="dash-btn-original">-</button>
+        <button class="skip-btn" id="skip-btn-original">Skip</button>
+    </div>
+    <div class="paddle-control-area">
+        <div class="paddle-toggle-container">
+            <label class="paddle-toggle-label">Spacebar Paddle Mode</label>
+            <div class="paddle-toggle-switch" id="paddle-toggle"></div>
+        </div>
+        <div class="paddle-interface" id="paddle-interface" style="display: none;">
+            <div class="paddle-status">
+                <div class="paddle-icon">⎵</div>
+                <div class="paddle-text">Press and hold spacebar</div>
+            </div>
+            <div class="paddle-speed-control">
+                <div class="speed-label">Paddle Speed</div>
+                <div class="speed-value" id="paddle-speed-value">12 WPM</div>
+                <input type="range" id="paddle-speed-slider" min="5" max="30" value="12" step="1" class="paddle-speed-slider">
+            </div>
+            <div class="timing-guides">
+                <div class="timing-zone dot-zone" id="dot-zone">DOT (&lt;150ms)</div>
+                <div class="timing-zone dash-zone" id="dash-zone">DASH (150-500ms)</div>
+            </div>
+            <div class="timing-bar-container">
+                <div class="timing-bar" id="inline-timing-bar"></div>
+            </div>
+        </div>
     </div>
 </div>

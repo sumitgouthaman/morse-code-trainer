@@ -5,6 +5,8 @@ import { initLearn } from './learn.js';
 import { initStats } from './stats.js';
 import { settings } from './settings.js';
 import { statistics } from './statistics.js';
+import { cleanupActiveSpacebarPaddle } from './spacebar-paddle.js';
+import { showToast } from './toast-utils.js';
 
 const mainMenu = document.getElementById('main-menu');
 const gameContainer = document.getElementById('game-container');
@@ -94,34 +96,6 @@ function closeSettings() {
     settingsModal.style.display = 'none';
 }
 
-// Function to show a toast notification
-export function showToast(message, isCorrect) {
-    if (!settings.get('showToast')) {
-        return; // Do not show toast if disabled in settings
-    }
-
-    let toast = document.getElementById('session-toast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'session-toast';
-        toast.className = 'session-toast';
-        document.body.appendChild(toast);
-    }
-
-    toast.innerHTML = `<div class="toast-content">${message}</div>`;
-    toast.style.backgroundColor = isCorrect ? 'rgba(76, 175, 80, 0.95)' : 'rgba(244, 67, 54, 0.95)';
-    toast.classList.remove('fade-out');
-    toast.style.display = 'block';
-
-    // Hide after 3 seconds
-    setTimeout(() => {
-        toast.classList.add('fade-out');
-        toast.addEventListener('animationend', () => {
-            toast.style.display = 'none';
-        }, { once: true });
-    }, 3000);
-}
-
 // Game mode navigation
 charToMorseBtn.addEventListener('click', () => {
     loadGameMode('char-to-morse');
@@ -159,6 +133,9 @@ async function loadGameMode(mode) {
 }
 
 async function loadGameModeFromHistory(mode) {
+    // Clean up any active spacebar paddle from previous mode
+    cleanupActiveSpacebarPaddle();
+    
     mainMenu.style.display = 'none';
     gameContainer.style.display = 'block';
 
@@ -180,6 +157,9 @@ async function loadGameModeFromHistory(mode) {
 }
 
 function showMainMenu() {
+    // Clean up any active spacebar paddle when returning to main menu
+    cleanupActiveSpacebarPaddle();
+    
     mainMenu.style.display = 'block';
     gameContainer.style.display = 'none';
     gameContainer.innerHTML = '';

@@ -5,7 +5,15 @@ class Settings {
             includePunctuation: true, // default value
             morseSpeed: 12, // default speed in WPM
             showToast: true, // default to showing toast notifications
-            toastQuestionCount: 20 // default number of questions for toast accuracy
+            toastQuestionCount: 20, // default number of questions for toast accuracy
+            spacebarPaddleEnabled: false, // enable spacebar paddle input
+            spacebarPaddleTiming: {
+                dotThreshold: 150,    // max duration for dot (ms)
+                dashThreshold: 500,   // max duration for dash (ms)
+                tolerance: 50,        // timing tolerance (ms)
+                useWPMTiming: true,   // derive timing from morse speed
+                customWPM: 12         // custom WPM for paddle timing
+            }
         };
         this.loadFromCookies();
     }

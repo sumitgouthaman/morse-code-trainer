@@ -1,5 +1,5 @@
 // Increment the CACHE_VERSION to trigger a cache update when any of the cached files change.
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v9';
 const CACHE_NAME = `morse-trainer-${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
@@ -9,6 +9,7 @@ const urlsToCache = [
   '/styles/layout.css',
   '/styles/components.css',
   '/styles/game-modes.css',
+  '/styles/spacebar-paddle.css',
   '/styles/mobile.css',
   '/js/main.js',
   '/js/char-to-morse.js',
@@ -21,7 +22,8 @@ const urlsToCache = [
   '/js/morse-code.js',
   '/js/ui.js',
   '/js/practice-mode-utils.js',
-  '/js/session-tracker.js',
+  '/js/spacebar-paddle.js',
+  '/js/toast-utils.js',
   '/html/char-to-morse.html',
   '/html/morse-to-char.html',
   '/html/sound-to-char.html',
@@ -41,7 +43,15 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Service Worker: Caching files');
-        return cache.addAll(urlsToCache);
+        // Cache files individually to handle failures gracefully
+        const cachePromises = urlsToCache.map(url => {
+          return cache.add(url).catch(error => {
+            console.warn(`Failed to cache ${url}:`, error);
+            // Don't fail the entire installation if one file fails
+            return Promise.resolve();
+          });
+        });
+        return Promise.all(cachePromises);
       })
       .then(() => self.skipWaiting())
   );

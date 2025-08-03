@@ -1,7 +1,7 @@
 import { morseCode } from './morse-code.js';
 import { settings } from './settings.js';
 import { statistics } from './statistics.js';
-import { showToast } from './main.js';
+import { showToast } from './toast-utils.js';
 
 // Global variable to track active keyboard handler
 let activeKeyboardHandler = null;
