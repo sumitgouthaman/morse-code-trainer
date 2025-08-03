@@ -32,6 +32,10 @@ export class SpacebarPaddle {
         this.keyupHandler = null;
         this.animationId = null;
         
+        // Touch/mouse conflict prevention
+        this.lastInteractionType = null;
+        this.interactionTimeout = null;
+        
         // Timing configuration (milliseconds)
         this.timing = {
             dotThreshold: MORSE_TIMING.DEFAULT_DOT_THRESHOLD,    // max duration for dot
@@ -50,6 +54,23 @@ export class SpacebarPaddle {
         this.inlineContainer = options.inlineContainer || null;
         this.inlineTimingBar = options.inlineTimingBar || null;
         
+        // Validate inline mode setup
+        if (this.useInlineMode) {
+            if (!this.inlineContainer) {
+                console.warn('SpacebarPaddle: Inline mode enabled but no inlineContainer provided');
+                this.useInlineMode = false;
+            } else if (!(this.inlineContainer instanceof Element)) {
+                console.warn('SpacebarPaddle: inlineContainer is not a valid DOM element');
+                this.useInlineMode = false;
+                this.inlineContainer = null;
+            }
+            
+            if (this.inlineTimingBar && !(this.inlineTimingBar instanceof Element)) {
+                console.warn('SpacebarPaddle: inlineTimingBar is not a valid DOM element');
+                this.inlineTimingBar = null;
+            }
+        }
+        
         // Floating indicator (fallback mode)
         this.pressIndicator = null;
         this.timingBar = null;
@@ -61,6 +82,10 @@ export class SpacebarPaddle {
         // Bind methods
         this.handleKeydown = this.handleKeydown.bind(this);
         this.handleKeyup = this.handleKeyup.bind(this);
+        this.handleTouchStart = this.handleTouchStart.bind(this);
+        this.handleTouchEnd = this.handleTouchEnd.bind(this);
+        this.handleMouseDown = this.handleMouseDown.bind(this);
+        this.handleMouseUp = this.handleMouseUp.bind(this);
     }
     
     /**
@@ -73,10 +98,37 @@ export class SpacebarPaddle {
         document.addEventListener('keydown', this.handleKeydown);
         document.addEventListener('keyup', this.handleKeyup);
         
+        // Add mouse and touch events for both desktop and mobile support
         if (this.useInlineMode && this.inlineContainer) {
-            this.inlineContainer.style.display = 'block';
+            try {
+                this.inlineContainer.style.display = 'block';
+                // Mouse events for desktop
+                this.inlineContainer.addEventListener('mousedown', this.handleMouseDown);
+                this.inlineContainer.addEventListener('mouseup', this.handleMouseUp);
+                this.inlineContainer.addEventListener('mouseleave', this.handleMouseUp); // Handle mouse leaving area
+                // Touch events for mobile
+                this.inlineContainer.addEventListener('touchstart', this.handleTouchStart, { passive: false });
+                this.inlineContainer.addEventListener('touchend', this.handleTouchEnd, { passive: false });
+                this.inlineContainer.addEventListener('touchcancel', this.handleTouchEnd, { passive: false });
+            } catch (error) {
+                console.warn('SpacebarPaddle: Error setting up inline container events:', error);
+            }
         } else if (this.pressIndicator) {
-            this.pressIndicator.style.display = 'block';
+            try {
+                this.pressIndicator.style.display = 'block';
+                // Mouse events for desktop
+                this.pressIndicator.addEventListener('mousedown', this.handleMouseDown);
+                this.pressIndicator.addEventListener('mouseup', this.handleMouseUp);
+                this.pressIndicator.addEventListener('mouseleave', this.handleMouseUp);
+                // Touch events for mobile
+                this.pressIndicator.addEventListener('touchstart', this.handleTouchStart, { passive: false });
+                this.pressIndicator.addEventListener('touchend', this.handleTouchEnd, { passive: false });
+                this.pressIndicator.addEventListener('touchcancel', this.handleTouchEnd, { passive: false });
+            } catch (error) {
+                console.warn('SpacebarPaddle: Error setting up press indicator events:', error);
+            }
+        } else {
+            console.warn('SpacebarPaddle: No valid container element found for paddle interface');
         }
     }
     
@@ -90,6 +142,35 @@ export class SpacebarPaddle {
         document.removeEventListener('keydown', this.handleKeydown);
         document.removeEventListener('keyup', this.handleKeyup);
         
+        // Remove mouse and touch events
+        if (this.useInlineMode && this.inlineContainer) {
+            try {
+                // Remove mouse events
+                this.inlineContainer.removeEventListener('mousedown', this.handleMouseDown);
+                this.inlineContainer.removeEventListener('mouseup', this.handleMouseUp);
+                this.inlineContainer.removeEventListener('mouseleave', this.handleMouseUp);
+                // Remove touch events
+                this.inlineContainer.removeEventListener('touchstart', this.handleTouchStart);
+                this.inlineContainer.removeEventListener('touchend', this.handleTouchEnd);
+                this.inlineContainer.removeEventListener('touchcancel', this.handleTouchEnd);
+            } catch (error) {
+                console.warn('SpacebarPaddle: Error removing inline container events:', error);
+            }
+        } else if (this.pressIndicator) {
+            try {
+                // Remove mouse events
+                this.pressIndicator.removeEventListener('mousedown', this.handleMouseDown);
+                this.pressIndicator.removeEventListener('mouseup', this.handleMouseUp);
+                this.pressIndicator.removeEventListener('mouseleave', this.handleMouseUp);
+                // Remove touch events
+                this.pressIndicator.removeEventListener('touchstart', this.handleTouchStart);
+                this.pressIndicator.removeEventListener('touchend', this.handleTouchEnd);
+                this.pressIndicator.removeEventListener('touchcancel', this.handleTouchEnd);
+            } catch (error) {
+                console.warn('SpacebarPaddle: Error removing press indicator events:', error);
+            }
+        }
+        
         // Reset state
         this.isPressed = false;
         this.pressStartTime = null;
@@ -100,18 +181,23 @@ export class SpacebarPaddle {
             this.animationId = null;
         }
         
-        if (this.useInlineMode && this.inlineContainer) {
-            this.inlineContainer.style.display = 'none';
-            this.inlineContainer.classList.remove('pressed');
-            if (this.inlineTimingBar) {
-                this.inlineTimingBar.style.width = '0%';
+        // Safely update UI elements
+        try {
+            if (this.useInlineMode && this.inlineContainer) {
+                this.inlineContainer.style.display = 'none';
+                this.inlineContainer.classList.remove('pressed');
+                if (this.inlineTimingBar) {
+                    this.inlineTimingBar.style.width = '0%';
+                }
+            } else if (this.pressIndicator) {
+                this.pressIndicator.style.display = 'none';
+                this.pressIndicator.classList.remove('pressed');
+                if (this.timingBar) {
+                    this.timingBar.style.width = '0%';
+                }
             }
-        } else if (this.pressIndicator) {
-            this.pressIndicator.style.display = 'none';
-            this.pressIndicator.classList.remove('pressed');
-            if (this.timingBar) {
-                this.timingBar.style.width = '0%';
-            }
+        } catch (error) {
+            console.warn('SpacebarPaddle: Error updating UI during disable:', error);
         }
     }
     
@@ -190,6 +276,143 @@ export class SpacebarPaddle {
     }
     
     /**
+     * Set interaction type and prevent conflicts
+     */
+    setInteractionType(type) {
+        // Prevent conflicts between touch and mouse on hybrid devices
+        if (this.lastInteractionType && this.lastInteractionType !== type) {
+            // If switching interaction types within 100ms, ignore the new one
+            if (this.interactionTimeout) {
+                return false; // Ignore this interaction
+            }
+        }
+        
+        this.lastInteractionType = type;
+        
+        // Clear any existing timeout
+        if (this.interactionTimeout) {
+            clearTimeout(this.interactionTimeout);
+        }
+        
+        // Reset interaction type after a delay
+        this.interactionTimeout = setTimeout(() => {
+            this.lastInteractionType = null;
+            this.interactionTimeout = null;
+        }, 100);
+        
+        return true; // Allow this interaction
+    }
+
+    /**
+     * Shared logic for starting a press (touch/mouse)
+     */
+    startPress(event, interactionType) {
+        if (!this.enabled || this.isPressed) {
+            return false;
+        }
+        
+        // Prevent touch/mouse conflicts
+        if (!this.setInteractionType(interactionType)) {
+            return false;
+        }
+        
+        // Prevent default behavior
+        event.preventDefault();
+        
+        this.isPressed = true;
+        this.pressStartTime = performance.now();
+        
+        // Visual feedback
+        try {
+            if (this.useInlineMode && this.inlineContainer) {
+                this.inlineContainer.classList.add('pressed');
+            } else if (this.pressIndicator) {
+                this.pressIndicator.classList.add('pressed');
+            }
+        } catch (error) {
+            console.warn('SpacebarPaddle: Error applying pressed visual feedback:', error);
+        }
+        
+        // Start timing bar animation
+        this.startTimingAnimation();
+        
+        this.onPressStart();
+        return true;
+    }
+
+    /**
+     * Shared logic for ending a press (touch/mouse)
+     */
+    endPress(event) {
+        if (!this.enabled || !this.isPressed) {
+            return;
+        }
+        
+        event.preventDefault();
+        
+        const duration = performance.now() - this.pressStartTime;
+        const symbol = this.calculateMorseSymbol(duration);
+        
+        // Reset state
+        this.isPressed = false;
+        this.pressStartTime = null;
+        
+        // Cancel any ongoing animation
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
+        
+        // Visual feedback
+        try {
+            if (this.useInlineMode && this.inlineContainer) {
+                this.inlineContainer.classList.remove('pressed');
+            } else if (this.pressIndicator) {
+                this.pressIndicator.classList.remove('pressed');
+            }
+        } catch (error) {
+            console.warn('SpacebarPaddle: Error removing pressed visual feedback:', error);
+        }
+        this.stopTimingAnimation();
+        
+        this.onPressEnd(duration, symbol);
+        
+        if (symbol) {
+            this.onInput(symbol);
+        } else {
+            this.onInvalidTiming(duration);
+        }
+    }
+
+    /**
+     * Handle touch start events (mobile support)
+     */
+    handleTouchStart(event) {
+        this.startPress(event, 'touch');
+    }
+    
+    /**
+     * Handle touch end events (mobile support)
+     */
+    handleTouchEnd(event) {
+        this.endPress(event);
+    }
+    
+    /**
+     * Handle mouse down events (desktop support)
+     */
+    handleMouseDown(event) {
+        this.startPress(event, 'mouse');
+    }
+    
+    /**
+     * Handle mouse up events (desktop support)
+     */
+    handleMouseUp(event) {
+        this.endPress(event);
+    }
+    
+    /**
      * Calculate morse symbol based on press duration
      */
     calculateMorseSymbol(duration) {
@@ -208,26 +431,41 @@ export class SpacebarPaddle {
      * Setup visual feedback elements
      */
     setupVisualFeedback() {
-        // Create press indicator
-        this.pressIndicator = document.createElement('div');
-        this.pressIndicator.className = 'spacebar-paddle-indicator';
-        this.pressIndicator.innerHTML = `
-            <div class="paddle-status">
-                <div class="paddle-icon">⎵</div>
-                <div class="paddle-text">Spacebar Paddle</div>
-            </div>
-            <div class="timing-guides">
-                <div class="timing-zone dot-zone">DOT</div>
-                <div class="timing-zone dash-zone">DASH</div>
-            </div>
-            <div class="timing-bar-container">
-                <div class="timing-bar"></div>
-            </div>
-        `;
-        
-        this.timingBar = this.pressIndicator.querySelector('.timing-bar');
-        this.pressIndicator.style.display = 'none';
-        document.body.appendChild(this.pressIndicator);
+        try {
+            // Create press indicator
+            this.pressIndicator = document.createElement('div');
+            this.pressIndicator.className = 'spacebar-paddle-indicator';
+            this.pressIndicator.innerHTML = `
+                <div class="paddle-status">
+                    <div class="paddle-icon">⎵</div>
+                    <div class="paddle-text">Spacebar Paddle</div>
+                </div>
+                <div class="timing-guides">
+                    <div class="timing-zone dot-zone">DOT</div>
+                    <div class="timing-zone dash-zone">DASH</div>
+                </div>
+                <div class="timing-bar-container">
+                    <div class="timing-bar"></div>
+                </div>
+            `;
+            
+            this.timingBar = this.pressIndicator.querySelector('.timing-bar');
+            if (!this.timingBar) {
+                console.warn('SpacebarPaddle: Failed to find timing bar in created indicator');
+            }
+            
+            this.pressIndicator.style.display = 'none';
+            
+            if (document.body) {
+                document.body.appendChild(this.pressIndicator);
+            } else {
+                console.warn('SpacebarPaddle: document.body not available, cannot append press indicator');
+            }
+        } catch (error) {
+            console.warn('SpacebarPaddle: Error setting up visual feedback elements:', error);
+            this.pressIndicator = null;
+            this.timingBar = null;
+        }
     }
     
     /**
@@ -240,8 +478,13 @@ export class SpacebarPaddle {
             return;
         }
         
-        timingBar.style.width = '0%';
-        timingBar.style.transition = 'none';
+        try {
+            timingBar.style.width = '0%';
+            timingBar.style.transition = 'none';
+        } catch (error) {
+            console.warn('SpacebarPaddle: Error initializing timing bar animation:', error);
+            return;
+        }
         
         // Use requestAnimationFrame for smooth animation
         const animate = () => {
@@ -251,22 +494,28 @@ export class SpacebarPaddle {
                 return;
             }
             
-            const elapsed = performance.now() - this.pressStartTime;
-            const maxDuration = this.timing.dashThreshold + this.timing.tolerance;
-            const progress = Math.min((elapsed / maxDuration) * 100, 100);
-            
-            timingBar.style.width = `${progress}%`;
-            
-            // Color coding based on timing zones
-            if (elapsed <= this.timing.dotThreshold) {
-                timingBar.className = 'timing-bar dot-timing';
-            } else if (elapsed <= this.timing.dashThreshold) {
-                timingBar.className = 'timing-bar dash-timing';
-            } else {
-                timingBar.className = 'timing-bar invalid-timing';
+            try {
+                const elapsed = performance.now() - this.pressStartTime;
+                const maxDuration = this.timing.dashThreshold + this.timing.tolerance;
+                const progress = Math.min((elapsed / maxDuration) * 100, 100);
+                
+                timingBar.style.width = `${progress}%`;
+                
+                // Color coding based on timing zones
+                if (elapsed <= this.timing.dotThreshold) {
+                    timingBar.className = 'timing-bar dot-timing';
+                } else if (elapsed <= this.timing.dashThreshold) {
+                    timingBar.className = 'timing-bar dash-timing';
+                } else {
+                    timingBar.className = 'timing-bar invalid-timing';
+                }
+                
+                this.animationId = requestAnimationFrame(animate);
+            } catch (error) {
+                console.warn('SpacebarPaddle: Error during timing bar animation:', error);
+                // Stop animation on error
+                this.animationId = null;
             }
-            
-            this.animationId = requestAnimationFrame(animate);
         };
         
         this.animationId = requestAnimationFrame(animate);
@@ -281,9 +530,13 @@ export class SpacebarPaddle {
         
         // Brief feedback showing final result
         setTimeout(() => {
-            if (timingBar) {
-                timingBar.style.width = '0%';
-                timingBar.className = 'timing-bar';
+            try {
+                if (timingBar) {
+                    timingBar.style.width = '0%';
+                    timingBar.className = 'timing-bar';
+                }
+            } catch (error) {
+                console.warn('SpacebarPaddle: Error resetting timing bar:', error);
             }
         }, 200);
     }
@@ -316,6 +569,12 @@ export class SpacebarPaddle {
      */
     destroy() {
         this.disable();
+        
+        // Clean up interaction timeout
+        if (this.interactionTimeout) {
+            clearTimeout(this.interactionTimeout);
+            this.interactionTimeout = null;
+        }
         
         if (this.pressIndicator && this.pressIndicator.parentNode) {
             this.pressIndicator.parentNode.removeChild(this.pressIndicator);

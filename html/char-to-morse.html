@@ -11,15 +11,15 @@
             <label class="paddle-toggle-label">Spacebar Paddle Mode</label>
             <div class="paddle-toggle-switch" id="paddle-toggle"></div>
         </div>
+        <div class="paddle-speed-control" id="paddle-speed-control" style="display: none;">
+            <div class="speed-label">Paddle Speed</div>
+            <div class="speed-value" id="paddle-speed-value">12 WPM</div>
+            <input type="range" id="paddle-speed-slider" min="5" max="30" value="12" step="1" class="paddle-speed-slider">
+        </div>
         <div class="paddle-interface" id="paddle-interface" style="display: none;">
             <div class="paddle-status">
                 <div class="paddle-icon">⎵</div>
-                <div class="paddle-text">Press and hold spacebar</div>
-            </div>
-            <div class="paddle-speed-control">
-                <div class="speed-label">Paddle Speed</div>
-                <div class="speed-value" id="paddle-speed-value">12 WPM</div>
-                <input type="range" id="paddle-speed-slider" min="5" max="30" value="12" step="1" class="paddle-speed-slider">
+                <div class="paddle-text">Press spacebar or click/tap this area</div>
             </div>
             <div class="timing-guides">
                 <div class="timing-zone dot-zone" id="dot-zone">DOT (&lt;150ms)</div>

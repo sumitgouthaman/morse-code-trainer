@@ -156,18 +156,22 @@ export function initCharToMorse() {
         });
         
         function updateUIMode(paddleEnabled) {
+            const paddleSpeedControl = document.getElementById('paddle-speed-control');
+            
             if (paddleEnabled) {
                 // Show paddle mode - hide only dot/dash buttons, keep skip button
                 toggleSwitch.classList.add('enabled');
                 if (dotBtn) dotBtn.style.display = 'none';
                 if (dashBtn) dashBtn.style.display = 'none';
                 if (paddleInterface) paddleInterface.style.display = 'block';
+                if (paddleSpeedControl) paddleSpeedControl.style.display = 'block';
             } else {
                 // Show button mode - show all buttons
                 toggleSwitch.classList.remove('enabled');
                 if (dotBtn) dotBtn.style.display = '';
                 if (dashBtn) dashBtn.style.display = '';
                 if (paddleInterface) paddleInterface.style.display = 'none';
+                if (paddleSpeedControl) paddleSpeedControl.style.display = 'none';
             }
         }
     }
