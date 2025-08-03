@@ -1,5 +1,5 @@
 // Increment the CACHE_VERSION to trigger a cache update when any of the cached files change.
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v10';
 const CACHE_NAME = `morse-trainer-${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
@@ -89,9 +89,13 @@ self.addEventListener('fetch', event => {
         // to clone it so we have two streams.
         var responseToCache = response.clone();
 
+        // Cache the response (don't await this to avoid blocking)
         caches.open(CACHE_NAME)
           .then(cache => {
             cache.put(event.request, responseToCache);
+          })
+          .catch(error => {
+            console.warn('Failed to cache response:', error);
           });
 
         return response;
@@ -103,6 +107,11 @@ self.addEventListener('fetch', event => {
             if (response) {
               return response;
             }
+            // No cache hit - return a basic response or let it fail gracefully
+            return new Response('Offline - resource not available', { 
+              status: 404, 
+              statusText: 'Not Found' 
+            });
           });
       })
   );
