@@ -54,6 +54,16 @@ const scenarios = [
     fullPage: false
   },
   {
+    name: '03b-char-to-morse-paddle',
+    description: 'Character to Morse practice mode with spacebar paddle enabled',
+    url: '#char-to-morse',
+    actions: [
+      { type: 'click', selector: '#paddle-toggle' }
+    ],
+    waitFor: '#paddle-interface',
+    fullPage: false
+  },
+  {
     name: '04-morse-to-char',
     description: 'Morse to Character practice mode',
     url: '#morse-to-char',
