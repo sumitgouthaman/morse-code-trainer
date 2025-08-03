@@ -49,7 +49,7 @@ function updateDisplay(state) {
 
 function updateSummaryCards(state) {
     const modeStats = statistics.getModeStats(currentMode);
-    const sessions = getSessionsFromAttempts(currentMode);
+    const dailyData = statistics.getAttemptsGroupedByDate(currentMode);
     
     // Calculate stats for current mode
     let totalAttempts = 0;
@@ -61,19 +61,19 @@ function updateSummaryCards(state) {
     }
     
     const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
-    const sessionCount = sessions.length;
-    const bestAccuracy = sessionCount > 0 ? Math.max(...sessions.map(s => s.accuracy)) : 0;
+    const practiceSessionsCount = dailyData.length;
+    const bestDailyAccuracy = practiceSessionsCount > 0 ? Math.max(...dailyData.map(d => d.accuracy)) : 0;
     
     // Update display
     state.overallAccuracy.textContent = totalAttempts > 0 ? `${accuracy}%` : '--';
-    state.totalSessions.textContent = sessionCount > 0 ? sessionCount : '--';
-    state.bestSession.textContent = bestAccuracy > 0 ? `${Math.round(bestAccuracy)}%` : '--';
+    state.totalSessions.textContent = practiceSessionsCount > 0 ? practiceSessionsCount : '--';
+    state.bestSession.textContent = bestDailyAccuracy > 0 ? `${bestDailyAccuracy}%` : '--';
 }
 
 function updateChart(state) {
-    const sessions = getSessionsFromAttempts(currentMode);
+    const dailyData = statistics.getAttemptsGroupedByDate(currentMode);
     
-    if (sessions.length < 2) {
+    if (dailyData.length < 2) {
         // Show no data message
         state.noDataMessage.style.display = 'block';
         state.chartCanvas.style.display = 'none';
@@ -89,45 +89,24 @@ function updateChart(state) {
     state.noDataMessage.style.display = 'none';
     state.chartCanvas.style.display = 'block';
     
-    const chartData = prepareChartData(sessions);
+    const chartData = prepareChartData(dailyData);
     renderChart(state.chartCanvas, chartData);
 }
 
-function getSessionsFromAttempts(mode) {
-    // Get recent attempts for the mode
-    const attempts = statistics.data.recentAttempts[mode] || [];
-    
-    if (attempts.length === 0) return [];
-    
-    // Group attempts into sessions (every 20 questions for now)
-    const sessionSize = 20;
-    const sessions = [];
-    
-    for (let i = 0; i < attempts.length; i += sessionSize) {
-        const sessionAttempts = attempts.slice(i, i + sessionSize);
-        
-        if (sessionAttempts.length >= 5) { // Only count sessions with at least 5 attempts
-            const correct = sessionAttempts.filter(Boolean).length;
-            const accuracy = (correct / sessionAttempts.length) * 100;
-            
-            sessions.push({
-                sessionNumber: Math.floor(i / sessionSize) + 1,
-                accuracy: accuracy,
-                totalQuestions: sessionAttempts.length,
-                correctAnswers: correct
-            });
-        }
-    }
-    
-    return sessions.slice(-20); // Show last 20 sessions max
-}
+// This function is no longer needed - replaced by getAttemptsGroupedByDate in statistics.js
 
-function prepareChartData(sessions) {
+function prepareChartData(dailyData) {
+    // Format dates for display
+    const labels = dailyData.map(d => {
+        const date = new Date(d.date);
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    });
+    
     return {
-        labels: sessions.map((_, index) => `Session ${sessions.length - sessions.length + index + 1}`),
+        labels: labels,
         datasets: [{
-            label: 'Accuracy %',
-            data: sessions.map(s => s.accuracy),
+            label: 'Daily Accuracy %',
+            data: dailyData.map(d => d.accuracy),
             borderColor: 'rgb(52, 152, 219)',
             backgroundColor: 'rgba(52, 152, 219, 0.1)',
             borderWidth: 2,
@@ -204,7 +183,13 @@ function renderChart(canvas, chartData) {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return `Accuracy: ${Math.round(context.parsed.y)}%`;
+                            const dataIndex = context.dataIndex;
+                            const dailyData = statistics.getAttemptsGroupedByDate(currentMode);
+                            const dayData = dailyData[dataIndex];
+                            return [
+                                `Accuracy: ${Math.round(context.parsed.y)}%`,
+                                `Questions: ${dayData.correctAnswers}/${dayData.totalQuestions}`
+                            ];
                         }
                     }
                 }

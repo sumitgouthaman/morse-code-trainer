@@ -1,14 +1,20 @@
-// Statistics Manager - Per-Character and Recent Accuracy Tracking
-const STORAGE_KEY = 'morse_trainer_stats_v2';
+// Statistics Manager - Per-Character and Time-based Accuracy Tracking
+const STORAGE_KEY = 'morse_trainer_stats_v3';
 
 class StatisticsManager {
     constructor() {
         this.data = this.loadData();
-        // Ensure recentAttempts structure exists for all modes
+        // Ensure recentAttempts structure exists for all modes (now stores objects with timestamps)
         this.data.recentAttempts = this.data.recentAttempts || {};
         this.data.recentAttempts['char-to-morse'] = this.data.recentAttempts['char-to-morse'] || [];
         this.data.recentAttempts['morse-to-char'] = this.data.recentAttempts['morse-to-char'] || [];
         this.data.recentAttempts['sound-to-char'] = this.data.recentAttempts['sound-to-char'] || [];
+        
+        // Clean up old data (keep only last 3 months)
+        this.cleanupOldData();
+        
+        // One-time migration: remove old storage format
+        this.migrateFromOldStorage();
         this.data.questionCounter = this.data.questionCounter || 0; // Initialize global question counter
     }
 
@@ -22,7 +28,7 @@ class StatisticsManager {
             console.warn('Failed to load statistics data:', error);
         }
         
-        // Default structure for per-character tracking and recent attempts
+        // Default structure for per-character tracking and recent attempts with timestamps
         return {
             'char-to-morse': {},
             'morse-to-char': {},
@@ -60,17 +66,15 @@ class StatisticsManager {
             stats.correct++;
         }
         
-        // Update recent attempts history
+        // Update recent attempts history with timestamp
         if (!this.data.recentAttempts[mode]) {
             this.data.recentAttempts[mode] = [];
         }
-        this.data.recentAttempts[mode].push(isCorrect);
-        
-        // Trim recent attempts to a reasonable size (e.g., 1000) to prevent excessive storage
-        const MAX_RECENT_ATTEMPTS = 1000;
-        if (this.data.recentAttempts[mode].length > MAX_RECENT_ATTEMPTS) {
-            this.data.recentAttempts[mode] = this.data.recentAttempts[mode].slice(-MAX_RECENT_ATTEMPTS);
-        }
+        this.data.recentAttempts[mode].push({
+            isCorrect: isCorrect,
+            timestamp: new Date().toISOString(),
+            character: character
+        });
 
         this.data.questionCounter++; // Increment global question counter
         
@@ -112,13 +116,66 @@ class StatisticsManager {
             return null; // No attempts to calculate accuracy from
         }
 
-        const correctCount = relevantAttempts.filter(isCorrect => isCorrect).length;
+        const correctCount = relevantAttempts.filter(attempt => attempt.isCorrect).length;
         return Math.round((correctCount / relevantAttempts.length) * 100);
     }
 
     // Get the global question counter
     getQuestionCount() {
         return this.data.questionCounter;
+    }
+
+    // Clean up attempts older than 3 months
+    cleanupOldData() {
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+        
+        for (const mode of ['char-to-morse', 'morse-to-char', 'sound-to-char']) {
+            if (this.data.recentAttempts[mode]) {
+                this.data.recentAttempts[mode] = this.data.recentAttempts[mode].filter(attempt => {
+                    return new Date(attempt.timestamp) >= threeMonthsAgo;
+                });
+            }
+        }
+    }
+
+    // Get attempts grouped by date for charting
+    getAttemptsGroupedByDate(mode) {
+        const attempts = this.data.recentAttempts[mode] || [];
+        const groups = {};
+        
+        attempts.forEach(attempt => {
+            const dateKey = attempt.timestamp.split('T')[0]; // YYYY-MM-DD
+            if (!groups[dateKey]) {
+                groups[dateKey] = { correct: 0, total: 0 };
+            }
+            groups[dateKey].total++;
+            if (attempt.isCorrect) {
+                groups[dateKey].correct++;
+            }
+        });
+        
+        // Convert to sorted array
+        return Object.entries(groups)
+            .map(([date, stats]) => ({
+                date: date,
+                accuracy: Math.round((stats.correct / stats.total) * 100),
+                totalQuestions: stats.total,
+                correctAnswers: stats.correct
+            }))
+            .sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    // One-time migration to clean up old storage format
+    migrateFromOldStorage() {
+        // Check if old storage exists and remove it
+        const oldKeys = ['morse_trainer_stats_v2', 'morse_trainer_stats_v1', 'morse_trainer_stats'];
+        oldKeys.forEach(key => {
+            if (localStorage.getItem(key)) {
+                console.log(`Removing old statistics storage: ${key}`);
+                localStorage.removeItem(key);
+            }
+        });
     }
 
     // Clear all statistics
