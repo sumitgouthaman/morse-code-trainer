@@ -8,9 +8,9 @@ Built using Gemini CLI and Q CLI.
 
 ## Screenshots
 
-| Main Menu | Character to Morse | Paddle mode | Morse to Character | Sound to Character |
-|:---:|:---:|:---:|:---:|:---:|
-| ![Main Menu](_screenshots/local/mobile/01-main-menu.png) | ![Char to Morse](_screenshots/local/mobile/03-char-to-morse.png) | ![Paddle mode](_screenshots/local/mobile/03b-char-to-morse-paddle.png) | ![Morse to Char](_screenshots/local/mobile/04-morse-to-char.png) | ![Sound to Char](_screenshots/local/mobile/05-sound-to-char.png) |
+| Main Menu | Game Modes | Statistics | Settings |
+|:---:|:---:|:---:|:---:|
+| ![Main Menu](_screenshots/local/mobile/01-main-menu.png) | ![Game Modes](_screenshots/local/mobile/game-modes.gif) | ![Statistics](_screenshots/local/mobile/07-statistics.png) | ![Settings](_screenshots/local/mobile/02-settings-modal.png) |
 
 ## Running the Application
 
@@ -103,29 +103,33 @@ _screenshots/
 ├── local/              # Local development screenshots
 │   ├── desktop/        # Desktop viewport (1200x800)
 │   │   ├── [screenshots]
-│   │   └── combined.gif
-│   └── mobile/         # Mobile viewport (375x667)
+│   │   ├── combined.gif      # All screens
+│   │   └── game-modes.gif    # Just the 3 practice modes
+│   └── mobile/         # Mobile viewport (448x867)
 │       ├── [screenshots]
-│       └── combined.gif
+│       ├── combined.gif      # All screens
+│       └── game-modes.gif    # Just the 3 practice modes
 └── live/               # Live GitHub Pages screenshots
     ├── desktop/        # Desktop viewport (1200x800)
     │   ├── [screenshots]
-    │   └── combined.gif
-    └── mobile/         # Mobile viewport (375x667)
+    │   ├── combined.gif      # All screens
+    │   └── game-modes.gif    # Just the 3 practice modes
+    └── mobile/         # Mobile viewport (448x867)
         ├── [screenshots]
-        └── combined.gif
+        ├── combined.gif      # All screens
+        └── game-modes.gif    # Just the 3 practice modes
 ```
 
 Each folder contains screenshots of:
 - Main menu with all practice modes
-- Settings modal interface
+- Settings modal interface  
 - Character to Morse practice mode
 - Character to Morse with spacebar paddle enabled
 - Morse to Character practice mode
 - Sound to Character practice mode
-- Learn mode interface
+- Learn mode reference chart
+- Statistics page with learning progression
 
-The animated GIFs cycle through all screens with 1-second timing, perfect for README demonstrations and social media.
-
-## TODO
-- Store stats
+Two animated GIFs are generated:
+- **combined.gif**: Cycles through all 8 screens (1 second per frame)
+- **game-modes.gif**: Shows just the 4 interactive practice modes (1 second per frame)

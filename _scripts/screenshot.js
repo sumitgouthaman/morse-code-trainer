@@ -21,7 +21,7 @@ const config = {
   gif: {
     delay: 100, // Frame delay in centiseconds (100 = 1 second)
     loop: 0,    // Infinite loop
-    quality: 80
+    quality: 85 // Good quality
   }
 };
 
@@ -102,6 +102,36 @@ const scenarios = [
     description: 'Learn mode',
     url: '#learn',
     fullPage: false  // Changed from true to false to capture only visible area
+  },
+  {
+    name: '07-statistics',
+    description: 'Statistics page with sample data',
+    url: '#stats',
+    waitFor: '.stats-content',
+    actions: [
+      { 
+        type: 'evaluate', 
+        script: `
+          // Ensure chart renders without animations for clean screenshots
+          const canvas = document.getElementById('accuracy-chart');
+          if (canvas && window.Chart) {
+            const chart = window.Chart.getChart(canvas);
+            if (chart) {
+              // Force chart update without animations
+              chart.options.animation = false;
+              chart.options.animations = false;
+              chart.options.transitions = false;
+              chart.update('none'); // 'none' mode = no animation
+            }
+          }
+        `
+      },
+      { 
+        type: 'wait', 
+        duration: 2000 // Wait for chart rendering with new data
+      }
+    ],
+    fullPage: false
   }
 ];
 
@@ -109,15 +139,20 @@ async function createOutputDir(source) {
   const desktopDir = config.getDesktopDir(source);
   const mobileDir = config.getMobileDir(source);
   
+  // Clean up existing directories and recreate them
+  if (fs.existsSync(desktopDir)) {
+    fs.rmSync(desktopDir, { recursive: true, force: true });
+  }
+  if (fs.existsSync(mobileDir)) {
+    fs.rmSync(mobileDir, { recursive: true, force: true });
+  }
+  
+  // Create fresh directories
   if (!fs.existsSync(config.outputDir)) {
     fs.mkdirSync(config.outputDir, { recursive: true });
   }
-  if (!fs.existsSync(desktopDir)) {
-    fs.mkdirSync(desktopDir, { recursive: true });
-  }
-  if (!fs.existsSync(mobileDir)) {
-    fs.mkdirSync(mobileDir, { recursive: true });
-  }
+  fs.mkdirSync(desktopDir, { recursive: true });
+  fs.mkdirSync(mobileDir, { recursive: true });
 }
 
 async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
@@ -160,6 +195,90 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
       // Override performance.now for consistent timing
       window._originalPerformanceNow = performance.now;
       performance.now = () => 1000; // Fixed 1 second
+      
+      // COMPLETELY NEW APPROACH: Inject fake statistics data 
+      // The key insight: StatisticsManager is instantiated when modules load, 
+      // so we need to inject data AND override the statistics object itself
+      
+      // Create comprehensive fake data with realistic accuracy patterns
+      const now = new Date();
+      const fakeAttemptsData = [];
+      
+      // Generate 30 days of realistic LEARNING PROGRESSION data
+      // Start around 50% and gradually improve to ~90% with natural variation
+      const dailyAccuracies = [
+        // Week 1: Starting out, lots of mistakes (45-65%)
+        48, 52, 45, 58, 50, 62, 55,
+        // Week 2: Getting better, some good days (55-75%) 
+        60, 68, 62, 72, 58, 75, 65,
+        // Week 3: Solid improvement, occasional setbacks (65-85%)
+        70, 78, 72, 82, 68, 85, 75,
+        // Week 4: Nearly mastered, high accuracy with minor dips (75-92%)
+        80, 88, 83, 90, 78, 92, 85,
+        // Recent days: Consistent high performance (85-92%)
+        87, 91, 88, 90, 86, 89
+      ];
+      const chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+      
+      for (let day = 0; day < 30; day++) {
+        const attemptsThisDay = 2 + (day % 4); // 2-5 attempts per day
+        const targetAccuracy = dailyAccuracies[day];
+        const correctCount = Math.round((targetAccuracy / 100) * attemptsThisDay);
+        
+        for (let i = 0; i < attemptsThisDay; i++) {
+          const attemptDate = new Date(now);
+          attemptDate.setDate(attemptDate.getDate() - (29 - day));
+          attemptDate.setHours(10 + i, i * 15, 0, 0);
+          
+          fakeAttemptsData.push({
+            isCorrect: i < correctCount,
+            timestamp: attemptDate.toISOString(),
+            character: chars[Math.floor(Math.random() * chars.length)]
+          });
+        }
+      }
+      
+      const fakeStatsData = {
+        'char-to-morse': {
+          'A': { attempts: 15, correct: 11 },  // ~73%
+          'B': { attempts: 12, correct: 8 },   // ~67%
+          'C': { attempts: 18, correct: 13 },  // ~72%
+          'D': { attempts: 20, correct: 15 },  // ~75%
+          'E': { attempts: 25, correct: 19 },  // ~76%
+          'F': { attempts: 14, correct: 10 },  // ~71%
+          'G': { attempts: 16, correct: 12 },  // ~75%
+          'H': { attempts: 22, correct: 17 },  // ~77%
+          'I': { attempts: 19, correct: 15 },  // ~79%
+          'J': { attempts: 11, correct: 9 }    // ~82%
+        },
+        'morse-to-char': {
+          'A': { attempts: 18, correct: 13 },  // ~72%
+          'B': { attempts: 15, correct: 11 },  // ~73%
+          'C': { attempts: 12, correct: 9 }    // ~75%
+        },
+        'sound-to-char': {
+          'A': { attempts: 10, correct: 7 },   // ~70%
+          'B': { attempts: 8, correct: 6 }     // ~75%
+        },
+        recentAttempts: {
+          'char-to-morse': fakeAttemptsData,
+          'morse-to-char': fakeAttemptsData.slice(0, 40),
+          'sound-to-char': fakeAttemptsData.slice(0, 25)
+        },
+        questionCounter: 125
+      };
+      
+      // Store the fake data BEFORE any scripts run
+      localStorage.setItem('morse_trainer_stats_v3', JSON.stringify(fakeStatsData));
+      
+      // Override Chart.js to disable ALL animations and transitions
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.Chart) {
+          window.Chart.defaults.animation = false;
+          window.Chart.defaults.animations = false;
+          window.Chart.defaults.transitions = false;
+        }
+      });
     });
     
     // Navigate to the specific URL
@@ -183,6 +302,8 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
         } else if (action.type === 'evaluate') {
           await page.evaluate(action.script);
           await new Promise(resolve => setTimeout(resolve, 500)); // Wait for DOM changes
+        } else if (action.type === 'wait') {
+          await new Promise(resolve => setTimeout(resolve, action.duration));
         }
       }
     }
@@ -231,16 +352,17 @@ async function takeScreenshot(page, scenario, baseUrl, suffix = '', source) {
   }
 }
 
-async function createGifFromScreenshots(source, viewport) {
+async function createGifFromScreenshots(source, viewport, gifName = 'combined', scenarioFilter = null) {
   const isDesktop = viewport.width > 500;
   const viewportType = isDesktop ? 'desktop' : 'mobile';
   const screenshotDir = isDesktop ? config.getDesktopDir(source) : config.getMobileDir(source);
   
-  console.log(`🎬 Creating animated GIF from ${source} ${viewportType} screenshots...`);
+  console.log(`🎬 Creating animated GIF: ${gifName}.gif from ${source} ${viewportType} screenshots...`);
   
   try {
-    // Get all screenshot files in order
-    const screenshotFiles = scenarios.map(scenario => 
+    // Get all screenshot files in order, optionally filtered
+    const scenariosToInclude = scenarioFilter ? scenarios.filter(scenarioFilter) : scenarios;
+    const screenshotFiles = scenariosToInclude.map(scenario => 
       path.join(screenshotDir, `${scenario.name}.png`)
     ).filter(filePath => fs.existsSync(filePath));
     
@@ -252,18 +374,18 @@ async function createGifFromScreenshots(source, viewport) {
     console.log(`📊 Processing ${screenshotFiles.length} screenshots into GIF...`);
     
     // Create GIF in the same directory as screenshots
-    const gifPath = path.join(screenshotDir, 'combined.gif');
+    const gifPath = path.join(screenshotDir, `${gifName}.gif`);
     
-    // Check if ImageMagick is available for better GIF creation
+    // Check if ImageMagick is available for better GIF creation with crossfade
     try {
       const { execSync } = require('child_process');
       
-      // Build the convert command
+      // Simple, fast GIF creation without slow morphing
       const frameList = screenshotFiles.map(f => `"${f}"`).join(' ');
-      const convertCmd = `convert -delay ${config.gif.delay} -loop ${config.gif.loop} ${frameList} "${gifPath}"`;
+      const convertCmd = `convert -delay ${config.gif.delay} -loop ${config.gif.loop} -layers optimize ${frameList} "${gifPath}"`;
       
       execSync(convertCmd, { stdio: 'pipe' });
-      console.log(`🎉 Animated GIF created: combined.gif`);
+      console.log(`🎉 Animated GIF created: ${gifName}.gif`);
       console.log(`📁 Saved to: ${gifPath}`);
       
     } catch (convertError) {
@@ -299,24 +421,34 @@ async function createGifFromScreenshots(source, viewport) {
         })
         .toFile(gifPath);
         
-        console.log(`🎉 Animated GIF created: combined.gif`);
+        console.log(`🎉 Animated GIF created: ${gifName}.gif`);
         console.log(`📁 Saved to: ${gifPath}`);
       }
     }
     
   } catch (error) {
-    console.error(`❌ Failed to create GIF for ${source} ${viewportType}:`, error.message);
+    console.error(`❌ Failed to create GIF ${gifName} for ${source} ${viewportType}:`, error.message);
   }
 }
 
 async function createAllGifs(source) {
   console.log(`🎬 Creating animated GIFs for ${source}...`);
   
-  // Create desktop GIF
-  await createGifFromScreenshots(source, config.viewport);
+  // Create desktop GIFs
+  await createGifFromScreenshots(source, config.viewport, 'combined');
+  await createGifFromScreenshots(source, config.viewport, 'game-modes', 
+    scenario => scenario.name.includes('char-to-morse') || 
+               scenario.name.includes('morse-to-char') || 
+               scenario.name.includes('sound-to-char')
+  );
   
-  // Create mobile GIF  
-  await createGifFromScreenshots(source, config.mobileViewport);
+  // Create mobile GIFs  
+  await createGifFromScreenshots(source, config.mobileViewport, 'combined');
+  await createGifFromScreenshots(source, config.mobileViewport, 'game-modes',
+    scenario => scenario.name.includes('char-to-morse') || 
+               scenario.name.includes('morse-to-char') || 
+               scenario.name.includes('sound-to-char')
+  );
 }
 
 async function runSingleScreenshots(source, baseUrl) {
@@ -390,10 +522,10 @@ async function runScreenshots() {
       
       console.log('\n🎉 Comprehensive screenshot session complete!');
       console.log('📁 Screenshots and GIFs saved to:');
-      console.log('   • _screenshots/local/desktop/ (+ combined.gif)');
-      console.log('   • _screenshots/local/mobile/ (+ combined.gif)');
-      console.log('   • _screenshots/live/desktop/ (+ combined.gif)');
-      console.log('   • _screenshots/live/mobile/ (+ combined.gif)');
+      console.log('   • _screenshots/local/desktop/ (+ combined.gif + game-modes.gif)');
+      console.log('   • _screenshots/local/mobile/ (+ combined.gif + game-modes.gif)');
+      console.log('   • _screenshots/live/desktop/ (+ combined.gif + game-modes.gif)');
+      console.log('   • _screenshots/live/mobile/ (+ combined.gif + game-modes.gif)');
       
       console.log('\n✨ You can now compare local vs live versions!');
       
