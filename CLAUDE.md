@@ -124,7 +124,12 @@ settings.set('settingName', value); // Save setting (auto-persists to cookies)
 
 ## Screenshot Automation
 The `_scripts/` directory contains Puppeteer-based screenshot generation that:
-- Captures all game modes in desktop (1200x800) and mobile (375x667) viewports
-- Generates animated GIFs cycling through all screens
+- Captures all app screens in desktop (1200x800) and mobile (448x867) viewports
+- Automatically cleans existing screenshots before generation for consistency
+- Generates two types of animated GIFs:
+  - `combined.gif`: All 8 screens (menu, settings, game modes, learn, stats)
+  - `game-modes.gif`: Only the 4 interactive practice modes
+- Uses optimized timing (1 second per frame) without slow morphing effects
 - Supports both local development and live GitHub Pages URLs
 - Organizes output in `_screenshots/` with environment-specific folders
+- Includes realistic fake statistics data for stats page screenshots
