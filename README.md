@@ -4,13 +4,13 @@ An app I vibe-coded for practicing morse-code!
 
 **🚀 [Try it live here!](https://morse-code.sumitgouthaman.com)**
 
-Built using Gemini CLI and Q CLI.
+Built using claude-code, Gemini CLI and Q CLI.
 
 ## Screenshots
 
 | Main Menu | Game Modes | Statistics | Settings |
 |:---:|:---:|:---:|:---:|
-| ![Main Menu](_screenshots/local/mobile/01-main-menu.png) | ![Game Modes](_screenshots/local/mobile/game-modes.gif) | ![Statistics](_screenshots/local/mobile/07-statistics.png) | ![Settings](_screenshots/local/mobile/02-settings-modal.png) |
+| ![Main Menu](_screenshots/local/mobile/01-main-menu.png) | ![Game Modes](_screenshots/local/mobile/game-modes.gif) | ![Statistics](_screenshots/local/mobile/10-statistics.png) | ![Settings](_screenshots/local/mobile/02-settings-modal.png) |
 
 ## Running the Application
 
