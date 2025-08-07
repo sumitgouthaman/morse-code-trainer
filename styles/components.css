@@ -737,3 +737,76 @@
 .character-feedback.show {
     display: block;
 }
+
+/* ===== STUDY MENU ===== */
+.study-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-lg);
+    text-align: center;
+}
+
+.study-header {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xl);
+    flex-shrink: 0;
+}
+
+.study-header h2 {
+    color: var(--text);
+    margin-bottom: var(--space-md);
+    font-size: 2.5em;
+}
+
+.study-header p {
+    color: var(--text-muted);
+    font-size: 1.2em;
+    line-height: 1.4;
+}
+
+.study-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    width: 100%;
+    max-width: 500px;
+}
+
+.study-option-btn {
+    display: flex;
+    align-items: center;
+    padding: var(--space-lg);
+    background: linear-gradient(135deg, var(--bg-light), #3a3a3a);
+    border: 2px solid var(--border);
+    border-radius: 15px;
+    color: var(--text);
+    cursor: pointer;
+    transition: all var(--transition);
+    text-align: left;
+    width: 100%;
+}
+
+.study-option-btn:hover {
+    background: linear-gradient(135deg, #5a5a5a, var(--bg-light));
+    transform: translateY(-2px);
+}
+
+.study-option-btn:active {
+    transform: translateY(0);
+}
+
+.study-option-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.3em;
+    color: var(--text);
+}
+
+.study-option-content p {
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+    font-size: 0.9em;
+}

@@ -1,0 +1,73 @@
+<div class="flash-cards-container">
+    <div class="flash-cards-setup" id="flash-cards-setup">
+        <h2>Flash Cards Setup</h2>
+        
+        <div class="setup-section">
+            <h3>Mode</h3>
+            <p>Choose how you want to practice:</p>
+            <div class="mode-selection">
+                <label class="selection-item">
+                    <input type="radio" name="flash-card-mode" id="char-to-morse-mode" value="char-to-morse" checked>
+                    <span>Character → Morse Code</span>
+                </label>
+                
+                <label class="selection-item">
+                    <input type="radio" name="flash-card-mode" id="morse-to-char-mode" value="morse-to-char">
+                    <span>Morse Code → Character</span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="setup-section">
+            <h3>Characters</h3>
+            <p>Select which characters to include:</p>
+            <div class="character-selection">
+                <label class="selection-item">
+                    <input type="checkbox" id="include-alphabet" checked>
+                    <span>Alphabet (A-Z)</span>
+                </label>
+                
+                <label class="selection-item">
+                    <input type="checkbox" id="include-digits">
+                    <span>Digits (0-9)</span>
+                </label>
+                
+                <label class="selection-item">
+                    <input type="checkbox" id="include-punctuation">
+                    <span>Punctuation</span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="setup-controls">
+            <button id="start-flash-cards" class="start-btn">Start Flash Cards</button>
+        </div>
+    </div>
+    
+    <div class="flash-cards-practice" id="flash-cards-practice" style="display: none;">
+        <div class="progress-bar">
+            <div class="progress-text">
+                <span id="current-card">1</span> of <span id="total-cards">26</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="flash-card" id="flash-card">
+            <div class="flash-card-front" id="flash-card-front">
+                <div class="character-display" id="character-display">A</div>
+            </div>
+            
+            <div class="flash-card-back" id="flash-card-back" style="display: none;">
+                <div class="character-display small" id="character-small">A</div>
+                <div class="morse-display" id="morse-display">•−</div>
+            </div>
+        </div>
+        
+        <div class="flash-card-controls">
+            <button id="next-btn" class="next-btn">Next</button>
+            <button id="restart-btn" class="restart-btn" style="display: none;">Start Over</button>
+        </div>
+    </div>
+</div>

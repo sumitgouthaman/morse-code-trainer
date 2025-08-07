@@ -1,7 +1,9 @@
 import { initCharToMorse } from './char-to-morse.js';
 import { initMorseToChar } from './morse-to-char.js';
 import { initSoundToChar } from './sound-to-char.js';
+import { initFlashCards } from './flash-cards.js';
 import { initLearn } from './learn.js';
+import { initStudy } from './study.js';
 import { initStats } from './stats.js';
 import { settings } from './settings.js';
 import { statistics } from './statistics.js';
@@ -14,7 +16,7 @@ const gameContainer = document.getElementById('game-container');
 const charToMorseBtn = document.getElementById('char-to-morse-btn');
 const morseToCharBtn = document.getElementById('morse-to-char-btn');
 const soundToCharBtn = document.getElementById('sound-to-char-btn');
-const learnBtn = document.getElementById('learn-btn');
+const studyBtn = document.getElementById('study-btn');
 const statsBtn = document.getElementById('stats-btn');
 
 // Settings modal elements
@@ -109,8 +111,8 @@ soundToCharBtn.addEventListener('click', () => {
     loadGameMode('sound-to-char');
 });
 
-learnBtn.addEventListener('click', () => {
-    loadGameMode('learn');
+studyBtn.addEventListener('click', () => {
+    loadGameMode('study');
 });
 
 statsBtn.addEventListener('click', () => {
@@ -132,6 +134,9 @@ async function loadGameMode(mode) {
     await loadGameModeFromHistory(mode);
 }
 
+// Make loadGameMode available globally for sub-modules
+window.loadGameMode = loadGameMode;
+
 async function loadGameModeFromHistory(mode) {
     // Clean up any active spacebar paddle from previous mode
     cleanupActiveSpacebarPaddle();
@@ -149,8 +154,12 @@ async function loadGameModeFromHistory(mode) {
         initMorseToChar();
     } else if (mode === 'sound-to-char') {
         initSoundToChar();
+    } else if (mode === 'flash-cards') {
+        initFlashCards();
     } else if (mode === 'learn') {
         initLearn();
+    } else if (mode === 'study') {
+        initStudy();
     } else if (mode === 'stats') {
         initStats();
     }
@@ -174,7 +183,7 @@ window.addEventListener('load', () => {
     initializeSettings();
     updateStatsDisplay();
     const hash = window.location.hash.substring(1);
-    if (hash && ['char-to-morse', 'morse-to-char', 'sound-to-char', 'learn', 'stats'].includes(hash)) {
+    if (hash && ['char-to-morse', 'morse-to-char', 'sound-to-char', 'flash-cards', 'learn', 'study', 'stats'].includes(hash)) {
         loadGameModeFromHistory(hash);
     }
 });

@@ -369,3 +369,221 @@
     background: linear-gradient(135deg, #cc7700, #b36600);
 }
 
+/* ===== FLASH CARDS ===== */
+.flash-cards-container {
+    min-height: 100vh;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+}
+
+.flash-cards-setup {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    padding: var(--space-lg) 0;
+}
+
+.flash-cards-setup h2 {
+    font-size: 2em;
+    margin-bottom: var(--space-md);
+}
+
+.setup-section {
+    margin-bottom: var(--space-lg);
+}
+
+.setup-section h3 {
+    font-size: 1.2em;
+    margin-bottom: var(--space-sm);
+}
+
+.mode-selection,
+.character-selection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.selection-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.selection-item:hover {
+    border-color: var(--primary);
+    background: var(--hover-bg);
+}
+
+.selection-item input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.start-btn {
+    width: 100%;
+    padding: var(--space-lg) var(--space-xl);
+    font-size: 1.2em;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+}
+
+.start-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-2px);
+}
+
+.flash-cards-practice {
+    height: 100vh;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+.progress-bar {
+    margin-bottom: var(--space-xl);
+    flex-shrink: 0;
+}
+
+.progress-text {
+    text-align: center;
+    font-size: 1.1em;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+}
+
+.progress-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.flash-card {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all var(--transition);
+    margin-bottom: var(--space-xl);
+    min-height: 400px;
+    overflow: hidden;
+}
+
+.flash-card:hover {
+    background: var(--hover-bg);
+    transform: translateY(-2px);
+}
+
+.flash-card-front,
+.flash-card-back {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.flash-card .character-display {
+    font-size: 6em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.flash-card .character-display.morse-front {
+    font-size: 4em;
+    font-family: 'Courier New', monospace;
+    color: var(--primary);
+    letter-spacing: 0.1em;
+}
+
+.flash-card .character-display.small {
+    font-size: 3em;
+    margin-bottom: var(--space-md);
+    color: var(--text-muted);
+}
+
+.flash-card .morse-display {
+    font-size: 4em;
+    font-family: 'Courier New', monospace;
+    color: var(--primary);
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.flash-card-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-lg);
+    flex-shrink: 0;
+}
+
+.next-btn, .restart-btn {
+    padding: var(--space-lg) var(--space-xl);
+    font-size: 1.1em;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+    min-width: 120px;
+}
+
+.next-btn {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+}
+
+.next-btn:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+    transform: translateY(-2px);
+}
+
+.restart-btn {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+}
+
+.restart-btn:hover {
+    background: linear-gradient(135deg, #138496, #117a8b);
+    transform: translateY(-2px);
+}
+
+.next-btn:active, .restart-btn:active {
+    transform: translateY(0);
+}
+
+
