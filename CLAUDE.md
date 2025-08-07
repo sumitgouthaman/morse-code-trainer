@@ -47,7 +47,9 @@ Each mode is a separate module with its own HTML template:
 - `char-to-morse`: Show character, input morse code (supports spacebar paddle)
 - `morse-to-char`: Show morse code, guess character
 - `sound-to-char`: Play morse audio, identify character
-- `learn`: Reference chart for all morse characters
+- `study`: Menu for learning tools (reference charts and flash cards)
+- `learn`: Reference chart for all morse characters (accessed via Study menu)
+- `flash-cards`: Interactive flash cards with customizable character sets and dual modes
 - `stats`: Visualized practice statistics with Chart.js
 
 #### Core Systems
@@ -60,6 +62,7 @@ Each mode is a separate module with its own HTML template:
 - Cookie-based persistence with 1-year expiry
 - Global settings: punctuation inclusion, morse speed (WPM), toast notifications
 - Spacebar paddle configuration with timing thresholds
+- Flash cards preferences: character selection (alphabet, digits, punctuation), mode selection (char-to-morse, morse-to-char)
 
 **Statistics System (`js/statistics.js`)**
 - LocalStorage-based persistence with versioning (`morse_trainer_stats_v3`)
@@ -74,6 +77,10 @@ Each mode is a separate module with its own HTML template:
 - `js/toast-utils.js`: Accuracy notification system
 - `js/practice-mode-utils.js`: Shared practice mode functionality
 
+**Study and Learning Tools**
+- `js/study.js`: Study menu navigation between reference charts and flash cards
+- `js/flash-cards.js`: Interactive flash cards with setup, practice, and flip functionality
+
 **Spacebar Paddle (`js/spacebar-paddle.js`)**
 - Hardware-style morse key simulation using spacebar
 - Timing-based dot/dash detection with WPM-derived thresholds
@@ -83,14 +90,15 @@ Each mode is a separate module with its own HTML template:
 Modular CSS approach in `styles/`:
 - `base.css`: CSS variables, reset, typography
 - `layout.css`: Grid systems, main layout structure
-- `components.css`: Reusable UI components (buttons, modals, cards)
-- `game-modes.css`: Practice mode specific styles
+- `components.css`: Reusable UI components (buttons, modals, cards, study menu)
+- `game-modes.css`: Practice mode specific styles (including flash cards)
 - `spacebar-paddle.css`: Paddle mode visual feedback
 - `mobile.css`: Responsive design overrides
 
 ### Service Worker Caching
-- Versioned cache (`v10`) for cache-busting on updates
-- Caches all static assets and external Chart.js CDN
+- Versioned cache (`v11`) for cache-busting on updates
+- Caches all static assets including new study and flash cards modules
+- Caches external Chart.js CDN
 - Graceful failure handling for individual cache misses
 
 ## Key Development Patterns
@@ -122,14 +130,32 @@ settings.set('settingName', value); // Save setting (auto-persists to cookies)
 - Toggle via settings with `spacebarPaddleEnabled` flag
 - Uses timing thresholds derived from WPM settings
 
+### Flash Cards Settings Pattern
+```javascript
+// Flash cards use persistent settings for user preferences
+settings.get('flashCardMode'); // 'char-to-morse' or 'morse-to-char'
+settings.get('flashCardIncludeAlphabet'); // boolean
+settings.get('flashCardIncludeDigits'); // boolean  
+settings.get('flashCardIncludePunctuation'); // boolean
+```
+
+### Study Menu Navigation Pattern
+```javascript
+// Study menu acts as a gateway to learning tools
+window.loadGameMode('learn');       // Reference charts
+window.loadGameMode('flash-cards'); // Interactive flash cards
+```
+
 ## Screenshot Automation
 The `_scripts/` directory contains Puppeteer-based screenshot generation that:
 - Captures all app screens in desktop (1200x800) and mobile (448x867) viewports
 - Automatically cleans existing screenshots before generation for consistency
 - Generates two types of animated GIFs:
-  - `combined.gif`: All 8 screens (menu, settings, game modes, learn, stats)
-  - `game-modes.gif`: Only the 4 interactive practice modes
+  - `combined.gif`: All screens including new study menu and flash cards
+  - `game-modes.gif`: Interactive practice modes (char-to-morse, morse-to-char, sound-to-char, flash-cards)
 - Uses optimized timing (1 second per frame) without slow morphing effects
 - Supports both local development and live GitHub Pages URLs
 - Organizes output in `_screenshots/` with environment-specific folders
 - Includes realistic fake statistics data for stats page screenshots
+
+**Note**: Screenshot automation may need updates to include the new study menu and flash cards screens.

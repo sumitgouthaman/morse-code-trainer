@@ -56,9 +56,9 @@ const scenarios = [
         type: 'evaluate', 
         script: `
           // Ensure paddle is disabled for regular char-to-morse screenshot
-          const toggle = document.querySelector('#paddle-toggle');
-          if (toggle && toggle.classList.contains('enabled')) {
-            toggle.click();
+          const paddleToggle = document.querySelector('#paddle-toggle');
+          if (paddleToggle && paddleToggle.classList.contains('enabled')) {
+            paddleToggle.click();
           }
         `
       }
@@ -75,9 +75,9 @@ const scenarios = [
         type: 'evaluate', 
         script: `
           // Ensure paddle is enabled for paddle mode screenshot
-          const toggle = document.querySelector('#paddle-toggle');
-          if (toggle && !toggle.classList.contains('enabled')) {
-            toggle.click();
+          const paddleToggleBtn = document.querySelector('#paddle-toggle');
+          if (paddleToggleBtn && !paddleToggleBtn.classList.contains('enabled')) {
+            paddleToggleBtn.click();
           }
         `
       }
@@ -98,13 +98,45 @@ const scenarios = [
     fullPage: false
   },
   {
-    name: '06-learn-mode',
-    description: 'Learn mode',
-    url: '#learn',
-    fullPage: false  // Changed from true to false to capture only visible area
+    name: '06-study-menu',
+    description: 'Study menu with learning options',
+    url: '#study',
+    waitFor: '.study-option-btn',
+    fullPage: false
   },
   {
-    name: '07-statistics',
+    name: '07-flash-cards-setup',
+    description: 'Flash cards setup screen',
+    url: '#flash-cards',
+    waitFor: '.flash-cards-setup',
+    fullPage: false
+  },
+  {
+    name: '08-flash-cards-practice',
+    description: 'Flash cards practice mode',
+    url: '#flash-cards',
+    waitFor: '.flash-cards-setup',
+    actions: [
+      { 
+        type: 'click', 
+        selector: '#start-flash-cards'
+      },
+      { 
+        type: 'wait', 
+        duration: 1000
+      }
+    ],
+    fullPage: false
+  },
+  {
+    name: '09-learn-mode',
+    description: 'Learn mode (reference charts)',
+    url: '#learn',
+    waitFor: '.morse-grid',
+    fullPage: false
+  },
+  {
+    name: '10-statistics',
     description: 'Statistics page with sample data',
     url: '#stats',
     waitFor: '.stats-content',
@@ -431,25 +463,6 @@ async function createGifFromScreenshots(source, viewport, gifName = 'combined', 
   }
 }
 
-async function createAllGifs(source) {
-  console.log(`🎬 Creating animated GIFs for ${source}...`);
-  
-  // Create desktop GIFs
-  await createGifFromScreenshots(source, config.viewport, 'combined');
-  await createGifFromScreenshots(source, config.viewport, 'game-modes', 
-    scenario => scenario.name.includes('char-to-morse') || 
-               scenario.name.includes('morse-to-char') || 
-               scenario.name.includes('sound-to-char')
-  );
-  
-  // Create mobile GIFs  
-  await createGifFromScreenshots(source, config.mobileViewport, 'combined');
-  await createGifFromScreenshots(source, config.mobileViewport, 'game-modes',
-    scenario => scenario.name.includes('char-to-morse') || 
-               scenario.name.includes('morse-to-char') || 
-               scenario.name.includes('sound-to-char')
-  );
-}
 
 async function runSingleScreenshots(source, baseUrl) {
   await createOutputDir(source);
@@ -463,31 +476,76 @@ async function runSingleScreenshots(source, baseUrl) {
   });
   
   try {
-    // Desktop screenshots
+    // Desktop screenshots - fresh page for each to avoid state pollution
     console.log('🖥️  Taking desktop screenshots...');
     
     for (const scenario of scenarios) {
-      const desktopPage = await browser.newPage(); // Fresh page for each screenshot
-      await desktopPage.setViewport(config.viewport);
-      await takeScreenshot(desktopPage, scenario, baseUrl, '-desktop', source);
-      await desktopPage.close();
+      let desktopPage = null;
+      try {
+        desktopPage = await browser.newPage();
+        await desktopPage.setViewport(config.viewport);
+        await takeScreenshot(desktopPage, scenario, baseUrl, '-desktop', source);
+        await desktopPage.close();
+        // Small delay between screenshots to prevent overwhelming the browser
+        await new Promise(resolve => setTimeout(resolve, 300));
+      } catch (error) {
+        console.error(`❌ Failed desktop screenshot ${scenario.name}:`, error.message);
+        // Make sure to close the page even on error
+        if (desktopPage) {
+          try {
+            await desktopPage.close();
+          } catch (closeError) {
+            // Ignore close errors
+          }
+        }
+      }
     }
     
-    // Mobile screenshots
+    // Generate desktop GIFs immediately
+    console.log('🎬 Creating desktop animated GIFs...');
+    await createGifFromScreenshots(source, config.viewport, 'combined');
+    await createGifFromScreenshots(source, config.viewport, 'game-modes', 
+      scenario => scenario.name.includes('char-to-morse') || 
+                 scenario.name.includes('morse-to-char') || 
+                 scenario.name.includes('sound-to-char')
+    );
+    
+    // Mobile screenshots - fresh page for each to avoid state pollution
     console.log('📱 Taking mobile screenshots...');
     
     for (const scenario of scenarios) {
-      const mobilePage = await browser.newPage(); // Fresh page for each screenshot
-      await mobilePage.setViewport(config.mobileViewport);
-      await takeScreenshot(mobilePage, scenario, baseUrl, '-mobile', source);
-      await mobilePage.close();
+      let mobilePage = null;
+      try {
+        mobilePage = await browser.newPage();
+        await mobilePage.setViewport(config.mobileViewport);
+        await takeScreenshot(mobilePage, scenario, baseUrl, '-mobile', source);
+        await mobilePage.close();
+        // Small delay between screenshots to prevent overwhelming the browser
+        await new Promise(resolve => setTimeout(resolve, 300));
+      } catch (error) {
+        console.error(`❌ Failed mobile screenshot ${scenario.name}:`, error.message);
+        // Make sure to close the page even on error
+        if (mobilePage) {
+          try {
+            await mobilePage.close();
+          } catch (closeError) {
+            // Ignore close errors
+          }
+        }
+      }
     }
     
-    console.log('🎉 Screenshot session complete!');
-    console.log(`📁 Screenshots saved to: _screenshots/${source}/`);
+    // Generate mobile GIFs immediately
+    console.log('🎬 Creating mobile animated GIFs...');
+    await createGifFromScreenshots(source, config.mobileViewport, 'combined');
+    await createGifFromScreenshots(source, config.mobileViewport, 'game-modes',
+      scenario => scenario.name.includes('char-to-morse') || 
+                 scenario.name.includes('morse-to-char') || 
+                 scenario.name.includes('sound-to-char')
+    );
     
-    // Always create GIFs after screenshots
-    await createAllGifs(source);
+    console.log('🎉 Screenshot session complete!');
+    console.log(`📁 Screenshots and GIFs saved to: _screenshots/${source}/`);
     
   } catch (error) {
     console.error('❌ Screenshot session failed:', error);
