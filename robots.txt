@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Important pages
+Allow: /index.html
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.svg
+Allow: /manifest.json
+
+# Sitemap (when created)
+# Sitemap: https://morse-code.sumitgouthaman.com/sitemap.xml

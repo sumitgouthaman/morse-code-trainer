@@ -3,7 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Morse Code Trainer</title>
+    <title>Morse Code Trainer - Learn & Practice Morse Code Online</title>
+    <meta name="description" content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input. Great for beginners.">
+    <meta name="keywords" content="morse code, morse trainer, ham radio, amateur radio, telegraph, CW practice, morse code learning, dot dash">
+    <link rel="canonical" href="https://morse-code.sumitgouthaman.com/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://morse-code.sumitgouthaman.com/">
+    <meta property="og:title" content="Morse Code Trainer - Learn & Practice Morse Code Online">
+    <meta property="og:description" content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input.">
+    <meta property="og:image" content="https://morse-code.sumitgouthaman.com/icon-512.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:url" content="https://morse-code.sumitgouthaman.com/">
+    <meta property="twitter:title" content="Morse Code Trainer - Learn & Practice Morse Code Online">
+    <meta property="twitter:description" content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input.">
+    <meta property="twitter:image" content="https://morse-code.sumitgouthaman.com/icon-512.png">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": ["WebApplication", "Game"],
+        "name": "Morse Code Trainer",
+        "description": "Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input. Perfect for beginners and ham radio operators.",
+        "url": "https://morse-code.sumitgouthaman.com/",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": ["Web Browser", "Android", "iOS"],
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Sumit Gouthaman"
+        },
+        "keywords": "morse code, morse trainer, ham radio, amateur radio, telegraph, CW practice",
+        "inLanguage": "en"
+    }
+    </script>
+    
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="manifest" href="manifest.json">
@@ -14,12 +56,12 @@
     <meta name="apple-mobile-web-app-title" content="Morse Trainer">
 </head>
 <body>
-    <div id="main-menu">
-        <div class="menu-header">
+    <main id="main-menu">
+        <header class="menu-header">
             <h1>Morse Code Trainer</h1>
-        </div>
+        </header>
         
-        <div class="menu-buttons">
+        <nav class="menu-buttons">
             <button id="char-to-morse-btn" class="menu-btn">
                 <div class="btn-content">
                     <h3>Character to Morse</h3>
@@ -61,17 +103,17 @@
                     <p>Configure app preferences</p>
                 </div>
             </button>
-        </div>
-    </div>
+        </nav>
+    </main>
 
     <!-- Settings Modal -->
-    <div id="settings-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
+    <aside id="settings-modal" class="modal" style="display: none;">
+        <section class="modal-content">
+            <header class="modal-header">
                 <h2>Settings</h2>
                 <button id="close-settings" class="close-btn">&times;</button>
-            </div>
-            <div class="modal-body">
+            </header>
+            <section class="modal-body">
                 <div class="setting-item">
                     <label>
                         <input type="checkbox" id="global-include-punctuation">
@@ -110,11 +152,11 @@
                     <button id="clear-stats-btn" class="clear-stats-btn">Clear All Statistics</button>
                     <p class="setting-description">Reset all practice session data and accuracy tracking</p>
                 </div>
-            </div>
-        </div>
-    </div>
+            </section>
+        </section>
+    </aside>
 
-    <div id="game-container" style="display: none;"></div>
+    <section id="game-container" style="display: none;"></section>
 
     <script type="module" src="js/main.js"></script>
     <script>
