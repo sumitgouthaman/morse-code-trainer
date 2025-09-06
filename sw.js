@@ -83,10 +83,11 @@ self.addEventListener('fetch', event => {
     fetch(event.request)
       .then(response => {
         // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== 'basic') {
+        if (!response || response.status !== 200) {
           return response;
         }
 
+        // Only cache successful responses (removed response.type restriction)
         // IMPORTANT: Clone the response. A response is a stream
         // and because we want the browser to consume the response
         // as well as the cache consuming the response, we need
