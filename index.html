@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Morse Code Trainer - Learn & Practice Morse Code Online</title>
-    <meta name="description" content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input. Great for beginners.">
-    <meta name="keywords" content="morse code, morse trainer, ham radio, amateur radio, telegraph, CW practice, morse code learning, dot dash">
+    <meta name="description"
+        content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input. Great for beginners.">
+    <meta name="keywords"
+        content="morse code, morse trainer, ham radio, amateur radio, telegraph, CW practice, morse code learning, dot dash">
     <link rel="canonical" href="https://morse-code.sumitgouthaman.com/">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://morse-code.sumitgouthaman.com/">
     <meta property="og:title" content="Morse Code Trainer - Learn & Practice Morse Code Online">
-    <meta property="og:description" content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input.">
+    <meta property="og:description"
+        content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input.">
     <meta property="og:image" content="https://morse-code.sumitgouthaman.com/icon-512.png">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary">
     <meta property="twitter:url" content="https://morse-code.sumitgouthaman.com/">
     <meta property="twitter:title" content="Morse Code Trainer - Learn & Practice Morse Code Online">
-    <meta property="twitter:description" content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input.">
+    <meta property="twitter:description"
+        content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input.">
     <meta property="twitter:image" content="https://morse-code.sumitgouthaman.com/icon-512.png">
-    
+
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
     {
@@ -45,7 +51,7 @@
         "inLanguage": "en"
     }
     </script>
-    
+
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="manifest" href="manifest.json">
@@ -55,12 +61,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Morse Trainer">
 </head>
+
 <body>
     <main id="main-menu">
         <header class="menu-header">
             <h1>Morse Code Trainer</h1>
         </header>
-        
+
         <nav class="menu-buttons">
             <button id="char-to-morse-btn" class="menu-btn">
                 <div class="btn-content">
@@ -68,35 +75,35 @@
                     <p>See a character, input the morse code</p>
                 </div>
             </button>
-            
+
             <button id="morse-to-char-btn" class="menu-btn">
                 <div class="btn-content">
                     <h3>Morse to Character</h3>
                     <p>See morse code, guess the character</p>
                 </div>
             </button>
-            
+
             <button id="sound-to-char-btn" class="menu-btn">
                 <div class="btn-content">
                     <h3>Sound to Character</h3>
                     <p>Listen to morse code, identify the character</p>
                 </div>
             </button>
-            
+
             <button id="study-btn" class="menu-btn">
                 <div class="btn-content">
                     <h3>Study</h3>
                     <p>Reference charts and flash cards</p>
                 </div>
             </button>
-            
+
             <button id="stats-btn" class="menu-btn">
                 <div class="btn-content">
                     <h3>Statistics</h3>
                     <p>View your learning progress</p>
                 </div>
             </button>
-            
+
             <button id="settings-btn" class="menu-btn">
                 <div class="btn-content">
                     <h3>Settings</h3>
@@ -111,7 +118,7 @@
         <section class="modal-content">
             <header class="modal-header">
                 <h2>Settings</h2>
-                <button id="close-settings" class="close-btn">&times;</button>
+                <button id="close-settings" class="close-btn" aria-label="Close Settings">&times;</button>
             </header>
             <section class="modal-body">
                 <div class="setting-item">
@@ -121,7 +128,7 @@
                     </label>
                     <p class="setting-description">Include punctuation marks in practice modes</p>
                 </div>
-                
+
                 <div class="setting-item">
                     <label for="morse-speed-slider" class="speed-label">
                         Morse Code Speed
@@ -130,9 +137,9 @@
                     <input type="range" id="morse-speed-slider" min="5" max="30" value="12" step="1">
                     <p class="setting-description">Adjust the speed of morse code playback (5-30 WPM)</p>
                 </div>
-                
-                
-                
+
+
+
                 <div class="setting-item">
                     <label>
                         <input type="checkbox" id="show-toast-checkbox">
@@ -140,14 +147,16 @@
                     </label>
                     <p class="setting-description">Display a toast notification with accuracy periodically.</p>
                 </div>
-                
+
                 <div class="setting-item">
                     <label for="toast-question-count-input" class="inline-label">
-                        Show accuracy every <input type="number" id="toast-question-count-input" min="1" max="100" value="20" step="1" class="inline-input"> questions
+                        Show accuracy every <input type="number" id="toast-question-count-input" min="1" max="100"
+                            value="20" step="1" class="inline-input"> questions
                     </label>
-                    <p class="setting-description">Shows your accuracy over the most recent questions when practicing.</p>
+                    <p class="setting-description">Shows your accuracy over the most recent questions when practicing.
+                    </p>
                 </div>
-                
+
                 <div class="setting-item">
                     <button id="clear-stats-btn" class="clear-stats-btn">Clear All Statistics</button>
                     <p class="setting-description">Reset all practice session data and accuracy tracking</p>
@@ -174,4 +183,5 @@
         }
     </script>
 </body>
+
 </html>

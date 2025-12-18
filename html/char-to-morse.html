@@ -2,8 +2,8 @@
     <div class="character-display"></div>
     <div class="morse-input"></div>
     <div class="controls" id="button-controls">
-        <button class="dot-btn" id="dot-btn-original">.</button>
-        <button class="dash-btn" id="dash-btn-original">-</button>
+        <button class="dot-btn" id="dot-btn-original" aria-label="Dot">.</button>
+        <button class="dash-btn" id="dash-btn-original" aria-label="Dash">-</button>
         <button class="skip-btn" id="skip-btn-original">Skip</button>
     </div>
     <div class="paddle-control-area">
@@ -14,7 +14,8 @@
         <div class="paddle-speed-control" id="paddle-speed-control" style="display: none;">
             <div class="speed-label">Paddle Speed</div>
             <div class="speed-value" id="paddle-speed-value">12 WPM</div>
-            <input type="range" id="paddle-speed-slider" min="5" max="30" value="12" step="1" class="paddle-speed-slider">
+            <input type="range" id="paddle-speed-slider" min="5" max="30" value="12" step="1"
+                class="paddle-speed-slider">
         </div>
         <div class="paddle-interface" id="paddle-interface" style="display: none;">
             <div class="paddle-status">

@@ -16,7 +16,8 @@ export function initSoundToChar() {
         speedSlider: document.querySelector('#inline-speed-slider'),
         speedValue: document.querySelector('#speed-value'),
         currentMorse: '',
-        correctCharacter: ''
+        correctCharacter: '',
+        practiceMode: practiceMode
     };
 
     let audioCtx = null;
@@ -25,12 +26,12 @@ export function initSoundToChar() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        
+
         // Ensure AudioContext is running
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
-        
+
         return audioCtx;
     }
 
@@ -50,13 +51,13 @@ export function initSoundToChar() {
         const currentSpeed = settings.get('morseSpeed');
         soundToChar.speedSlider.value = currentSpeed;
         soundToChar.speedValue.textContent = `${currentSpeed} WPM`;
-        
+
         // Add event listener for speed changes
         soundToChar.speedSlider.addEventListener('input', (e) => {
             const speed = parseInt(e.target.value);
             soundToChar.speedValue.textContent = `${speed} WPM`;
             settings.set('morseSpeed', speed);
-            
+
             // Update the main settings display if it exists
             const mainSpeedDisplay = document.getElementById('speed-display');
             if (mainSpeedDisplay) {
@@ -70,25 +71,23 @@ export function initSoundToChar() {
     }
 
     function nextSoundToChar(soundToChar) {
-        const practiceMode = new PracticeMode('sound-to-char', 'sound-to-char');
-        
-        soundToChar.correctCharacter = practiceMode.getRandomCharacter();
+        soundToChar.correctCharacter = soundToChar.practiceMode.getRandomCharacter();
         soundToChar.currentMorse = morseCode[soundToChar.correctCharacter];
-        
+
         // Clear any previous feedback and hide hint
         clearCharacterFeedback(soundToChar);
         hideMorseHint(soundToChar);
-        
+
         // Set the morse pattern but keep it hidden
         soundToChar.morsePattern.textContent = soundToChar.currentMorse;
-        
+
         // Automatically play sound for the new character
         playSoundAndVibrate(soundToChar.currentMorse);
     }
 
     function toggleMorseHint(soundToChar) {
         const isVisible = soundToChar.morsePattern.classList.contains('visible');
-        
+
         if (isVisible) {
             hideMorseHint(soundToChar);
         } else {
@@ -107,13 +106,11 @@ export function initSoundToChar() {
     }
 
     function handleSoundGuess(guess, soundToChar) {
-        const practiceMode = new PracticeMode('sound-to-char', 'sound-to-char');
-        
         // Show the guessed character prominently in the sound display area
         showCharacterFeedback(guess, soundToChar);
-        
+
         const isCorrect = guess === soundToChar.correctCharacter;
-        practiceMode.recordAttemptAndCheckToast(soundToChar.correctCharacter, isCorrect);
+        soundToChar.practiceMode.recordAttemptAndCheckToast(soundToChar.correctCharacter, isCorrect);
 
         if (isCorrect) {
             // Correct guess - clear feedback and move to next character
@@ -136,9 +133,9 @@ export function initSoundToChar() {
             feedbackDiv.className = 'character-feedback';
             soundToChar.soundDisplay.appendChild(feedbackDiv);
         }
-        
+
         feedbackDiv.textContent = character;
-        
+
         // Set class based on correctness
         if (character === soundToChar.correctCharacter) {
             feedbackDiv.className = 'character-feedback correct show';
@@ -157,13 +154,13 @@ export function initSoundToChar() {
 
     function skipSound(soundToChar, practiceMode) {
         const answerContent = `${soundToChar.currentMorse} <span class="arrow">→</span> ${soundToChar.correctCharacter}`;
-        
+
         // Custom next function that also clears feedback
         const customNext = (state) => {
             clearCharacterFeedback(state);
             nextSoundToChar(state);
         };
-        
+
         practiceMode.handleSkip(soundToChar.correctCharacter, answerContent, customNext, soundToChar);
     }
 
@@ -209,22 +206,22 @@ export function initSoundToChar() {
     generatePhoneKeyboard(soundToChar, handleSoundGuess);
     soundToChar.playBtn.addEventListener('click', () => playSoundAndVibrate(soundToChar.currentMorse));
     soundToChar.skipBtn.addEventListener('click', () => skipSound(soundToChar, practiceMode));
-    
+
     // Set up keyboard handler
     practiceMode.setupKeyboardHandler(handleKeyboardInput, soundToChar);
-    
+
     // Add click handler for hint area
     soundToChar.hintArea.addEventListener('click', () => toggleMorseHint(soundToChar));
-    
+
     nextSoundToChar(soundToChar);
 
     function handleKeyboardInput(event, soundToChar) {
         // Prevent default behavior for handled keys
         const key = event.key.toUpperCase();
-        
+
         // Handle alphanumeric characters and punctuation
         const validChars = createValidCharsRegex();
-        
+
         if (validChars.test(key)) {
             event.preventDefault();
             handleSoundGuess(key, soundToChar);

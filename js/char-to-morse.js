@@ -5,7 +5,7 @@ import { settings } from './settings.js';
 
 export function initCharToMorse() {
     const practiceMode = new PracticeMode('char-to-morse', 'char-to-morse');
-    
+
     const charToMorseState = {
         characterDisplay: document.querySelector('.character-display'),
         morseInput: document.querySelector('.morse-input'),
@@ -14,7 +14,8 @@ export function initCharToMorse() {
         skipBtn: document.querySelector('.skip-btn'),
         currentCharacter: '',
         currentUserInput: '',
-        paddle: null
+        paddle: null,
+        practiceMode: practiceMode
     };
 
     charToMorseState.dotBtn.addEventListener('click', () => {
@@ -29,16 +30,16 @@ export function initCharToMorse() {
         addPressedAnimation(charToMorseState.skipBtn);
         skipCharacter(charToMorseState);
     });
-    
+
     // Set up keyboard handler
     practiceMode.setupKeyboardHandler(handleKeyboardInput, charToMorseState);
-    
+
     // Initialize spacebar paddle
     initSpacebarPaddle(charToMorseState);
-    
+
     // Initialize paddle toggle
     initPaddleToggle(charToMorseState);
-    
+
     nextCharToMorse(charToMorseState);
 
     function handleKeyboardInput(event, charToMorseState) {
@@ -46,7 +47,7 @@ export function initCharToMorse() {
         if (event.code === 'Space' && charToMorseState.paddle && charToMorseState.paddle.enabled) {
             return;
         }
-        
+
         // Handle dot and dash key presses
         if (event.key === '.') {
             event.preventDefault();
@@ -75,7 +76,7 @@ export function initCharToMorse() {
                         addPressedAnimation(charToMorseState.dashBtn);
                     }
                 }
-                
+
                 handleCharInput(symbol, charToMorseState);
             },
             onPressStart: () => {
@@ -94,10 +95,10 @@ export function initCharToMorse() {
                 }
             }
         });
-        
+
         // Configure timing based on settings
         updatePaddleTiming(charToMorseState.paddle);
-        
+
         // Enable/disable based on settings
         if (settings.get('spacebarPaddleEnabled')) {
             charToMorseState.paddle.enable();
@@ -106,7 +107,7 @@ export function initCharToMorse() {
 
     function updatePaddleTiming(paddle) {
         const paddleTiming = settings.get('spacebarPaddleTiming');
-        
+
         if (paddleTiming.useWPMTiming) {
             // Use WPM-based timing
             const wpm = paddleTiming.customWPM || settings.get('morseSpeed');
@@ -126,27 +127,27 @@ export function initCharToMorse() {
         const paddleInterface = document.getElementById('paddle-interface');
         const dotBtn = document.getElementById('dot-btn-original');
         const dashBtn = document.getElementById('dash-btn-original');
-        
+
         if (!toggleSwitch) return;
-        
+
         // Initialize speed control
         initPaddleSpeedControl(charToMorseState);
-        
+
         // Set initial state
         const isEnabled = settings.get('spacebarPaddleEnabled');
         updateUIMode(isEnabled);
-        
+
         // Add click handler for toggle
         toggleSwitch.addEventListener('click', () => {
             const currentlyEnabled = settings.get('spacebarPaddleEnabled');
             const newState = !currentlyEnabled;
-            
+
             // Update settings
             settings.set('spacebarPaddleEnabled', newState);
-            
+
             // Update UI mode
             updateUIMode(newState);
-            
+
             // Update paddle state
             if (newState) {
                 charToMorseState.paddle.enable();
@@ -154,10 +155,10 @@ export function initCharToMorse() {
                 charToMorseState.paddle.disable();
             }
         });
-        
+
         function updateUIMode(paddleEnabled) {
             const paddleSpeedControl = document.getElementById('paddle-speed-control');
-            
+
             if (paddleEnabled) {
                 // Show paddle mode - hide only dot/dash buttons, keep skip button
                 toggleSwitch.classList.add('enabled');
@@ -181,25 +182,25 @@ export function initCharToMorse() {
         const speedValue = document.getElementById('paddle-speed-value');
         const dotZone = document.getElementById('dot-zone');
         const dashZone = document.getElementById('dash-zone');
-        
+
         if (!speedSlider || !speedValue) return;
-        
+
         // Get current paddle speed setting
         const paddleTiming = settings.get('spacebarPaddleTiming');
-        const currentSpeed = paddleTiming.useWPMTiming ? 
-            (paddleTiming.customWPM || settings.get('morseSpeed')) : 
+        const currentSpeed = paddleTiming.useWPMTiming ?
+            (paddleTiming.customWPM || settings.get('morseSpeed')) :
             12; // fallback
-        
+
         // Set initial values
         speedSlider.value = currentSpeed;
         speedValue.textContent = `${currentSpeed} WPM`;
         updateTimingGuides(currentSpeed);
-        
+
         // Add event listener for speed changes
         speedSlider.addEventListener('input', (e) => {
             const newSpeed = parseInt(e.target.value);
             speedValue.textContent = `${newSpeed} WPM`;
-            
+
             // Update settings
             const currentPaddleTiming = settings.get('spacebarPaddleTiming');
             settings.set('spacebarPaddleTiming', {
@@ -207,22 +208,22 @@ export function initCharToMorse() {
                 customWPM: newSpeed,
                 useWPMTiming: true
             });
-            
+
             // Update paddle timing
             if (charToMorseState.paddle) {
                 charToMorseState.paddle.setTimingFromWPM(newSpeed);
             }
-            
+
             // Update timing guides
             updateTimingGuides(newSpeed);
         });
-        
+
         function updateTimingGuides(wpm) {
             // Calculate timing based on WPM (matches sound-to-char formula)
             const baseDotDuration = 1200 / wpm; // Standard morse timing formula
             const dotDuration = Math.round(baseDotDuration * 1.2); // Slightly longer than audio
             const dashDuration = Math.round(baseDotDuration * 3 * 1.2); // Standard 3:1 ratio, slightly longer than audio
-            
+
             // Safely update timing guides only if elements exist
             if (dotZone) {
                 dotZone.textContent = `DOT (<${dotDuration}ms)`;
@@ -236,16 +237,14 @@ export function initCharToMorse() {
 
     function skipCharacter(charToMorseState) {
         const answerContent = morseCode[charToMorseState.currentCharacter];
-        practiceMode.handleSkip(charToMorseState.currentCharacter, answerContent, nextCharToMorse, charToMorseState);
+        charToMorseState.practiceMode.handleSkip(charToMorseState.currentCharacter, answerContent, nextCharToMorse, charToMorseState);
     }
 
 }
 
 
 function nextCharToMorse(charToMorseState) {
-    const practiceMode = new PracticeMode('char-to-morse', 'char-to-morse');
-    
-    charToMorseState.currentCharacter = practiceMode.getRandomCharacter();
+    charToMorseState.currentCharacter = charToMorseState.practiceMode.getRandomCharacter();
     charToMorseState.currentUserInput = '';
     charToMorseState.characterDisplay.textContent = charToMorseState.currentCharacter;
     charToMorseState.morseInput.textContent = '';
@@ -260,19 +259,18 @@ function handleCharInput(input, charToMorseState) {
 }
 
 function checkCharToMorse(charToMorseState) {
-    const practiceMode = new PracticeMode('char-to-morse', 'char-to-morse');
     const correctMorse = morseCode[charToMorseState.currentCharacter];
-    
+
     if (charToMorseState.currentUserInput === correctMorse) {
         // Correct!
-        practiceMode.recordAttemptAndCheckToast(charToMorseState.currentCharacter, true);
-        practiceMode.applyFeedback(charToMorseState.characterDisplay, 'correct', () => {
+        charToMorseState.practiceMode.recordAttemptAndCheckToast(charToMorseState.currentCharacter, true);
+        charToMorseState.practiceMode.applyFeedback(charToMorseState.characterDisplay, 'correct', () => {
             nextCharToMorse(charToMorseState);
         });
     } else if (!correctMorse.startsWith(charToMorseState.currentUserInput)) {
         // Incorrect
-        practiceMode.recordAttemptAndCheckToast(charToMorseState.currentCharacter, false);
-        practiceMode.applyFeedback(charToMorseState.characterDisplay, 'incorrect', () => {
+        charToMorseState.practiceMode.recordAttemptAndCheckToast(charToMorseState.currentCharacter, false);
+        charToMorseState.practiceMode.applyFeedback(charToMorseState.characterDisplay, 'incorrect', () => {
             charToMorseState.currentUserInput = '';
             charToMorseState.morseInput.textContent = '';
         });
