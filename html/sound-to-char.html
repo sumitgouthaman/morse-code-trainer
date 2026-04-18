@@ -7,17 +7,17 @@
     </div>
     
     <div class="audio-controls">
-        <button class="control-btn speed-btn">
+        <div class="control-btn speed-btn" aria-label="Morse code speed">
             <div class="btn-label">Speed</div>
             <div class="btn-value" id="speed-value">12 WPM</div>
-            <input type="range" id="inline-speed-slider" min="5" max="30" value="12" step="1" class="speed-slider">
-        </button>
-        
-        <button class="control-btn play-btn">
+            <input type="range" id="inline-speed-slider" min="5" max="30" value="12" step="1" class="speed-slider" aria-label="Morse code speed in WPM">
+        </div>
+
+        <button class="control-btn play-btn" aria-label="Play morse code sound">
             <div class="btn-content">Play Sound</div>
         </button>
-        
-        <button class="control-btn skip-btn">
+
+        <button class="control-btn skip-btn" aria-label="Skip this character">
             <div class="btn-content">Skip</div>
         </button>
     </div>

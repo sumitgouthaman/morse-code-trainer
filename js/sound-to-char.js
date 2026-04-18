@@ -24,12 +24,16 @@ export function initSoundToChar() {
 
     function getAudioContext() {
         if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.error('AudioContext not available:', e);
+                return null;
+            }
         }
 
-        // Ensure AudioContext is running
         if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
+            audioCtx.resume().catch(() => {});
         }
 
         return audioCtx;
@@ -167,6 +171,7 @@ export function initSoundToChar() {
 
     function playSoundAndVibrate(morse) {
         const audioContext = getAudioContext();
+        if (!audioContext) return;
         const speed = settings.get('morseSpeed');
         const timing = getTimingFromWPM(speed);
 

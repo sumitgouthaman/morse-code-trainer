@@ -12,13 +12,15 @@ function setupTabs() {
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             const targetTab = button.dataset.tab;
-            
-            // Remove active class from all buttons and panels
-            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
             tabPanels.forEach(panel => panel.classList.remove('active'));
-            
-            // Add active class to clicked button and corresponding panel
+
             button.classList.add('active');
+            button.setAttribute('aria-selected', 'true');
             document.getElementById(`${targetTab}-tab`).classList.add('active');
         });
     });

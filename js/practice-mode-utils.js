@@ -67,12 +67,7 @@ export class PracticeMode {
      */
     showSkipAnswer(content) {
         const answerDisplay = document.createElement('div');
-        // Check if content contains HTML tags
-        if (typeof content === 'string' && content.includes('<')) {
-            answerDisplay.innerHTML = content;
-        } else {
-            answerDisplay.textContent = content;
-        }
+        answerDisplay.innerHTML = content;
         answerDisplay.className = 'answer-display-skip';
         
         document.body.appendChild(answerDisplay);
@@ -155,9 +150,11 @@ export function addPressedAnimation(button) {
     }, 100);
 }
 
+const VALID_CHARS_REGEX = /^[A-Z0-9.,'!/()&:;=+\-_"$@?]$/;
+
 /**
- * Utility function to create character filter regex
+ * Utility function to get character filter regex
  */
 export function createValidCharsRegex() {
-    return /^[A-Z0-9.,'!/()&:;=+\-_"$@?]$/;
+    return VALID_CHARS_REGEX;
 }

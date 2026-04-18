@@ -1,5 +1,5 @@
 // Increment the CACHE_VERSION to trigger a cache update when any of the cached files change.
-const CACHE_VERSION = 'v11';
+const CACHE_VERSION = 'v12';
 const CACHE_NAME = `morse-trainer-${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
@@ -108,14 +108,16 @@ self.addEventListener('fetch', event => {
       .catch(() => {
         return caches.match(event.request)
           .then(response => {
-            // Cache hit - return response
             if (response) {
               return response;
             }
-            // No cache hit - return a basic response or let it fail gracefully
-            return new Response('Offline - resource not available', { 
-              status: 404, 
-              statusText: 'Not Found' 
+            // For navigation requests, serve cached index.html as SPA fallback
+            if (event.request.mode === 'navigate') {
+              return caches.match('/index.html');
+            }
+            return new Response('Offline - resource not available', {
+              status: 503,
+              statusText: 'Service Unavailable'
             });
           });
       })

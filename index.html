@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Morse Code Trainer - Learn & Practice Morse Code Online</title>
     <meta name="description"
         content="Free online morse code trainer with interactive exercises. Practice character recognition, sound identification, and morse code input. Great for beginners.">
@@ -55,7 +54,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="manifest" href="manifest.json">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js" integrity="sha384-XcdcwHqIPULERb2yDEM4R0XaQKU3YnDsrTmjACBZyfdVVqjh6xQ4/DCMd7XLcA6Y" crossorigin="anonymous"></script>
     <meta name="theme-color" content="#333">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -68,43 +67,43 @@
             <h1>Morse Code Trainer</h1>
         </header>
 
-        <nav class="menu-buttons">
-            <button id="char-to-morse-btn" class="menu-btn">
+        <nav class="menu-buttons" aria-label="Practice modes">
+            <button id="char-to-morse-btn" class="menu-btn" aria-label="Character to Morse: See a character, input the morse code">
                 <div class="btn-content">
                     <h3>Character to Morse</h3>
                     <p>See a character, input the morse code</p>
                 </div>
             </button>
 
-            <button id="morse-to-char-btn" class="menu-btn">
+            <button id="morse-to-char-btn" class="menu-btn" aria-label="Morse to Character: See morse code, guess the character">
                 <div class="btn-content">
                     <h3>Morse to Character</h3>
                     <p>See morse code, guess the character</p>
                 </div>
             </button>
 
-            <button id="sound-to-char-btn" class="menu-btn">
+            <button id="sound-to-char-btn" class="menu-btn" aria-label="Sound to Character: Listen to morse code, identify the character">
                 <div class="btn-content">
                     <h3>Sound to Character</h3>
                     <p>Listen to morse code, identify the character</p>
                 </div>
             </button>
 
-            <button id="study-btn" class="menu-btn">
+            <button id="study-btn" class="menu-btn" aria-label="Study: Reference charts and flash cards">
                 <div class="btn-content">
                     <h3>Study</h3>
                     <p>Reference charts and flash cards</p>
                 </div>
             </button>
 
-            <button id="stats-btn" class="menu-btn">
+            <button id="stats-btn" class="menu-btn" aria-label="Statistics: View your learning progress">
                 <div class="btn-content">
                     <h3>Statistics</h3>
                     <p>View your learning progress</p>
                 </div>
             </button>
 
-            <button id="settings-btn" class="menu-btn">
+            <button id="settings-btn" class="menu-btn" aria-label="Settings: Configure app preferences">
                 <div class="btn-content">
                     <h3>Settings</h3>
                     <p>Configure app preferences</p>
@@ -114,10 +113,10 @@
     </main>
 
     <!-- Settings Modal -->
-    <aside id="settings-modal" class="modal" style="display: none;">
+    <aside id="settings-modal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
         <section class="modal-content">
             <header class="modal-header">
-                <h2>Settings</h2>
+                <h2 id="settings-modal-title">Settings</h2>
                 <button id="close-settings" class="close-btn" aria-label="Close Settings">&times;</button>
             </header>
             <section class="modal-body">

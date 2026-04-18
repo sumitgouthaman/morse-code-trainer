@@ -17,7 +17,11 @@ export function showToast(message, isCorrect) {
         document.body.appendChild(toast);
     }
 
-    toast.innerHTML = `<div class="toast-content">${message}</div>`;
+    const toastContent = document.createElement('div');
+    toastContent.className = 'toast-content';
+    toastContent.textContent = message;
+    toast.innerHTML = '';
+    toast.appendChild(toastContent);
     toast.style.backgroundColor = isCorrect ? 'rgba(76, 175, 80, 0.95)' : 'rgba(244, 67, 54, 0.95)';
     toast.classList.remove('fade-out');
 

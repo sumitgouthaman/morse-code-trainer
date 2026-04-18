@@ -92,17 +92,29 @@ export function initFlashCards() {
     
     function startFlashCards() {
         const selectedChars = getSelectedCharacters();
-        
+
         if (selectedChars.length === 0) {
-            alert('Please select at least one character type.');
+            const startBtn = document.getElementById('start-flash-cards');
+            const prev = startBtn.textContent;
+            startBtn.textContent = 'Select at least one character type';
+            startBtn.disabled = true;
+            setTimeout(() => {
+                startBtn.textContent = prev;
+                startBtn.disabled = false;
+            }, 2500);
             return;
         }
         
         // Get selected mode
         const selectedMode = charToMorseMode.checked ? 'char-to-morse' : 'morse-to-char';
         
-        // Shuffle the characters
-        flashCardsState.characters = selectedChars.sort(() => Math.random() - 0.5);
+        // Shuffle using Fisher-Yates for unbiased random order
+        const arr = [...selectedChars];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        flashCardsState.characters = arr;
         flashCardsState.currentIndex = 0;
         flashCardsState.isRevealed = false;
         flashCardsState.mode = selectedMode;

@@ -75,10 +75,20 @@ function initializeSettings() {
     // Clear stats button event listener
     const clearStatsBtn = document.getElementById('clear-stats-btn');
     clearStatsBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to clear all statistics? This action cannot be undone.')) {
+        if (clearStatsBtn.dataset.confirming === 'true') {
             statistics.clearAllStats();
             updateStatsDisplay();
-            alert('All statistics have been cleared.');
+            clearStatsBtn.textContent = 'Clear All Statistics';
+            clearStatsBtn.dataset.confirming = 'false';
+        } else {
+            clearStatsBtn.textContent = 'Confirm — this cannot be undone';
+            clearStatsBtn.dataset.confirming = 'true';
+            setTimeout(() => {
+                if (clearStatsBtn.dataset.confirming === 'true') {
+                    clearStatsBtn.textContent = 'Clear All Statistics';
+                    clearStatsBtn.dataset.confirming = 'false';
+                }
+            }, 4000);
         }
     });
     
@@ -92,11 +102,36 @@ function initializeSettings() {
 
 function openSettings() {
     settingsModal.style.display = 'flex';
+    // Move focus into modal
+    closeSettingsBtn.focus();
 }
 
 function closeSettings() {
     settingsModal.style.display = 'none';
+    settingsBtn.focus();
 }
+
+// Trap focus inside the settings modal
+settingsModal.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeSettings();
+        return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusable = Array.from(settingsModal.querySelectorAll(
+        'button, input, [tabindex]:not([tabindex="-1"])'
+    )).filter(el => !el.disabled);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+    }
+});
 
 // Game mode navigation
 charToMorseBtn.addEventListener('click', () => {
@@ -140,13 +175,22 @@ window.loadGameMode = loadGameMode;
 async function loadGameModeFromHistory(mode) {
     // Clean up any active spacebar paddle from previous mode
     cleanupActiveSpacebarPaddle();
-    
+
     mainMenu.style.display = 'none';
     gameContainer.style.display = 'block';
 
-    const response = await fetch(`html/${mode}.html`);
-    const html = await response.text();
-    gameContainer.innerHTML = html;
+    try {
+        const response = await fetch(`html/${mode}.html`);
+        if (!response.ok) {
+            throw new Error(`Failed to load mode: ${response.status}`);
+        }
+        const html = await response.text();
+        gameContainer.innerHTML = html;
+    } catch (error) {
+        console.error('Failed to load game mode:', error);
+        gameContainer.innerHTML = '<p style="color:var(--error);padding:20px;">Failed to load. Please try again.</p>';
+        return;
+    }
 
     if (mode === 'char-to-morse') {
         initCharToMorse();
@@ -191,12 +235,11 @@ window.addEventListener('load', () => {
 // Update statistics display on main menu
 function updateStatsDisplay() {
     const summary = statistics.getStatsSummary();
-    console.log('Updating stats display:', summary);
-    
-    // Update the Statistics button instead of the header
     const statsBtn = document.getElementById('stats-btn');
+    if (!statsBtn) return;
     const statsDescription = statsBtn.querySelector('p');
-    
+    if (!statsDescription) return;
+
     if (summary.hasStats) {
         statsDescription.textContent = `View your learning progress (${summary.overallAccuracy}% overall accuracy)`;
     } else {
